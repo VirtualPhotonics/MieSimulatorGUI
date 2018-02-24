@@ -8,4 +8,4 @@ Click on “release” to get latest releases. Users can download Windows Installer 
 ## Copyright
 Virtual Tissue Simulator (VTS) Project.
 
-Copyright © 2009 - 2018 Laser Microbeam and Medical Program
+Copyright ©  2009 - 2018 Laser Microbeam and Medical Program
