@@ -116,7 +116,7 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
     para->endWavel = ui->lineEdit_EndWL->text().toDouble();
     para->stepWavel = ui->lineEdit_StepWL->text().toDouble();
     para->scatRefReal = ui->lineEdit_ScatRefReal->text().toDouble();
-    para->scatRefImag = -1.0 * (ui->lineEdit_ScatRefImag->text().toDouble()); //multiply by -1 to use "n-ik" convention
+    para->scatRefImag = ui->lineEdit_ScatRefImag->text().toDouble(); 
     para->medRef = ui->lineEdit_MedRef->text().toDouble();
     if (ui->radioButton_Conc_mm3->isChecked())
         para->sphNumDensity = ui->lineEdit_Conc_mm3->text().toDouble();

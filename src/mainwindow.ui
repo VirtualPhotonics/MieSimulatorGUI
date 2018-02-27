@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>768</height>
+    <width>1200</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1149,27 +1149,6 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_ScatRefReal">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>8</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Sphere </string>
-           </property>
-           <property name="buddy">
-            <cstring>lineEdit_ScatRefReal</cstring>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="2">
           <widget class="QLineEdit" name="lineEdit_ScatRefImag">
            <property name="sizePolicy">
@@ -1220,6 +1199,52 @@
            </property>
           </widget>
          </item>
+         <item row="2" column="2">
+          <widget class="QLineEdit" name="lineEdit_MedRef">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>40</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>65</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="QLabel" name="label_ScatRefReal">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Sphere </string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEdit_ScatRefReal</cstring>
+           </property>
+          </widget>
+         </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_MedRef">
            <property name="sizePolicy">
@@ -1244,31 +1269,6 @@
            </property>
            <property name="buddy">
             <cstring>lineEdit_MedRef</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QLineEdit" name="lineEdit_MedRef">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>40</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>65</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
@@ -1822,32 +1822,10 @@
             </font>
            </property>
            <property name="text">
-            <string> Std. Deviation (in μm)</string>
+            <string>Std. Deviation (in μm)</string>
            </property>
            <property name="buddy">
             <cstring>lineEdit_StdDev</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0" colspan="4">
-          <widget class="QLabel" name="label_NSphere">
-           <property name="minimumSize">
-            <size>
-             <width>125</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>8</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Num. sph. sizes (2-101)</string>
-           </property>
-           <property name="buddy">
-            <cstring>lineEdit_NSphere</cstring>
            </property>
           </widget>
          </item>
@@ -1887,7 +1865,7 @@
             </font>
            </property>
            <property name="text">
-            <string> Mean Diameter (in μm)</string>
+            <string>Mean Diameter (in μm)</string>
            </property>
            <property name="buddy">
             <cstring>lineEdit_MeanDiameter</cstring>
@@ -1998,7 +1976,7 @@
             </font>
            </property>
            <property name="text">
-            <string> Diameter (in μm)</string>
+            <string>Diameter (in μm)</string>
            </property>
            <property name="buddy">
             <cstring>lineEdit_Diameter</cstring>
@@ -2050,6 +2028,28 @@
            </property>
            <property name="maxVisibleItems">
             <number>3</number>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0" colspan="4">
+          <widget class="QLabel" name="label_NSphere">
+           <property name="minimumSize">
+            <size>
+             <width>125</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Num. sph. sizes (2-101)</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEdit_NSphere</cstring>
            </property>
           </widget>
          </item>
@@ -2384,7 +2384,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup_MonoPoly"/>
   <buttongroup name="buttonGroup_ConcVolFrac"/>
+  <buttongroup name="buttonGroup_MonoPoly"/>
  </buttongroups>
 </ui>

@@ -17,12 +17,11 @@ public:
     explicit DisplayDialog(QWidget *parent = 0);
     ~DisplayDialog();
     void DisplayData(Ui_MainWindow *, parameters *);
+    Ui::DisplayDialog *ui;
 
 private slots:
     void on_pushButton_Close_clicked();
 
-private:
-    Ui::DisplayDialog *ui;
 };
 
 #endif // DISPLAYDIALOG_H

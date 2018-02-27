@@ -20,7 +20,7 @@ public:
 
     double *scatRefRealArray;   // scatRefRealArray: refractive index of scatterer -Real  data array
     double *scatRefImagArray;   // scatRefImagArray: refractive index of scatterer -Imag  data array
-    double scatRefReal;         // scatRefReal: refractive index of scatterer -Real
+    double scatRefReal;         // scatRefReal: refractive index of scatterer - Real
     double scatRefImag;         // scatRefImg: refractive index of scatterer - Imaginary ((n-ik): negative sign convention as Scott Prahl's Mie calculator)
     double medRef;              // medRef: refractive index of medium
     double volFraction;         // volFraction: Volume fraction of sphere volume
