@@ -107,15 +107,14 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
                     mOtherPlotsFlag = true;
                     mDistPlotFlag = true;
                 }
+                if (ui->comboBox_Distribution->currentIndex() ==2)
+                    support.DisableWidgetsDuringCustomPolyDisperseData(ui, true);
+                else
+                    support.DisableWidgetsDuringCustomPolyDisperseData(ui, false);
             }
             //Enable widgets
             support.DisableWidgetsDuringSimulation(ui, false);
-        }
-        if (ui->comboBox_Distribution->currentIndex() ==2)
-            support.DisableWidgetsDuringCustomPolyDisperseData(ui, true);
-        else
-            support.DisableWidgetsDuringCustomPolyDisperseData(ui, false);
-        //delete mPara;
+        }        
     }
 }
 
@@ -301,6 +300,7 @@ void MainWindow::on_radioButton_LogXAxis_clicked()
 void MainWindow::on_radioButton_MonoDisperse_clicked()
 {    
     MainWindowSupport support;
+    ui->comboBox_Distribution->setCurrentIndex(0);
     support.SetWidgets(ui);
     PlotData plot;
     plot.ClearPlots(ui,mPara);
@@ -308,7 +308,7 @@ void MainWindow::on_radioButton_MonoDisperse_clicked()
     ui->tabWidget_ScatCross->setTabText(1,"Scattering Cross Section");
     mOtherPlotsFlag = false;
     mDistPlotFlag = false;
-    ui->comboBox_Distribution->setCurrentIndex(0);
+
 }
 
 //radioButtonPolyDisperse_clicked: Select Poly disperse distribution
