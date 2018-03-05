@@ -67,8 +67,8 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
                 if (refRelIm == 0.0)
                     sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, xPara, refRelRe, mu);
                 else
-					sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, xPara,
-						std::complex<double>(refRelRe, -refRelIm), mu);  //multiply by -1 to use "n-ik" convention
+                    sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, xPara,
+                                                           std::complex<double>(refRelRe,-refRelIm), mu);  //multiply by -1 to use "n-ik" convention
                 curS1[t] = cS1;
                 curS2[t] = cS2;
             }
@@ -129,7 +129,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
                 sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, xPara, refRelRe, mu);
             else
                 sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, xPara,
-                                                       std::complex<double>(refRelRe,refRelIm), mu);
+                                                       std::complex<double>(refRelRe,-refRelIm), mu);   //multiply by -1 to use "n-ik" convention
             curS1[t] = cS1;
             curS2[t] = cS2;
         }
