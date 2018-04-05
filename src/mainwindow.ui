@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Mie Simulator v1.0.7: Virtual Photonics Technology Initiative - Beckman Laser Institute  </string>
+   <string>Mie Simulator v1.0.8: Virtual Photonics Technology Initiative - Beckman Laser Institute  </string>
   </property>
   <property name="windowIcon">
    <iconset resource="MieRes.qrc">
@@ -2384,7 +2384,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup_ConcVolFrac"/>
   <buttongroup name="buttonGroup_MonoPoly"/>
+  <buttongroup name="buttonGroup_ConcVolFrac"/>
  </buttongroups>
 </ui>

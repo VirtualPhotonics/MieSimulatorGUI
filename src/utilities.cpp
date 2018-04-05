@@ -17,7 +17,7 @@ void utilities::Delay()
 {
     QTime dieTime= QTime::currentTime().addMSecs(1);
     while( QTime::currentTime() < dieTime )
-    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
 }
 
 //Intensity calculation (Amplitude^2)

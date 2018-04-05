@@ -18,7 +18,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
     double tempForwardHalf, tempBackwardHalf;
     double sumForward, sumBackward;
     double rad;
-    double factor;
+    double singleScatCross;
     double refRelRe = 1.0;
     double refRelIm = 0.0;
 
@@ -57,23 +57,36 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
         for (int r = 0; r < para->nRadius; r++)
         {
             rad = para->radArray[r];
+            xPara = k * rad;
+
             refRelRe = para->scatRefRealArray[r] / para->medRef;
             refRelIm = para->scatRefImagArray[r] / para->medRef;
 
-            xPara = k * rad;
-            for (int t = 0; t < para->nTheta; t++)
+            if (refRelIm == 0.0)  //FarFieldSolutionForRealRefIndex is ~2x faster than FarFieldSolutionForComplexRefIndex
             {
-                mu = cos(para->minTheta + t * para->stepTheta);
-                if (refRelIm == 0.0)
+                for (int t = 0; t < para->nTheta; t++)
+                {
+                    mu = cos(para->minTheta + t * para->stepTheta);
                     sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, xPara, refRelRe, mu);
-                else
+                    curS1[t] = cS1;
+                    curS2[t] = cS2;
+                }
+            }
+            else
+            {
+                for (int t = 0; t < para->nTheta; t++)
+                {
+                    mu = cos(para->minTheta + t * para->stepTheta);
                     sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, xPara,
                                                            std::complex<double>(refRelRe,-refRelIm), mu);  //multiply by -1 to use "n-ik" convention
-                curS1[t] = cS1;
-                curS2[t] = cS2;
+                    curS1[t] = cS1;
+                    curS2[t] = cS2;
+                }
             }
+
+            singleScatCross = 2.0 * M_PI * rad * rad * qSca;
             //Mus calculation
-            tempMus = 1e-6 *(M_PI * rad * rad * qSca) * para->numDensityArray[r];  //1e-6--> 1micron2 to 1mm2
+            tempMus = singleScatCross * para->numDensityArray[r] * 1e-6;  //1e-6--> 1micron2 to 1mm2
             sumMus += tempMus;          //Σμs                      
             //G calculation
             tempG = CalculateG(curS1, curS2, para);
@@ -86,17 +99,17 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
             sumBackward += tempBackwardHalf * tempMus;
 
             //S1 and S2
-            factor = M_PI * xPara * xPara * qSca;
+            double factor = k*k*singleScatCross;
             for (int t = 0; t < para->nTheta; t++)
             {
                 sumS1[t] += curS1[t] * tempMus;
                 sumS2[t] += curS2[t] * tempMus;
-                sumPhaseFuncAve[t] += 0.5 * (util.ComplexAbsSquared(curS1[t])+util.ComplexAbsSquared(curS2[t])) * tempMus / factor ;
+                sumPhaseFuncAve[t] += 0.5 * (util.ComplexAbsSquared(curS1[t])+util.ComplexAbsSquared(curS2[t])) * tempMus / factor;
                 sumPhaseFuncPara[t] += util.ComplexAbsSquared(curS2[t]) * tempMus / factor;
                 sumPhaseFuncPerp[t] += util.ComplexAbsSquared(curS1[t]) * tempMus / factor;
             }
         }
-        para->scatCross[w] = 1e6 * sumMus / sumNumDen ; //1e6--> 1mm2 to 1micron2
+        para->scatCross[w] = sumMus * 1e6 / sumNumDen ; //1e6--> 1mm2 to 1micron2
         para->mus[w] = sumMus;
         para->g[w] = sumMusG /sumMus;
         para->forward[w] = sumForward*100.0/(sumForward+sumBackward);    //Not necessary to divide by sumMus in ratio calculation
@@ -118,23 +131,36 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
     for (int r = 0; r < para->nRadius; r++)
     {
         rad = para->radArray[r];
+        xPara = k * rad;
+
         refRelRe = para->scatRefRealArray[r] / para->medRef;
         refRelIm = para->scatRefImagArray[r] / para->medRef;
 
-        xPara = k * rad;
-        for (int t = 0; t < para->nTheta; t++)
+        if (refRelIm == 0.0)  //FarFieldSolutionForRealRefIndex is ~2x faster than FarFieldSolutionForComplexRefIndex
         {
-            mu = cos(para->minTheta + t * para->stepTheta);
-            if (refRelIm == 0.0)
+            for (int t = 0; t < para->nTheta; t++)
+            {
+                mu = cos(para->minTheta + t * para->stepTheta);
                 sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, xPara, refRelRe, mu);
-            else
-                sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, xPara,
-                                                       std::complex<double>(refRelRe,-refRelIm), mu);   //multiply by -1 to use "n-ik" convention
-            curS1[t] = cS1;
-            curS2[t] = cS2;
+                curS1[t] = cS1;
+                curS2[t] = cS2;
+            }
         }
+        else
+        {
+            for (int t = 0; t < para->nTheta; t++)
+            {
+                mu = cos(para->minTheta + t * para->stepTheta);
+                sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, xPara,
+                                                       std::complex<double>(refRelRe,-refRelIm), mu);  //multiply by -1 to use "n-ik" convention
+                curS1[t] = cS1;
+                curS2[t] = cS2;
+            }
+        }
+
+        singleScatCross = 2.0 * M_PI * rad * rad * qSca;
         //Mus calculation
-        tempMus = 1e-6 *(M_PI * rad * rad * qSca)*para->numDensityArray[r];  //1e-6--> 1micron2 to 1mm2
+        tempMus = singleScatCross * para->numDensityArray[r] * 1e-6;  //1e-6--> 1micron2 to 1mm2
         sumMus += tempMus;          //Σμs
         //G calculation
         tempG = CalculateG(curS1, curS2, para);

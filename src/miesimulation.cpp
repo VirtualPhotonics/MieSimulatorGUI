@@ -29,11 +29,11 @@ MieSimulation::~MieSimulation(void)
 void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1,std::complex<double> *cS2,
                                                     double *qSca,double xPara,double relRef,double mu)
 {
-    double xstop;
-    double mx;
+    double xstop;    
     double dPCost0, dPCost1;
     double fac0, fac1, fac2, fac3, fac4;
-    double j_x0, j_x1, y_x0, y_x1;    
+    double j_x0, j_x1, y_x0, y_x1;
+    double mx;
     double dervDn1, dervDn2;
     double sumQsca;
     std::complex<double> an, bn;
@@ -61,7 +61,7 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1,st
 
     Dn_mx[nmx-1]=0;
     for (int N = nmx-1; N>0; N--)
-        Dn_mx[N-1] = (N/mx)-(1.0/(Dn_mx[N]+N/mx));
+        Dn_mx[N-1] = (double(N)/mx)-(1.0/(Dn_mx[N]+double(N)/mx));
 
     // Legendre Polynomials
     dPCost0 = 0.0;  //pi0
@@ -109,8 +109,8 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1,st
 
         // Calculate an and bn  (According to Bohren and Huffman book)
         // Remark: GouGouesbet  uses size parameter as "ka" instead of "kx"
-        dervDn1 = Dn_mx[n]/m +n/x;
-        dervDn2 = m*Dn_mx[n] +n/x;
+        dervDn1 = (Dn_mx[n]/m) + (double(n)/x);
+        dervDn2 = (m*Dn_mx[n]) + (double(n)/x);
 
         an = (dervDn1*j_x[n]-j_x[n-1])/ (dervDn1*xi_x[n]-xi_x[n-1]);
         bn = (dervDn2*j_x[n]-j_x[n-1])/ (dervDn2*xi_x[n]-xi_x[n-1]);
@@ -145,22 +145,14 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1,st
 void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1, std::complex<double> *cS2,
                                                        double *qSca, double xPara, std::complex<double> cRelRef,
                                                        double mu)
-{
-    int n;
-    int nstop, ymod, nmx, arraySize;
-    double xstop;
-    std::complex<double> mx;
+{    
+    double xstop;    
     double dPCost0, dPCost1;
     double fac0, fac1, fac2, fac3, fac4;
     double j_x0, j_x1, y_x0, y_x1;
-    double *j_x;
-    double *y_x;
-    double *piCost;
-    double *tauCost;
-    std::complex<double> *Dn_mx;
+    std::complex<double> mx;
     std::complex<double> dervDn1, dervDn2;
     double sumQSca;
-    std::complex<double> *xi_x;
     std::complex<double> an, bn;
     std::complex<double> tempS1, tempS2;
 
@@ -172,21 +164,21 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
 
     mx = m*x;
     xstop = x+4.0*(pow(x,(1.0/3.0)))+2.0;
-    nstop = ceil(xstop);
-    ymod = ceil(util.ComplexAbs(mx));
-    nmx = max(xstop,ymod)+15;
-    arraySize = nstop+1;
+    int nstop = ceil(xstop);
+    int ymod = ceil(util.ComplexAbs(mx));
+    int nmx = max(xstop,ymod)+15;
+    int arraySize = nstop+1;
 
-    Dn_mx = new std::complex<double> [nmx];
-    j_x = new double [arraySize];
-    y_x = new double [arraySize];
-    piCost = new double [arraySize];
-    tauCost = new double [arraySize];
-    xi_x = new std::complex<double>  [arraySize];
+    std::complex<double> *Dn_mx = new std::complex<double> [nmx];
+    double *j_x = new double [arraySize];
+    double *y_x = new double [arraySize];
+    double *piCost = new double [arraySize];
+    double *tauCost = new double [arraySize];
+    std::complex<double> *xi_x = new std::complex<double>  [arraySize];
 
     Dn_mx[nmx-1] = 0;
-    for (n = nmx-1; n>0; n--)
-        Dn_mx[n-1] = (double(n)/mx)-(1.0/(Dn_mx[n]+(double(n)/mx)));
+    for (int N = nmx-1; N>0; N--)
+        Dn_mx[N-1] = (double(N)/mx)-(1.0/(Dn_mx[N]+double(N)/mx));
 
     // Legendre Polynomials
     dPCost0 = 0.0;  //pi0
@@ -206,7 +198,7 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
     tempS2 = std::complex<double>  (0.0, 0.0);
     sumQSca = 0.0;
 
-    n=1;
+    int n=1;
     while ((n-1-nstop) < 0)
     {
         fac0 = double(n);		// n
@@ -239,7 +231,7 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
 
         an = (dervDn1*j_x[n]-j_x[n-1])/ (dervDn1*xi_x[n]-xi_x[n-1]);
         bn = (dervDn2*j_x[n]-j_x[n-1])/ (dervDn2*xi_x[n]-xi_x[n-1]);
-        sumQSca += fac2*(util.ComplexAbs(an)*util.ComplexAbs(an) + util.ComplexAbs(bn)*util.ComplexAbs(bn));
+        sumQSca += (fac2/(x*x))*(util.ComplexAbs(an)*util.ComplexAbs(an) + util.ComplexAbs(bn)*util.ComplexAbs(bn));
 
         // Calculate cS1 and cS2
         tempS1 += fac4*(an*piCost[n-1]+bn*tauCost[n-1]);
@@ -248,7 +240,7 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
         n = n+1;
     }
 
-    *qSca= (2.0/(x*x))*sumQSca;
+    *qSca= sumQSca;
     *cS1 = tempS1;
     *cS2 = tempS2;
 
