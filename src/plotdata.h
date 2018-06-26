@@ -18,24 +18,30 @@ public:
     void ClearPlots(Ui_MainWindow *ui, parameters *para);
 
     void InitializeDistributionPlot(Ui_MainWindow *ui);
-    void InitializePolarPlot(Ui_MainWindow *ui , parameters *para);
+    void InitializePhaseFunctionPolarPlot(Ui_MainWindow *ui , parameters *para);
+    void InitializePhaseFunctionLinearPlot(Ui_MainWindow *ui);
     void InitializeAllOtherPlots(Ui_MainWindow *ui);
     void AssignValuesDistributionPlot(Ui_MainWindow *ui, parameters* para);
-    void AssignValuesPolarPlot(Ui_MainWindow *ui, parameters *para);
+    void AssignValuesPhaseFunctionPolarPlot(Ui_MainWindow *ui, parameters *para);
+    void AssignValuesPhaseFunctionLinearPlot(Ui_MainWindow *ui, parameters *para);
     void AssignValuesS1S2Plot(Ui_MainWindow *ui, parameters *para);
     void AssignValuesAllOtherPlots(Ui_MainWindow *ui, parameters* para);
     void AssignValuesMuspPowerLawPlots(Ui_MainWindow *ui, parameters* para);
-
     void PlotDistribution(Ui_MainWindow *ui, parameters *para, QVector<double> x, QVector<double> yDist);
-    void PlotPolar(Ui_MainWindow *ui, parameters *para, QVector<double> theta, QVector<double> phaseFunction);
-    void PlotScatCross(Ui_MainWindow *ui, QVector<double> x, QVector<double> yScat);
+    void PlotPhaseFunctionPolar(Ui_MainWindow *ui, parameters *para, QVector<double> theta, QVector<double> phaseFunction);
+    void PlotPhaseFunctionLinear(Ui_MainWindow *ui, QVector<double> x, QVector<double> yPara,
+                                           QVector<double> yPerp, QVector<double> yAve);
+    void PlotS1S2(Ui_MainWindow *ui, parameters *para, QVector<double> x, QVector<double> yS);
+    void PlotScatteringCrossSection(Ui_MainWindow *ui, QVector<double> x, QVector<double> yCsca);
+    void PlotExtinctionCrossSection(Ui_MainWindow *ui, QVector<double> x, QVector<double> yCext);
+    void PlotBackscatteringCrossSection(Ui_MainWindow *ui, QVector<double> x, QVector<double> yCback);
+    void PlotSizeParameter(Ui_MainWindow *ui, QVector<double> x, QVector<double> ySizePara);
     void PlotMus(Ui_MainWindow *ui,QVector<double> x, QVector<double> yMus);
     void PlotMusp(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp);
     void PlotMuspCurveForPowerLawFit(Ui_MainWindow *ui, parameters *para, QVector<double> x, QVector<double> yMusp);
     void PlotG(Ui_MainWindow *ui, QVector<double> x, QVector<double> yG);
     void PlotForwardBackward(Ui_MainWindow *ui, QVector<double> x, QVector<double> yF, QVector<double> yB, bool legendFlag);
-    void PlotMuspPowerLaw(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp, QVector<double> yFit);
-    void PlotS1S2(Ui_MainWindow *ui, parameters *para, QVector<double> x, QVector<double> yS);
+    void PlotMuspPowerLaw(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp, QVector<double> yFit);    
 
 private:
     QwtPolarGrid *mGrid;

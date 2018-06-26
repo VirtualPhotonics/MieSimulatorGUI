@@ -18,10 +18,11 @@ public:
     double wavel;		// wavel: wavelength of the light in the medium (in microns)
     double mu;          // mu: cos angle
     double k;           // k: wavevector
-    double xPara;       // xPara: x-parameter
     std::complex<double> cS2;		// complex parallel component: far field
     std::complex<double> cS1;		// complex perpendicular component: far field
     double qSca;                    // scattering efficiency
+    double qExt;                    // extinction efficiency
+    double qBack;                   // backscattering efficiency
 
     void DoSimulation(Ui_MainWindow *ui, parameters *para, double* mus1000, double *g1000);
     void CalculatePowerLawAutoFit(parameters *para);

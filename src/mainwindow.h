@@ -58,27 +58,33 @@ private slots:
     void on_doubleSpinBox_F_valueChanged(double arg1);
     void on_doubleSpinBox_B_valueChanged(double arg1);
     void on_slider_ConcPercentChange_valueChanged(int value);
-    void on_slider_PF_WL_valueChanged(int value);
-    void on_slider_S1S2_WL_valueChanged(int value);
+    void on_slider_WL_PFPolar_valueChanged(int value);
+    void on_slider_WL_PFLinear_valueChanged(int value);
+    void on_slider_WL_S1S2_valueChanged(int value);
     void on_comboBox_Distribution_currentIndexChanged(int value);
 
     void Initialize();
-    void UpdatePhaseFunctionPlot();
+    void UpdatePhaseFunctionPolarPlot();
+    void UpdatePhaseFunctionLinearPlot();
     void UpdateS1S2Plot();
     void UpdateMuspFitPlot();
-    void MouseOverPlotScatCross(QMouseEvent *event);
+    void UpdateMuspFitError();
+    void MouseOverPlotScatteringCrossSection(QMouseEvent *event);
+    void MouseOverPlotExtinctionCrossSection(QMouseEvent *event);
+    void MouseOverPlotBackscatteringCrossSection(QMouseEvent *event);
+    void MouseOverPlotSizeParameter(QMouseEvent *event);
     void MouseOverPlotMus(QMouseEvent *event);
     void MouseOverPlotMusp(QMouseEvent *event);
     void MouseOverPlotG(QMouseEvent *event);
     void MouseOverPlotForwardBackward(QMouseEvent *event);
     void MouseOverPlotS1S2(QMouseEvent *event);
+    void MouseOverPlotPhaseFunctionLinear(QMouseEvent *event);
     void MouseOverPlotDistribution(QMouseEvent *event);
     void MouseOverPlotMuspPowerLaw(QMouseEvent *event);
     void DisplayCurveData(QMouseEvent *event, QCustomPlot *curPlot, QString strNameX, QString strNameY);
 
 private:
     Ui::MainWindow *ui;
-    Ui_DisplayDialog *uiDisplay;
     parameters *mPara;
     bool mDistPlotFlag;         //Flag to check distributionPlot
     bool mOtherPlotsFlag;       //Flag to check other customplots

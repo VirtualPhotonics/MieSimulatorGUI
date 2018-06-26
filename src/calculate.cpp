@@ -14,13 +14,15 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
                              double* mus1000, double *g1000)
 {
     MieSimulation sim;
-    double sumMus, sumMusG, tempMus, tempG;
-    double tempForwardHalf, tempBackwardHalf;
+    double curMus;
+    double sumMus, sumMusG;
     double sumForward, sumBackward;
-    double rad;
-    double singleScatCross;
+    double sumCsca, sumCext, sumCback;
+    double tempPhase;
+    double piRadiusSquared;
     double refRelRe = 1.0;
     double refRelIm = 0.0;
+    double xPara;
 
     std::complex<double> *curS1 = new std::complex<double> [para->nTheta];
     std::complex<double> *curS2 = new std::complex<double> [para->nTheta];
@@ -46,6 +48,9 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
         sumMusG = 0.0;
         sumForward = 0.0;
         sumBackward = 0.0;
+        sumCsca = 0.0;
+        sumCext = 0.0;
+        sumCback = 0.0;
         for (int t = 0; t < para->nTheta; t++)
         {
             sumS1[t] = std::complex<double>(0.0,0.0);
@@ -56,8 +61,8 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
         }
         for (int r = 0; r < para->nRadius; r++)
         {
-            rad = para->radArray[r];
-            xPara = k * rad;
+            xPara = k * para->radArray[r];            
+            piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
 
             refRelRe = para->scatRefRealArray[r] / para->medRef;
             refRelIm = para->scatRefImagArray[r] / para->medRef;
@@ -67,7 +72,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
                 for (int t = 0; t < para->nTheta; t++)
                 {
                     mu = cos(para->minTheta + t * para->stepTheta);
-                    sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, xPara, refRelRe, mu);
+                    sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara, refRelRe, mu);
                     curS1[t] = cS1;
                     curS2[t] = cS2;
                 }
@@ -77,40 +82,50 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
                 for (int t = 0; t < para->nTheta; t++)
                 {
                     mu = cos(para->minTheta + t * para->stepTheta);
-                    sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, xPara,
+                    sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara,
                                                            std::complex<double>(refRelRe,-refRelIm), mu);  //multiply by -1 to use "n-ik" convention
                     curS1[t] = cS1;
                     curS2[t] = cS2;
                 }
             }
-
-            singleScatCross = 2.0 * M_PI * rad * rad * qSca;
+            //Ref: Schmitt and Kumar, Applied Optics 37(13) 1998
             //Mus calculation
-            tempMus = singleScatCross * para->numDensityArray[r] * 1e-6;  //1e-6--> 1micron2 to 1mm2
-            sumMus += tempMus;          //Σμs                      
+            curMus = piRadiusSquared * qSca * para->numDensityArray[r];
+            sumMus += curMus;          //Σμs
             //G calculation
-            tempG = CalculateG(curS1, curS2, para);
-            sumMusG += tempG * tempMus;
+            sumMusG += CalculateG(curS1, curS2, para) * curMus;
             //Forward Scattering
-            tempForwardHalf = CalculateForwardBackward(curS1, curS2, para, 0, (para->nTheta-1)/2);
-            sumForward += tempForwardHalf * tempMus;
+            sumForward += CalculateForwardBackward(curS1, curS2, para, 0, (para->nTheta-1)/2)* curMus;
             //Backward Scattering
-            tempBackwardHalf = CalculateForwardBackward(curS1, curS2, para, ((para->nTheta-1)/2), para->nTheta);
-            sumBackward += tempBackwardHalf * tempMus;
+            sumBackward += CalculateForwardBackward(curS1, curS2, para, ((para->nTheta-1)/2), para->nTheta)* curMus;
+            //Coefficients
+            sumCsca += piRadiusSquared * qSca * para->numDensityArray[r];
+            sumCext += piRadiusSquared * qExt * para->numDensityArray[r];
+            sumCback += piRadiusSquared * qBack * para->numDensityArray[r];
 
             //S1 and S2
-            double factor = k*k*singleScatCross;
+            double factor = 1.0 / (M_PI * xPara * xPara * qSca);   // 1/(pi *X^2 * qSca);
             for (int t = 0; t < para->nTheta; t++)
             {
-                sumS1[t] += curS1[t] * tempMus;
-                sumS2[t] += curS2[t] * tempMus;
-                sumPhaseFuncAve[t] += 0.5 * (util.ComplexAbsSquared(curS1[t])+util.ComplexAbsSquared(curS2[t])) * tempMus / factor;
-                sumPhaseFuncPara[t] += util.ComplexAbsSquared(curS2[t]) * tempMus / factor;
-                sumPhaseFuncPerp[t] += util.ComplexAbsSquared(curS1[t]) * tempMus / factor;
+                sumS1[t] += curS1[t] * curMus;
+                sumS2[t] += curS2[t] * curMus;
+                //Phase function - Parallel
+                tempPhase = util.ComplexAbsSquared(curS2[t])*factor;    //|S2|^2/(pi X^2 Qsca)
+                sumPhaseFuncPara[t] +=  tempPhase*curMus;
+                //Phase function - Perpendicular
+                tempPhase = util.ComplexAbsSquared(curS1[t])*factor;    //|S1|^2/(pi X^2 Qsca)
+                sumPhaseFuncPerp[t] +=  tempPhase*curMus;
+                //Phase function - Average
+                tempPhase = 0.5*(util.ComplexAbsSquared(curS1[t])+util.ComplexAbsSquared(curS2[t]))*factor;  //(|S1|^2+|S2|^2)/(2 pi X^2 Qsca)
+                sumPhaseFuncAve[t] +=  tempPhase*curMus;
             }
         }
-        para->scatCross[w] = sumMus * 1e6 / sumNumDen ; //1e6--> 1mm2 to 1micron2
-        para->mus[w] = sumMus;
+        //Normalize
+        para->cSca[w]  = sumCsca / sumNumDen ;
+        para->cExt[w]  = sumCext / sumNumDen;
+        para->cBack[w] = sumCback / sumNumDen;
+        para->SizePara[w] = xPara;
+        para->mus[w] = sumMus * 1e-6;   //1e-6--> 1micron2 to 1mm2
         para->g[w] = sumMusG /sumMus;
         para->forward[w] = sumForward*100.0/(sumForward+sumBackward);    //Not necessary to divide by sumMus in ratio calculation
         para->backward[w] = sumBackward*100.0/(sumForward+sumBackward);  //Not necessary to divide by sumMus in ratio calculation
@@ -130,8 +145,8 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
     sumMusG = 0.0;
     for (int r = 0; r < para->nRadius; r++)
     {
-        rad = para->radArray[r];
-        xPara = k * rad;
+        xPara = k * para->radArray[r];
+        piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
 
         refRelRe = para->scatRefRealArray[r] / para->medRef;
         refRelIm = para->scatRefImagArray[r] / para->medRef;
@@ -141,7 +156,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
             for (int t = 0; t < para->nTheta; t++)
             {
                 mu = cos(para->minTheta + t * para->stepTheta);
-                sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, xPara, refRelRe, mu);
+                sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara, refRelRe, mu);
                 curS1[t] = cS1;
                 curS2[t] = cS2;
             }
@@ -151,20 +166,17 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
             for (int t = 0; t < para->nTheta; t++)
             {
                 mu = cos(para->minTheta + t * para->stepTheta);
-                sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, xPara,
+                sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara,
                                                        std::complex<double>(refRelRe,-refRelIm), mu);  //multiply by -1 to use "n-ik" convention
                 curS1[t] = cS1;
                 curS2[t] = cS2;
             }
         }
-
-        singleScatCross = 2.0 * M_PI * rad * rad * qSca;
         //Mus calculation
-        tempMus = singleScatCross * para->numDensityArray[r] * 1e-6;  //1e-6--> 1micron2 to 1mm2
-        sumMus += tempMus;          //Σμs
+        curMus = piRadiusSquared * qSca * para->numDensityArray[r] * 1e-6;  //1e-6--> 1micron2 to 1mm2
+        sumMus += curMus;          //Σμs
         //G calculation
-        tempG = CalculateG(curS1, curS2, para);
-        sumMusG += tempG*tempMus;
+        sumMusG += CalculateG(curS1, curS2, para)*curMus;
     }
     *mus1000 = sumMus;
     *g1000 = sumMusG /sumMus;
@@ -261,7 +273,6 @@ double calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
     }
     return num/den;
 }
-
 
 //Set sphere parameters
 void calculate::SetSphereRadiusAndRefIndex(parameters *para, int index, bool flagVolOrConc)

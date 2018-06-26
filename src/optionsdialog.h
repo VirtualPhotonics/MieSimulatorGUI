@@ -18,7 +18,9 @@ class OptionsDialog : public QDialog
 public:
     explicit OptionsDialog(QWidget *parent = 0);
     ~OptionsDialog();
-    bool scatCross;
+    bool cSca;
+    bool cExt;
+    bool cBack;
     bool scatCoeff;
     bool redScatCoeff;
     bool g;
@@ -38,7 +40,9 @@ public:
 private slots:
     void on_pushButton_Apply_clicked();
     void on_pushButton_Cancel_clicked();
-    void on_checkBox_ScatCross_clicked(bool checked);
+    void on_checkBox_Csca_clicked(bool checked);
+    void on_checkBox_Cext_clicked(bool checked);
+    void on_checkBox_Cback_clicked(bool checked);
     void on_checkBox_ScatCoeff_clicked(bool checked);
     void on_checkBox_ReducedScatCoeff_clicked(bool checked);
     void on_checkBox_G_clicked(bool checked);

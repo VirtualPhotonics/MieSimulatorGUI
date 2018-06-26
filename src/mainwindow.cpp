@@ -15,12 +15,16 @@ MainWindow::MainWindow(QWidget *parent) :
     Initialize();
 
     //Connect signals and slots
-    connect(ui->customPlot_ScatCross, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotScatCross(QMouseEvent*)));
+    connect(ui->customPlot_Csca, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotScatteringCrossSection(QMouseEvent*)));
+    connect(ui->customPlot_Cext, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotExtinctionCrossSection(QMouseEvent*)));
+    connect(ui->customPlot_Cback, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotBackscatteringCrossSection(QMouseEvent*)));
+    connect(ui->customPlot_SizePara, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotSizeParameter(QMouseEvent*)));
     connect(ui->customPlot_Mus, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotMus(QMouseEvent*)));
     connect(ui->customPlot_Musp, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotMusp(QMouseEvent*)));
     connect(ui->customPlot_G, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotG(QMouseEvent*)));
     connect(ui->customPlot_FB, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotForwardBackward(QMouseEvent*)));
     connect(ui->customPlot_S1S2, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotS1S2(QMouseEvent*)));
+    connect(ui->customPlot_PhaseFunctionLinear, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotPhaseFunctionLinear(QMouseEvent*)));
     connect(ui->customPlot_Distribution, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotDistribution(QMouseEvent*)));
     connect(ui->customPlot_MuspPowerLaw, SIGNAL(mouseMove(QMouseEvent*)), SLOT(MouseOverPlotMuspPowerLaw(QMouseEvent*)));
 }
@@ -47,7 +51,8 @@ void MainWindow::Initialize()
 
     PlotData plot;
     plot.InitializeDistributionPlot(ui);
-    plot.InitializePolarPlot(ui,mPara);
+    plot.InitializePhaseFunctionPolarPlot(ui,mPara);
+    plot.InitializePhaseFunctionLinearPlot(ui);
     plot.InitializeAllOtherPlots(ui);
 }
 
@@ -222,8 +227,7 @@ void MainWindow::on_pushButton_BestFit_clicked()
             bMie = mPara->bMie;
             ui->doubleSpinBox_F->setValue(fRay);
             ui->doubleSpinBox_B->setValue(bMie);
-            ui->label_CurrentMSE->setText("<font color=\"red\">M.S. Error = </font>"+QString::number(mPara->muspFittingError,'g',6));
-            ui->label_CurrentA->setText("<font color=\"blue\">A = </font>"+QString::number(mPara->fittedA,'g',6));
+            UpdateMuspFitError();
 
             //Enable Widgets
             support.DisableWidgetsDuringSimulation(ui, false);
@@ -253,9 +257,10 @@ void MainWindow::on_radioButton_LinearYAxis_clicked()
     if (mOtherPlotsFlag)
     {
         MainWindowSupport support;
-        support.DisableEnableRealImagButtons(ui);        
-        plot.AssignValuesAllOtherPlots(ui, mPara);
+        support.DisableEnableRealImagButtons(ui);
         plot.AssignValuesS1S2Plot(ui, mPara);
+        plot.AssignValuesPhaseFunctionLinearPlot(ui, mPara);
+        plot.AssignValuesAllOtherPlots(ui, mPara);
     }
     if (mDistPlotFlag)
         plot.AssignValuesDistributionPlot(ui, mPara);
@@ -268,9 +273,10 @@ void MainWindow::on_radioButton_LogYAxis_clicked()
     if (mOtherPlotsFlag)
     {
         MainWindowSupport support;
-        support.DisableEnableRealImagButtons(ui);
-        plot.AssignValuesAllOtherPlots(ui, mPara);
+        support.DisableEnableRealImagButtons(ui);        
         plot.AssignValuesS1S2Plot(ui, mPara);
+        plot.AssignValuesPhaseFunctionLinearPlot(ui, mPara);
+        plot.AssignValuesAllOtherPlots(ui, mPara);
     }
     if (mDistPlotFlag)
         plot.AssignValuesDistributionPlot(ui, mPara);
@@ -304,11 +310,17 @@ void MainWindow::on_radioButton_MonoDisperse_clicked()
     support.SetWidgets(ui);
     PlotData plot;
     plot.ClearPlots(ui,mPara);
-    ui->tabWidget_PhaseFunction->setTabText(1,"S1 and S2");
-    ui->tabWidget_ScatCross->setTabText(1,"Scattering Cross Section");
+    ui->tabWidget_PhaseFunction->setTabText(0,"S1/S2");
+    ui->tabWidget_PhaseFunction->setTabText(1,"Phase Function (Polar)");
+    ui->tabWidget_PhaseFunction->setTabText(2,"Phase Function (Linear)");
+    ui->tabWidget_Scat->setTabText(1,"Csca");
+    ui->tabWidget_Scat->setTabText(2,"Cext");
+    ui->tabWidget_Scat->setTabText(3,"Cback");           
+    ui->tabWidget_Ns->setTabText(0,"Concentration (Number Density: Ns)");
+    ui->tabWidget_Ns->setTabEnabled(1,true);
+    ui->tabWidget_Ns->setTabText(1,"Size Parameter");
     mOtherPlotsFlag = false;
     mDistPlotFlag = false;
-
 }
 
 //radioButtonPolyDisperse_clicked: Select Poly disperse distribution
@@ -318,8 +330,15 @@ void MainWindow::on_radioButton_PolyDisperse_clicked()
     support.SetWidgets(ui);    
     PlotData plot;
     plot.ClearPlots(ui,mPara);    
-    ui->tabWidget_PhaseFunction->setTabText(1,"Ave. S1 and S2");
-    ui->tabWidget_ScatCross->setTabText(1,"Ave. Scattering Cross Section");
+    ui->tabWidget_PhaseFunction->setTabText(0,"Ave. S1/S2");
+    ui->tabWidget_PhaseFunction->setTabText(1,"Ave. Phase Function (Polar)");
+    ui->tabWidget_PhaseFunction->setTabText(2,"Ave. Phase Function (Linear)");
+    ui->tabWidget_Scat->setTabText(1,"Ave. Csca");
+    ui->tabWidget_Scat->setTabText(2,"Ave. Cext");
+    ui->tabWidget_Scat->setTabText(3,"Ave. Cback");
+        ui->tabWidget_Ns->setTabText(0,"Scatterer Distribution and Concentration (Ns)");
+    ui->tabWidget_Ns->setTabEnabled(1,false);    
+    ui->tabWidget_Ns->setTabText(1,"");
     mOtherPlotsFlag = false;
     mDistPlotFlag = false;
 }
@@ -385,31 +404,31 @@ void MainWindow::on_radioButton_S1S2_Imag_clicked()
 //radioButton_PhaseLinear_clicked: Select Linear Scale
 void MainWindow::on_radioButton_PhaseLinear_clicked()
 {
-    UpdatePhaseFunctionPlot();
+    UpdatePhaseFunctionPolarPlot();
 }
 
 //radioButton_PhaseLog_clicked: Select Log Scale
 void MainWindow::on_radioButton_PhaseLog_clicked()
 {
-    UpdatePhaseFunctionPlot();
+    UpdatePhaseFunctionPolarPlot();
 }
 
 //radioButton_PhaseAverage_clicked: Select average
 void MainWindow::on_radioButton_PhaseAverage_clicked()
 {
-    UpdatePhaseFunctionPlot();
+    UpdatePhaseFunctionPolarPlot();
 }
 
 //radioButton_PhasePara_clicked: Select Parallel component
 void MainWindow::on_radioButton_PhasePara_clicked()
 {
-    UpdatePhaseFunctionPlot();
+    UpdatePhaseFunctionPolarPlot();
 }
 
 //radioButton_PhasePerp_clicked: Select Perpendicular component
 void MainWindow::on_radioButton_PhasePerp_clicked()
 {
-    UpdatePhaseFunctionPlot();
+    UpdatePhaseFunctionPolarPlot();
 }
 
 //radioButton_dTheta0_1 is clicked: Simulation time warning
@@ -466,16 +485,24 @@ void MainWindow::on_slider_ConcPercentChange_valueChanged(int position)
     }
 }
 
-//on_sliderWL_PF_valueChanged: Change Phase Function Wavelenghth Slider
-void MainWindow::on_slider_PF_WL_valueChanged(int value)
+//on_slider_WL_PFPolar_valueChanged: Change Phase Function Wavelenghth Slider
+void MainWindow::on_slider_WL_PFPolar_valueChanged(int value)
 {
    int wavel = mPara->startWavel + value*mPara->stepWavel;
-   ui->label_CurrentWL_PF->setText(QString::number(wavel));
-   UpdatePhaseFunctionPlot();
+   ui->label_CurrentWL_PFPolar->setText(QString::number(wavel));
+   UpdatePhaseFunctionPolarPlot();
 }
 
-//on_sliderWL_S1S2_valueChanged: Change S1/S2 Wavelenghth Slider
-void MainWindow::on_slider_S1S2_WL_valueChanged(int value)
+//on_slider_WL_PFLinear_valueChanged: Change Phase Function Wavelenghth Slider
+void MainWindow::on_slider_WL_PFLinear_valueChanged(int value)
+{
+   int wavel = mPara->startWavel + value*mPara->stepWavel;
+   ui->label_CurrentWL_PFLinear->setText(QString::number(wavel));
+   UpdatePhaseFunctionLinearPlot();
+}
+
+//on_slider_WL_S1S2_valueChanged: Change S1/S2 Wavelenghth Slider
+void MainWindow::on_slider_WL_S1S2_valueChanged(int value)
 {
    int wavel = mPara->startWavel + value*mPara->stepWavel;
    ui->label_CurrentWL_S1S2->setText(QString::number(wavel));
@@ -488,6 +515,7 @@ void MainWindow::on_doubleSpinBox_F_valueChanged(double arg1)
     ui->qwtslider_F->setValue(arg1);
     mPara->fRay = arg1;
     UpdateMuspFitPlot();
+    UpdateMuspFitError();
 }
 
 //SpinBoxB_valueChanged: Calculate fitting parameters and display
@@ -496,12 +524,12 @@ void MainWindow::on_doubleSpinBox_B_valueChanged(double arg1)
     ui->qwtslider_B->setValue(arg1);
     mPara->bMie = arg1;
     UpdateMuspFitPlot();
+    UpdateMuspFitError();
 }
-
 
 /********************************** Update Functions **********************************/
 
-//Process Musp Fit
+//Update Musp Fit
 void MainWindow::UpdateMuspFitPlot()
 {
     if (mOtherPlotsFlag)
@@ -514,7 +542,7 @@ void MainWindow::UpdateMuspFitPlot()
     }
 }
 
-//Process S1S2 plot
+//Update S1S2 plot
 void MainWindow::UpdateS1S2Plot()
 {
     if (mOtherPlotsFlag)
@@ -524,15 +552,33 @@ void MainWindow::UpdateS1S2Plot()
     }
 }
 
-//Process phase function plot
-void MainWindow::UpdatePhaseFunctionPlot()
+//Update Phase Function (Linear) plot
+void MainWindow::UpdatePhaseFunctionLinearPlot()
 {
     if (mOtherPlotsFlag)
     {
         PlotData plot;
-        plot.AssignValuesPolarPlot(ui,mPara);
+        plot.AssignValuesPhaseFunctionLinearPlot(ui, mPara);
     }
 }
+
+//Update Phase Function (Polar) plot
+void MainWindow::UpdatePhaseFunctionPolarPlot()
+{
+    if (mOtherPlotsFlag)
+    {
+        PlotData plot;
+        plot.AssignValuesPhaseFunctionPolarPlot(ui,mPara);
+    }
+}
+
+//Update Phase Function (Polar) plot
+void MainWindow::UpdateMuspFitError()
+{
+    ui->label_CurrentMSE->setText("<font color=\"red\">M.S. Error = </font>"+QString::number(mPara->muspFittingError,'g',6));
+    ui->label_CurrentA->setText("<font color=\"blue\">A = </font>"+QString::number(mPara->fittedA,'g',6));
+}
+
 
 /********************************** When 'PolyDisperse:Custom' is selected **********************************/
 
@@ -561,16 +607,56 @@ void MainWindow::on_comboBox_Distribution_currentIndexChanged(int value)
 
 /********************************** Mouse over customplots **********************************/
 
-//MouseOver PlotScatCross
-void MainWindow::MouseOverPlotScatCross(QMouseEvent *event)
+//MouseOver PlotScatteringCrossSection
+void MainWindow::MouseOverPlotScatteringCrossSection(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_ScatCross;
+    QCustomPlot *curPlot = ui->customPlot_Csca;
     QString strNameX = "WL";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Csca)";
     else
         strNameY = "Csca";
+    DisplayCurveData(event, curPlot, strNameX, strNameY);
+}
+
+
+//MouseOver PlotExtinctionCrossSection
+void MainWindow::MouseOverPlotExtinctionCrossSection(QMouseEvent *event)
+{
+    QString strNameY;
+    QCustomPlot *curPlot = ui->customPlot_Cext;
+    QString strNameX = "WL";
+    if (ui->radioButton_LogYAxis->isChecked())
+        strNameY = "Log(Cext)";
+    else
+        strNameY = "Cext";
+    DisplayCurveData(event, curPlot, strNameX, strNameY);
+}
+
+//MouseOver PlotBackscatteringCrossSection
+void MainWindow::MouseOverPlotBackscatteringCrossSection(QMouseEvent *event)
+{
+    QString strNameY;
+    QCustomPlot *curPlot = ui->customPlot_Cback;
+    QString strNameX = "WL";
+    if (ui->radioButton_LogYAxis->isChecked())
+        strNameY = "Log(Cback)";
+    else
+        strNameY = "Cback";
+    DisplayCurveData(event, curPlot, strNameX, strNameY);
+}
+
+//MouseOver PlotSizeParameter
+void MainWindow::MouseOverPlotSizeParameter(QMouseEvent *event)
+{
+    QString strNameY;
+    QCustomPlot *curPlot = ui->customPlot_SizePara;
+    QString strNameX = "WL";
+    if (ui->radioButton_LogYAxis->isChecked())
+        strNameY = "Log(Size Parameter)";
+    else
+        strNameY = "Size Parameter";
     DisplayCurveData(event, curPlot, strNameX, strNameY);
 }
 
@@ -637,7 +723,7 @@ void MainWindow::MouseOverPlotS1S2(QMouseEvent *event)
         if (ui->radioButton_S1->isChecked())
             strNameY = "Log(S1)";
         if (ui->radioButton_S2->isChecked())
-            strNameY = "Log(S2)";\
+            strNameY = "Log(S2)";
     }
     else
     {
@@ -645,7 +731,20 @@ void MainWindow::MouseOverPlotS1S2(QMouseEvent *event)
             strNameY = "S1";
         if (ui->radioButton_S2->isChecked())
             strNameY = "S2";
-    } \
+    }
+    DisplayCurveData(event, curPlot, strNameX, strNameY);
+}
+
+//MouseOver PlotPhaseFunctionLinear
+void MainWindow::MouseOverPlotPhaseFunctionLinear(QMouseEvent *event)
+{
+    QString strNameX = "Ang.";
+    QString strNameY;
+    QCustomPlot *curPlot = ui->customPlot_PhaseFunctionLinear;
+    if (ui->radioButton_LogYAxis->isChecked())
+        strNameY = "Log(Magnitude)";
+    else
+        strNameY = "Magnitude";
     DisplayCurveData(event, curPlot, strNameX, strNameY);
 }
 

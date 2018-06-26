@@ -42,7 +42,10 @@ public:
     double **phaseFunctionPerp; // phaseFunctionPerp: perpendicularphase function
     double *curPolarAng;        // curPolarAng: current polar angles for phase function
     double *curPhaseFunc;       // curPhaseFunc: current Phase function
-    double *scatCross;          // scatCross: Scattering cross section
+    double *cSca;               // cSca: Scattering cross section
+    double *cExt;               // cExt: Extinction cross section
+    double *cBack;              // cBack: Backscattering cross section
+    double *SizePara;           // SizePara: Size Parameter
     double *mus;                // mus: scattering coefficient
     double *g;                  // g: average cosine of phase function
     std::complex<double> **S1;  // S1: amplitude matrix component S1

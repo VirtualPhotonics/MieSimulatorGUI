@@ -116,7 +116,7 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
     para->endWavel = ui->lineEdit_EndWL->text().toDouble();
     para->stepWavel = ui->lineEdit_StepWL->text().toDouble();
     para->scatRefReal = ui->lineEdit_ScatRefReal->text().toDouble();
-    para->scatRefImag = ui->lineEdit_ScatRefImag->text().toDouble(); 
+    para->scatRefImag = ui->lineEdit_ScatRefImag->text().toDouble();
     para->medRef = ui->lineEdit_MedRef->text().toDouble();
     if (ui->radioButton_Conc_mm3->isChecked())
         para->sphNumDensity = ui->lineEdit_Conc_mm3->text().toDouble();
@@ -181,7 +181,10 @@ void MainWindowSupport::InitializeArrays(Ui_MainWindow *ui, parameters *para, bo
     for (int i=0; i<para->nWavel; i++)
         para->S2[i] = new std::complex<double> [para->nTheta];
 
-    para->scatCross = new double [para->nWavel];
+    para->cSca = new double [para->nWavel];
+    para->cExt = new double [para->nWavel];
+    para->cBack = new double [para->nWavel];
+    para->SizePara = new double [para->nWavel];
     para->mus = new double [para->nWavel];
     para->g = new double [para->nWavel];
     para->forward = new double [para->nWavel];
@@ -193,12 +196,15 @@ void MainWindowSupport::InitializeArrays(Ui_MainWindow *ui, parameters *para, bo
 //Delete dynamic arrays
 void MainWindowSupport::DeleteArrays(parameters *para, bool *arrayFlag)
 {
-    delete para->wavelArray;
-    delete para->scatCross;
-    delete para->mus;
-    delete para->g;
-    delete para->forward;
-    delete para->backward;
+    delete[] para->wavelArray;
+    delete[] para->cSca;
+    delete[] para->cExt;
+    delete[] para->cBack;
+    delete[] para->SizePara;
+    delete[] para->mus;
+    delete[] para->g;
+    delete[] para->forward;
+    delete[] para->backward;
 
     for (int i=0; i<para->nWavel; i++)
         delete [] para->phaseFunctionAve[i];
@@ -222,14 +228,19 @@ void MainWindowSupport::SetWavelengthSliders(Ui_MainWindow *ui)
     double stepWL = ui->lineEdit_StepWL->text().toDouble();
     int nWL = (floor(endWL - startWL)/stepWL) + 1;
 
-    ui->slider_PF_WL->setMinimum(0);
-    ui->slider_PF_WL->setMaximum(nWL-1);
-    ui->slider_PF_WL->setSingleStep(1);
-    ui->label_CurrentWL_PF->setText(QString::number(startWL));
+    ui->slider_WL_PFPolar->setMinimum(0);
+    ui->slider_WL_PFPolar->setMaximum(nWL-1);
+    ui->slider_WL_PFPolar->setSingleStep(1);
+    ui->label_CurrentWL_PFPolar->setText(QString::number(startWL));
 
-    ui->slider_S1S2_WL->setMinimum(0);
-    ui->slider_S1S2_WL->setMaximum(nWL-1);
-    ui->slider_S1S2_WL->setSingleStep(1);
+    ui->slider_WL_PFLinear->setMinimum(0);
+    ui->slider_WL_PFLinear->setMaximum(nWL-1);
+    ui->slider_WL_PFLinear->setSingleStep(1);
+    ui->label_CurrentWL_PFLinear->setText(QString::number(startWL));
+
+    ui->slider_WL_S1S2->setMinimum(0);
+    ui->slider_WL_S1S2->setMaximum(nWL-1);
+    ui->slider_WL_S1S2->setSingleStep(1);
     ui->label_CurrentWL_S1S2->setText(QString::number(startWL));
 }
 
@@ -250,7 +261,8 @@ void MainWindowSupport::ProcessMonoDisperse(Ui_MainWindow *ui, parameters *para)
     para->fittedA = tempMus1000*(1-tempG1000);
 
     //Assign values and plot    
-    plot.AssignValuesPolarPlot(ui,para);
+    plot.AssignValuesPhaseFunctionPolarPlot(ui,para);
+    plot.AssignValuesPhaseFunctionLinearPlot(ui,para);
     plot.AssignValuesS1S2Plot(ui, para);
     plot.AssignValuesAllOtherPlots(ui, para);
 }
@@ -271,7 +283,8 @@ void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, parameters *para)
     para->fittedA = tempMus1000*(1-tempG1000);
 
     //Assign values and plot
-    plot.AssignValuesPolarPlot(ui,para);
+    plot.AssignValuesPhaseFunctionPolarPlot(ui,para);
+    plot.AssignValuesPhaseFunctionLinearPlot(ui,para);
     plot.AssignValuesS1S2Plot(ui, para);
     plot.AssignValuesAllOtherPlots(ui, para);
 }
@@ -471,9 +484,9 @@ bool MainWindowSupport::CheckInputParameters(Ui_MainWindow *ui, parameters *para
         msgBoxWarn.exec();
         return 1;
     }
-    if (para->scatRefImag > 5.0)
+    if (para->scatRefImag >= 5.0)
     {
-        msgBox.setText("Imaginary refractive index must be between -5.0 and 0.0.");
+        msgBox.setText("Imaginary refractive index must be negative or less than 5.0.");
         msgBox.exec();
         return 1;
     }

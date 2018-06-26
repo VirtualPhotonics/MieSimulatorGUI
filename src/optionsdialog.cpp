@@ -9,7 +9,9 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     ui(new Ui::OptionsDialog)
 {    
     ui->setupUi(this);    
-    scatCross = false;
+    cSca = false;
+    cExt = false;
+    cBack = false;
     scatCoeff = false;
     redScatCoeff = false;
     fitPara = false;
@@ -34,7 +36,9 @@ void OptionsDialog::on_pushButton_Apply_clicked()
 
 void OptionsDialog::on_pushButton_Cancel_clicked()
 {
-    scatCross = false;
+    cSca = false;
+    cExt = false;
+    cBack = false;
     scatCoeff = false;
     redScatCoeff = false;
     fitPara = false;
@@ -49,8 +53,9 @@ void OptionsDialog::on_pushButton_Cancel_clicked()
 
 void OptionsDialog::CheckSelectAll()
 {
-    if (scatCross && scatCoeff && redScatCoeff && fitPara
-            && g && phaseFunc && S1 && S2 && forward && backward)
+    if (cSca && scatCoeff && redScatCoeff && fitPara
+            && g && phaseFunc && S1 && S2 && forward
+            && backward && cExt && cBack)
         ui->checkBox_SelectAll->setChecked(true);
     else
         ui->checkBox_SelectAll->setChecked(false);
@@ -58,8 +63,9 @@ void OptionsDialog::CheckSelectAll()
 
 void OptionsDialog::ApplyAllEnableDisable()
 {
-    if (scatCross || scatCoeff || redScatCoeff || fitPara
-            || g || phaseFunc || S1 || S2 || forward || backward)
+    if (cSca || scatCoeff || redScatCoeff || fitPara
+            || g || phaseFunc || S1 || S2 || forward
+            || backward ||cExt || cBack)
         ui->pushButton_Apply->setEnabled(true);
     else
         ui->pushButton_Apply->setEnabled(false);
@@ -77,8 +83,9 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
     setModal(true);
     exec();
 
-    if (scatCross || scatCoeff || redScatCoeff || fitPara
-            || g || phaseFunc || S1 || S2 || forward || backward)
+    if (cSca || scatCoeff || redScatCoeff || fitPara
+            || g || phaseFunc || S1 || S2 || forward
+            || backward ||cExt || cBack)
         flagSave = true;
     else
         flagSave = false;
@@ -146,9 +153,8 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
             out << "Dia.(um)\tNum. Den.(in a vol. of 1mm^3)\tRef. Index (real | imag)\n";
             for (int i=0; i<para->nRadius; i++)
                 out << 2.0 * para->radArray[i] <<"\t" << para->numDensityArray[i]*margin<<"\t"
-                    <<para->scatRefRealArray[i]<<"\t" << para->scatRefImagArray[i] <<"\n";
+                    <<para->scatRefRealArray[i]<<"\t" << para->scatRefImagArray[i] <<"\n";            
 
-            out << "\n\nOutput:\n\n";
             if (scatCoeff)
             {
                 out << "Scattering Coefficient (us):\n";
@@ -176,12 +182,30 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
                 out << "\n";
             }
 
-            if (scatCross)
+            if (cSca)
             {
                 out << "Scattering Cross Section (Csca):\n";
                 out << "WL(nm)\tScattering Cross Section (um^2)\n";
                 for (int i=0; i<para->nWavel; i++)
-                    out << para->wavelArray[i] <<"\t" << para->scatCross[i] <<"\n";
+                    out << para->wavelArray[i] <<"\t" << para->cSca[i] <<"\n";
+                out << "\n";
+            }
+
+            if (cExt)
+            {
+                out << "Extinction Cross Section (Cext):\n";
+                out << "WL(nm)\tExtinction Cross Section (um^2)\n";
+                for (int i=0; i<para->nWavel; i++)
+                    out << para->wavelArray[i] <<"\t" << para->cExt[i] <<"\n";
+                out << "\n";
+            }
+
+            if (cBack)
+            {
+                out << "Backscattering Cross Section (Cback):\n";
+                out << "WL(nm)\tBackscattering Cross Section (um^2)\n";
+                for (int i=0; i<para->nWavel; i++)
+                    out << para->wavelArray[i] <<"\t" << para->cBack[i] <<"\n";
                 out << "\n";
             }
 
@@ -217,7 +241,7 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
             {
                 out << "Phase Function:\n";
                 QVector<double> phaseFunction(2*para->nTheta-1), theta(2*para->nTheta-1);
-                int indexWL = ui->slider_PF_WL->value();
+                int indexWL = ui->slider_WL_PFPolar->value();
                 double currentWL = para->startWavel + indexWL*para->stepWavel;
                 for (int i=0; i<para->nTheta; i++)
                 {
@@ -242,13 +266,11 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
                 out << "Angle(deg)\t Phase Function";
                 if (ui->radioButton_PhaseAverage->isChecked())
                     out << " (Ave) ";
-                else
-                    if (ui->radioButton_PhasePara->isChecked())
-                        out << " (Para) ";\
-                    else
-                        if (ui->radioButton_PhasePerp->isChecked())
-                            out << " (Perp) ";
-                 out << "@ Wavelength of " << currentWL << " nm\n";
+                if (ui->radioButton_PhasePara->isChecked())
+                     out << " (Para) ";
+                if (ui->radioButton_PhasePerp->isChecked())
+                     out << " (Perp) ";
+                out << "@ Wavelength of " << currentWL << " nm\n";
                 for (int i=0; i<2*para->nTheta-1; i++)
                     out << theta[i] <<"\t" << phaseFunction[i] <<"\n";
                 out << "\n";
@@ -258,7 +280,7 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
             {                
                 out << "S1:\n";
                 QVector<double>  theta(para->nTheta);
-                int indexWL = ui->slider_S1S2_WL->value();
+                int indexWL = ui->slider_WL_S1S2->value();
                 double currentWL = para->startWavel + indexWL*para->stepWavel;
                 out << "Angle(deg)\t S1(real | imag)" << " @ Wavelength of " << currentWL << " nm\n";
                 for (int i=0; i<para->nTheta; i++)
@@ -274,7 +296,7 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
             {            
                 QVector<double>  theta(para->nTheta);
                 out << "S2:\n";
-                int indexWL = ui->slider_S1S2_WL->value();
+                int indexWL = ui->slider_WL_S1S2->value();
                 double currentWL = para->startWavel + indexWL*para->stepWavel;
                 out << "Angle(deg)\t S2(real | imag)" << " @ Wavelength of " << currentWL << " nm\n";
                 for (int i=0; i<para->nTheta; i++)
@@ -301,11 +323,25 @@ void OptionsDialog::DisableFitPara()
 }
 
 
-void OptionsDialog::on_checkBox_ScatCross_clicked(bool checked)
+void OptionsDialog::on_checkBox_Csca_clicked(bool checked)
 {
-    scatCross = checked;
-    if(!checked)
-        ui->checkBox_SelectAll->setChecked(false);
+    cSca = checked;
+    ApplyAllEnableDisable();
+    CheckSelectAll();
+}
+
+void OptionsDialog::on_checkBox_Cext_clicked(bool checked)
+{
+    cExt = checked;
+    ApplyAllEnableDisable();
+    CheckSelectAll();
+}
+
+void OptionsDialog::on_checkBox_Cback_clicked(bool checked)
+{
+    cBack = checked;
+    ApplyAllEnableDisable();
+    CheckSelectAll();
 }
 
 void OptionsDialog::on_checkBox_ScatCoeff_clicked(bool checked)
@@ -373,7 +409,7 @@ void OptionsDialog::on_checkBox_Backward_clicked(bool checked)
 
 void OptionsDialog::on_checkBox_SelectAll_clicked(bool checked)
 {
-    scatCross = checked;
+    cSca = checked;
     scatCoeff = checked;
     redScatCoeff = checked;
     fitPara = checked;
@@ -383,8 +419,10 @@ void OptionsDialog::on_checkBox_SelectAll_clicked(bool checked)
     S2 = checked;
     forward = checked;
     backward = checked;
+    cExt = checked;
+    cBack = checked;
 
-    ui->checkBox_ScatCross->setChecked(checked);
+    ui->checkBox_Csca->setChecked(checked);
     ui->checkBox_ScatCoeff->setChecked(checked);
     ui->checkBox_ReducedScatCoeff->setChecked(checked);
     ui->checkBox_Fitting->setChecked(checked);
@@ -394,6 +432,8 @@ void OptionsDialog::on_checkBox_SelectAll_clicked(bool checked)
     ui->checkBox_S2->setChecked(checked);
     ui->checkBox_Forward->setChecked(checked);
     ui->checkBox_Backward->setChecked(checked);
+    ui->checkBox_Cext ->setChecked(checked);
+    ui->checkBox_Cback ->setChecked(checked);
 
     ApplyAllEnableDisable();
 }

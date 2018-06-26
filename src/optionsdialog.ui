@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>556</width>
-    <height>203</height>
+    <height>235</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,7 +40,7 @@
      <x>30</x>
      <y>30</y>
      <width>501</width>
-     <height>130</height>
+     <height>151</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -57,7 +57,7 @@
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QCheckBox" name="checkBox_ScatCross">
+     <widget class="QCheckBox" name="checkBox_Csca">
       <property name="font">
        <font>
         <family>Arial</family>
@@ -68,6 +68,18 @@
       </property>
       <property name="checked">
        <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QCheckBox" name="checkBox_Forward">
+      <property name="font">
+       <font>
+        <family>Arial</family>
+       </font>
+      </property>
+      <property name="text">
+       <string>Forward Scattering %</string>
       </property>
      </widget>
     </item>
@@ -110,6 +122,18 @@
       </property>
      </widget>
     </item>
+    <item row="4" column="1">
+     <widget class="QCheckBox" name="checkBox_S2">
+      <property name="font">
+       <font>
+        <family>Arial</family>
+       </font>
+      </property>
+      <property name="text">
+       <string>S2</string>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="0">
      <widget class="QCheckBox" name="checkBox_PhaseFunc">
       <property name="font">
@@ -119,18 +143,6 @@
       </property>
       <property name="text">
        <string>Phase Function </string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QCheckBox" name="checkBox_Forward">
-      <property name="font">
-       <font>
-        <family>Arial</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>Forward Scattering %</string>
       </property>
      </widget>
     </item>
@@ -158,15 +170,17 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="1">
-     <widget class="QCheckBox" name="checkBox_S2">
-      <property name="font">
-       <font>
-        <family>Arial</family>
-       </font>
-      </property>
+    <item row="5" column="0">
+     <widget class="QCheckBox" name="checkBox_Cext">
       <property name="text">
-       <string>S2</string>
+       <string>Extinction Cross Section (Cext)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QCheckBox" name="checkBox_Cback">
+      <property name="text">
+       <string>Backscattering Cross Section (Cback)</string>
       </property>
      </widget>
     </item>
@@ -176,7 +190,7 @@
    <property name="geometry">
     <rect>
      <x>170</x>
-     <y>160</y>
+     <y>190</y>
      <width>301</width>
      <height>30</height>
     </rect>
@@ -269,7 +283,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>170</y>
+     <y>200</y>
      <width>101</width>
      <height>17</height>
     </rect>

@@ -78,8 +78,17 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
 			+ QString::number(para->numDensityArray[i] * margin) + "\t"
 			+ QString::number(para->scatRefRealArray[i]) + "\t" + QString::number(para->scatRefImagArray[i]) );
 
-	ui->textBrowser_Display->append("\n\nOutput:\n");
-	ui->textBrowser_Display->append("Scattering Coefficient (us):");
+     ui->textBrowser_Display->append("\n\nOutput:");
+    if (mainUi->radioButton_MonoDisperse->isChecked())
+    {
+        ui->textBrowser_Display->append("\nSize Parameter:");
+        ui->textBrowser_Display->append("WL(nm)\tSize Parameter");
+        for (int i = 0; i<para->nWavel; i++)
+            ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t"
+                + QString::number(para->SizePara[i]) );        
+    }
+
+    ui->textBrowser_Display->append("\nScattering Coefficient (us):");
 	ui->textBrowser_Display->append("WL(nm)\tScattering Coefficient (mm^-1)");
 	for (int i = 0; i<para->nWavel; i++)
 		ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" 
@@ -104,7 +113,19 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
 	ui->textBrowser_Display->append("WL(nm)\tScattering Cross Section (um^2)");
 	for (int i = 0; i<para->nWavel; i++)
 		ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" 
-			+ QString::number(para->scatCross[i]) );
+            + QString::number(para->cSca[i]) );
+
+    ui->textBrowser_Display->append("\nExtinction Cross Section (Cext):");
+    ui->textBrowser_Display->append("WL(nm)\tExtinction Cross Section (um^2)");
+    for (int i = 0; i<para->nWavel; i++)
+        ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t"
+            + QString::number(para->cExt[i]) );
+
+    ui->textBrowser_Display->append("\nBackscattering Cross Section (Cback):");
+    ui->textBrowser_Display->append("WL(nm)\tBackcattering Cross Section (um^2)");
+    for (int i = 0; i<para->nWavel; i++)
+        ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t"
+            + QString::number(para->cBack[i]) );    
 
 	ui->textBrowser_Display->append("\nForward and Backward Scattering %");
 	ui->textBrowser_Display->append("WL(nm)\tForward %\tBackward %");
@@ -114,7 +135,7 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
 
 	ui->textBrowser_Display->append("\nPhase Function:");
 	QVector<double> phaseFunction(para->nTheta), theta(para->nTheta);
-	int indexWL = mainUi->slider_PF_WL->value();
+    int indexWL = mainUi->slider_WL_PFPolar->value();
 	double currentWL = para->startWavel + indexWL*para->stepWavel;
 	for (int i = 0; i<para->nTheta; i++)
 	{
@@ -132,15 +153,12 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
 			phaseFunction[i] = para->phaseFunctionPerp[indexWL][i];
 		}
 	}
-
 	if (mainUi->radioButton_PhaseAverage->isChecked())
-		ui->textBrowser_Display->append("Angle(deg)\t Phase Function (Ave) @ Wavelength of " + QString::number(currentWL) + " nm");
-	else
-		if (mainUi->radioButton_PhasePara->isChecked())
-			ui->textBrowser_Display->append("Angle(deg)\t Phase Function (Para) @ Wavelength of " + QString::number(currentWL) + " nm");
-		else
-			if (mainUi->radioButton_PhasePerp->isChecked())
-				ui->textBrowser_Display->append("Angle(deg)\t Phase Function (Perp @ Wavelength of " + QString::number(currentWL) + " nm");
+		ui->textBrowser_Display->append("Angle(deg)\t Phase Function (Ave) @ Wavelength of " + QString::number(currentWL) + " nm");	
+    if (mainUi->radioButton_PhasePara->isChecked())
+        ui->textBrowser_Display->append("Angle(deg)\t Phase Function (Para) @ Wavelength of " + QString::number(currentWL) + " nm");
+    if (mainUi->radioButton_PhasePerp->isChecked())
+        ui->textBrowser_Display->append("Angle(deg)\t Phase Function (Perp) @ Wavelength of " + QString::number(currentWL) + " nm");
 	for (int i = 0; i<para->nTheta; i++)
 		ui->textBrowser_Display->append(QString::number(theta[i]) + "\t" + QString::number(phaseFunction[i]));
 }
