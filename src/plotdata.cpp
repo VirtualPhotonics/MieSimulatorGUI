@@ -256,7 +256,8 @@ void PlotData::PlotDistribution(Ui_MainWindow *ui, parameters *para, QVector<dou
         minX = 0.92 * 2.0 * para->minRadius;
         maxX = 1.08 * 2.0 * para->maxRadius;
         bar->setWidth(0.05*(maxX -minX));
-        ui->customPlot_Distribution->xAxis->setRange(minX, maxX);
+        ui->customPlot_Distribution->xAxis->setRange(minX, maxX);        
+        ui->customPlot_Distribution->xAxis->ticker()->setTickCount(3);
     }
     if (ui->radioButton_PolyDisperse->isChecked())
     {
@@ -272,6 +273,7 @@ void PlotData::PlotDistribution(Ui_MainWindow *ui, parameters *para, QVector<dou
             minX = 2.0 * para->minRadius - shift;
             maxX = 2.0 * para->maxRadius + shift;
             bar->setWidth((para->maxRadius - para->minRadius)/para->nRadius);
+            ui->customPlot_Distribution->xAxis->ticker()->setTickCount(5);
         }
         ui->customPlot_Distribution->xAxis->setRange(minX, maxX);
     }
