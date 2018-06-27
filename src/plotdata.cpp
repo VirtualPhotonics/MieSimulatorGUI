@@ -69,7 +69,6 @@ void PlotData::InitializePhaseFunctionLinearPlot(Ui_MainWindow *ui)
 {
     ui->customPlot_PhaseFunctionLinear->xAxis->setLabel("Angle (deg.)");
     ui->customPlot_PhaseFunctionLinear->xAxis->setRange(-180,180);
-    ui->customPlot_PhaseFunctionLinear->xAxis->ticker()->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
     QVector<double> ticks;
     QVector<QString> labels;
     ticks << -180 << -135 << -90 << -45 << 0 << 45 << 90 << 135 << 180;
@@ -95,7 +94,6 @@ void PlotData::InitializeAllOtherPlots(Ui_MainWindow *ui)
     //Plot S1S2
     ui->customPlot_S1S2->xAxis->setLabel("Angle (deg.)");
     ui->customPlot_S1S2->xAxis->setRange(0,180);
-    ui->customPlot_S1S2->xAxis->ticker()->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
     QVector<double> ticks;
     QVector<QString> labels;
     ticks << 0 << 45 << 90 << 135 << 180;
