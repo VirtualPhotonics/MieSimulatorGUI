@@ -87,15 +87,22 @@
        <widget class="QGroupBox" name="groupBox_Status">
         <property name="font">
          <font>
-          <family>Arial</family>
+          <family>Liberation Sans</family>
+          <pointsize>8</pointsize>
          </font>
         </property>
         <property name="title">
          <string>Status</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="leftMargin">
+          <number>3</number>
+         </property>
          <property name="topMargin">
           <number>2</number>
+         </property>
+         <property name="rightMargin">
+          <number>3</number>
          </property>
          <property name="bottomMargin">
           <number>2</number>
@@ -149,7 +156,13 @@
          <string>Plot Scale: Y-Axis</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_18">
+         <property name="leftMargin">
+          <number>3</number>
+         </property>
          <property name="topMargin">
+          <number>3</number>
+         </property>
+         <property name="rightMargin">
           <number>3</number>
          </property>
          <property name="bottomMargin">
@@ -236,7 +249,13 @@
          <string>Refractive Index</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_Refractive">
+         <property name="leftMargin">
+          <number>3</number>
+         </property>
          <property name="topMargin">
+          <number>3</number>
+         </property>
+         <property name="rightMargin">
           <number>3</number>
          </property>
          <property name="bottomMargin">
@@ -431,11 +450,17 @@
          <string>Concentration / Volume Fraction</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_15">
+         <property name="leftMargin">
+          <number>3</number>
+         </property>
          <property name="topMargin">
           <number>3</number>
          </property>
+         <property name="rightMargin">
+          <number>3</number>
+         </property>
          <property name="bottomMargin">
-          <number>0</number>
+          <number>2</number>
          </property>
          <item row="1" column="5" colspan="2">
           <widget class="QLineEdit" name="lineEdit_VolFrac">
@@ -650,7 +675,13 @@
          <string>Wavelength (nm)</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_WL">
+         <property name="leftMargin">
+          <number>3</number>
+         </property>
          <property name="topMargin">
+          <number>3</number>
+         </property>
+         <property name="rightMargin">
           <number>3</number>
          </property>
          <property name="bottomMargin">
@@ -860,11 +891,17 @@
          <string>Sphere Dispersion</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_3">
+         <property name="leftMargin">
+          <number>3</number>
+         </property>
          <property name="topMargin">
           <number>2</number>
          </property>
+         <property name="rightMargin">
+          <number>3</number>
+         </property>
          <property name="bottomMargin">
-          <number>7</number>
+          <number>3</number>
          </property>
          <item row="2" column="0">
           <widget class="QRadioButton" name="radioButton_PolyDisperse">
@@ -1246,7 +1283,8 @@
      <widget class="QTabWidget" name="tabWidget_ReducedScat">
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Liberation Sans</family>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="currentIndex">
@@ -1531,7 +1569,8 @@
      <widget class="QTabWidget" name="tabWidget_Ns">
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Liberation Sans</family>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="currentIndex">
@@ -1683,7 +1722,8 @@
      <widget class="QTabWidget" name="tabWidget_G">
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Liberation Sans</family>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="layoutDirection">
@@ -1721,7 +1761,8 @@
      <widget class="QTabWidget" name="tabWidget_Scat">
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Liberation Sans</family>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="tabShape">
@@ -1745,7 +1786,14 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QCustomPlot" name="customPlot_Mus" native="true"/>
+         <widget class="QCustomPlot" name="customPlot_Mus" native="true">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1797,7 +1845,8 @@
       </property>
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>Liberation Sans</family>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="tabShape">
@@ -2016,6 +2065,12 @@
             <height>0</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <family>Liberation Sans</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
           <property name="title">
            <string>Plot Scale</string>
           </property>
@@ -2081,6 +2136,12 @@
             <width>75</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Liberation Sans</family>
+            <pointsize>8</pointsize>
+           </font>
           </property>
           <property name="title">
            <string>dtheta (dθ)</string>
@@ -2163,6 +2224,12 @@
             <width>75</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Liberation Sans</family>
+            <pointsize>8</pointsize>
+           </font>
           </property>
           <property name="title">
            <string>Polarization</string>
@@ -2552,7 +2619,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup_ConcVolFrac"/>
   <buttongroup name="buttonGroup_MonoPoly"/>
+  <buttongroup name="buttonGroup_ConcVolFrac"/>
  </buttongroups>
 </ui>
