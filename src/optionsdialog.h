@@ -16,46 +16,30 @@ class OptionsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit OptionsDialog(QWidget *parent = 0);
+    explicit OptionsDialog(QWidget *parent = nullptr);
     ~OptionsDialog();
-    bool cSca;
-    bool cExt;
-    bool cBack;
-    bool scatCoeff;
-    bool redScatCoeff;
-    bool g;
-    bool phaseFunc;
-    bool S1;
-    bool S2;
-    bool forward;
-    bool backward;
-    bool fitPara;
-    void EnableFitPara();
-    void DisableFitPara();
-    void SaveData(Ui_MainWindow *ui, parameters *para);
-    void CheckSelectAll();
-    void ApplyAllEnableDisable();
 
+    void SaveData(Ui_MainWindow *ui, parameters *para);
 
 private slots:
-    void on_pushButton_Apply_clicked();
+    void on_pushButton_ScatPara_clicked();
+    void on_pushButton_PhaseFunction_clicked();
+    void on_pushButton_S1_clicked();
+    void on_pushButton_S2_clicked();
     void on_pushButton_Cancel_clicked();
-    void on_checkBox_Csca_clicked(bool checked);
-    void on_checkBox_Cext_clicked(bool checked);
-    void on_checkBox_Cback_clicked(bool checked);
-    void on_checkBox_ScatCoeff_clicked(bool checked);
-    void on_checkBox_ReducedScatCoeff_clicked(bool checked);
-    void on_checkBox_G_clicked(bool checked);
-    void on_checkBox_PhaseFunc_clicked(bool checked);
-    void on_checkBox_S1_clicked(bool checked);
-    void on_checkBox_S2_clicked(bool checked);
-    void on_checkBox_Forward_clicked(bool checked);
-    void on_checkBox_Backward_clicked(bool checked);
-    void on_checkBox_Fitting_clicked(bool checked);
-    void on_checkBox_SelectAll_clicked(bool checked);
 
 private:
+    bool flagScatPara;
+    bool flagPhaseFunction;
+    bool flagS1;
+    bool flagS2;
     Ui::OptionsDialog *ui;
+
+    void SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fileName, double margin);
+    void SavePhaseFunction(Ui_MainWindow *ui, parameters *para, QString fileName);
+    void SaveS1(parameters *para, QString fileName);
+    void SaveS2(parameters *para, QString fileName);
+    void RememberLastDirectory(QString fileName);
 };
 
 #endif // OPTIONSDIALOG_H

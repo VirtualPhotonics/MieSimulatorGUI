@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>556</width>
-    <height>235</height>
+    <width>244</width>
+    <height>138</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,268 +34,91 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <widget class="QWidget" name="verticalLayoutWidget">
+  <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>30</y>
-     <width>501</width>
-     <height>151</height>
+     <x>20</x>
+     <y>20</y>
+     <width>201</width>
+     <height>112</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QCheckBox" name="checkBox_ScatCoeff">
+    <item row="0" column="2" colspan="2">
+     <widget class="QPushButton" name="pushButton_S1">
       <property name="font">
        <font>
-        <family>Arial</family>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="text">
-       <string>Scattering Coefficient (μs)</string>
+       <string>S1</string>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QCheckBox" name="checkBox_Csca">
-      <property name="font">
-       <font>
-        <family>Arial</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>Scattering Cross Section (Csca)</string>
-      </property>
-      <property name="checked">
+      <property name="autoDefault">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QCheckBox" name="checkBox_Forward">
+    <item row="1" column="2" colspan="2">
+     <widget class="QPushButton" name="pushButton_S2">
       <property name="font">
        <font>
-        <family>Arial</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>Forward Scattering %</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QCheckBox" name="checkBox_ReducedScatCoeff">
-      <property name="font">
-       <font>
-        <family>Arial</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>Reduced Scattering Coefficient (μs')</string>
-      </property>
-      <property name="checked">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QCheckBox" name="checkBox_Fitting">
-      <property name="font">
-       <font>
-        <family>Arial</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>μs'  Power Law Fitting Parameters</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QCheckBox" name="checkBox_G">
-      <property name="font">
-       <font>
-        <family>Arial</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>Average Cosine of Phase Function (g)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QCheckBox" name="checkBox_S2">
-      <property name="font">
-       <font>
-        <family>Arial</family>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="text">
        <string>S2</string>
       </property>
+      <property name="autoDefault">
+       <bool>false</bool>
+      </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QCheckBox" name="checkBox_PhaseFunc">
+    <item row="1" column="0" colspan="2">
+     <widget class="QPushButton" name="pushButton_PhaseFunction">
       <property name="font">
        <font>
-        <family>Arial</family>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="text">
-       <string>Phase Function </string>
+       <string>Phase Function</string>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
-     <widget class="QCheckBox" name="checkBox_S1">
-      <property name="font">
-       <font>
-        <family>Arial</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>S1 </string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QCheckBox" name="checkBox_Backward">
-      <property name="font">
-       <font>
-        <family>Arial</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>Backward Scattering %</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QCheckBox" name="checkBox_Cext">
-      <property name="text">
-       <string>Extinction Cross Section (Cext)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QCheckBox" name="checkBox_Cback">
-      <property name="text">
-       <string>Backscattering Cross Section (Cback)</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>190</y>
-     <width>301</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton_Apply">
-      <property name="font">
-       <font>
-        <family>Arial</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>Apply</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item>
+    <item row="2" column="1" colspan="2">
      <widget class="QPushButton" name="pushButton_Cancel">
       <property name="font">
        <font>
-        <family>Arial</family>
+        <family>MS Shell Dlg 2</family>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="text">
        <string>Cancel</string>
       </property>
+      <property name="autoDefault">
+       <bool>false</bool>
+      </property>
      </widget>
     </item>
-    <item>
-     <spacer name="horizontalSpacer_3">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+    <item row="0" column="0" colspan="2">
+     <widget class="QPushButton" name="pushButton_ScatPara">
+      <property name="font">
+       <font>
+        <family>MS Shell Dlg 2</family>
+        <pointsize>8</pointsize>
+       </font>
       </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>20</height>
-       </size>
+      <property name="text">
+       <string>Scattering Parameters</string>
       </property>
-     </spacer>
+     </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QLabel" name="label_save">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>121</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Arial</family>
-    </font>
-   </property>
-   <property name="text">
-    <string>Select data to save:</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="checkBox_SelectAll">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>200</y>
-     <width>101</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Arial</family>
-    </font>
-   </property>
-   <property name="text">
-    <string>Select All</string>
-   </property>
   </widget>
  </widget>
  <resources/>

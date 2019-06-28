@@ -73,7 +73,7 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
 
 	ui->textBrowser_Display->append("\nSphere Data:");
 	ui->textBrowser_Display->append("Dia.(um)\tNum. Den.(in a vol. of 1mm^3)\tRef. Index (real | imag)");
-	for (int i = 0; i<para->nRadius; i++)
+    for (unsigned int i = 0; i<para->nRadius; i++)
 		ui->textBrowser_Display->append(QString::number(2.0 * para->radArray[i]) + "\t"
 			+ QString::number(para->numDensityArray[i] * margin) + "\t"
 			+ QString::number(para->scatRefRealArray[i]) + "\t" + QString::number(para->scatRefImagArray[i]) );
@@ -82,83 +82,55 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
     if (mainUi->radioButton_MonoDisperse->isChecked())
     {
         ui->textBrowser_Display->append("\nSize Parameter:");
-        ui->textBrowser_Display->append("WL(nm)\tSize Parameter");
-        for (int i = 0; i<para->nWavel; i++)
-            ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t"
-                + QString::number(para->SizePara[i]) );        
+        ui->textBrowser_Display->append("WL(nm)\t2*pi*R/lambda");
+        for (unsigned int i = 0; i<para->nWavel; i++)
+            ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" +
+                                            QString::number(para->SizePara[i]) );
     }
 
-    ui->textBrowser_Display->append("\nScattering Coefficient (us):");
-	ui->textBrowser_Display->append("WL(nm)\tScattering Coefficient (mm^-1)");
-	for (int i = 0; i<para->nWavel; i++)
-		ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" 
-			+ QString::number(para->mus[i] * margin) );
-	
+    ui->textBrowser_Display->append("\nScattering Coefficient, g (Average Cosine of Phase Function) and Reduced Scattering Coefficient:");
+    ui->textBrowser_Display->append("WL(nm)\tus(mm^-1)\tg\tus'(mm^-1)");
+    for (unsigned int i = 0; i<para->nWavel; i++)
+        ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" +
+                                        QString::number(para->mus[i] * margin) + "\t" +
+                                        QString::number(para->g[i]) + "\t" +
+                                        QString::number(para->mus[i] * (1 - para->g[i])*margin));
 
-	ui->textBrowser_Display->append("\ng (Average Cosine of Phase Function):");
-	ui->textBrowser_Display->append("WL(nm)\tg (Average Cosine of Phase Function)");
-	for (int i = 0; i<para->nWavel; i++)
-		ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" 
-			+ QString::number(para->g[i]) );
+    ui->textBrowser_Display->append("\nScattering (Csca), Extinction (Cext) and Backscattering (Cback) Cross Sections:");
+    ui->textBrowser_Display->append("WL(nm)\tCsca(um^2)\tCext(um^2)\tCback(um^2)");
+    for (unsigned int i = 0; i<para->nWavel; i++)
+        ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" +
+                                        QString::number(para->cSca[i]) + "\t" +
+                                        QString::number(para->cExt[i]) + "\t" +
+                                        QString::number(para->cBack[i]));
 
-
-	ui->textBrowser_Display->append("\nReduced Scattering Coefficient (us'):");
-	ui->textBrowser_Display->append("WL(nm)\tReduced Scattering Coefficient (mm^-1)");
-	for (int i = 0; i<para->nWavel; i++)
-		ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" 
-			+ QString::number(para->mus[i] * (1 - para->g[i])*margin) );
-
-
-	ui->textBrowser_Display->append("\nScattering Cross Section (Csca):");
-	ui->textBrowser_Display->append("WL(nm)\tScattering Cross Section (um^2)");
-	for (int i = 0; i<para->nWavel; i++)
-		ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" 
-            + QString::number(para->cSca[i]) );
-
-    ui->textBrowser_Display->append("\nExtinction Cross Section (Cext):");
-    ui->textBrowser_Display->append("WL(nm)\tExtinction Cross Section (um^2)");
-    for (int i = 0; i<para->nWavel; i++)
-        ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t"
-            + QString::number(para->cExt[i]) );
-
-    ui->textBrowser_Display->append("\nBackscattering Cross Section (Cback):");
-    ui->textBrowser_Display->append("WL(nm)\tBackcattering Cross Section (um^2)");
-    for (int i = 0; i<para->nWavel; i++)
-        ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t"
-            + QString::number(para->cBack[i]) );    
-
-	ui->textBrowser_Display->append("\nForward and Backward Scattering %");
+    ui->textBrowser_Display->append("\nForward and Backward Scattering percentages:");
 	ui->textBrowser_Display->append("WL(nm)\tForward %\tBackward %");
-	for (int i = 0; i<para->nWavel; i++)
-		ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" 
-			+ QString::number(para->forward[i]) + "\t" + QString::number(para->backward[i]));
+    for (unsigned int i = 0; i<para->nWavel; i++)
+        ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" +
+                                        QString::number(para->forward[i]) + "\t" +
+                                        QString::number(para->backward[i]));
 
-	ui->textBrowser_Display->append("\nPhase Function:");
-	QVector<double> phaseFunction(para->nTheta), theta(para->nTheta);
     int indexWL = mainUi->slider_WL_PFPolar->value();
 	double currentWL = para->startWavel + indexWL*para->stepWavel;
-	for (int i = 0; i<para->nTheta; i++)
-	{
-		theta[i] = 180.0 * i / (para->nTheta - 1);
-		if (mainUi->radioButton_PhaseAverage->isChecked())
-		{
-			phaseFunction[i] = para->phaseFunctionAve[indexWL][i];
-		}
-		if (mainUi->radioButton_PhasePara->isChecked())
-		{
-			phaseFunction[i] = para->phaseFunctionPara[indexWL][i];
-		}
-		if (mainUi->radioButton_PhasePerp->isChecked())
-		{
-			phaseFunction[i] = para->phaseFunctionPerp[indexWL][i];
-		}
-	}
+
+    ui->textBrowser_Display->append("\nPhase Function @ Wavelength of " + QString::number(currentWL) + " nm:");
 	if (mainUi->radioButton_PhaseAverage->isChecked())
-		ui->textBrowser_Display->append("Angle(deg)\t Phase Function (Ave) @ Wavelength of " + QString::number(currentWL) + " nm");	
+        ui->textBrowser_Display->append("Angle(deg)\tPhase Function (Ave)");
     if (mainUi->radioButton_PhasePara->isChecked())
-        ui->textBrowser_Display->append("Angle(deg)\t Phase Function (Para) @ Wavelength of " + QString::number(currentWL) + " nm");
+        ui->textBrowser_Display->append("Angle(deg)\tPhase Function (Para)");
     if (mainUi->radioButton_PhasePerp->isChecked())
-        ui->textBrowser_Display->append("Angle(deg)\t Phase Function (Perp) @ Wavelength of " + QString::number(currentWL) + " nm");
-	for (int i = 0; i<para->nTheta; i++)
-		ui->textBrowser_Display->append(QString::number(theta[i]) + "\t" + QString::number(phaseFunction[i]));
+        ui->textBrowser_Display->append("Angle(deg)\tPhase Function (Perp)");
+    for (unsigned int i = 0; i<para->nTheta; i++)
+    {
+        if (mainUi->radioButton_PhaseAverage->isChecked())
+            ui->textBrowser_Display->append(QString::number(180.0 * i / (para->nTheta - 1)) + "\t" +
+                                            QString::number(para->phaseFunctionAve[indexWL][i]));
+        if (mainUi->radioButton_PhasePara->isChecked())
+            ui->textBrowser_Display->append(QString::number(180.0 * i / (para->nTheta - 1)) + "\t" +
+                                            QString::number(para->phaseFunctionPara[indexWL][i]));
+        if (mainUi->radioButton_PhasePerp->isChecked())
+            ui->textBrowser_Display->append(QString::number(180.0 * i / (para->nTheta - 1)) + "\t" +
+                                            QString::number(para->phaseFunctionPerp[indexWL][i]));
+    }
 }

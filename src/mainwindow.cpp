@@ -105,7 +105,7 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
             {
                 if (!support.CheckDistribution(ui,mPara))   //sanity check
                 {
-                    support.ProcessDistribution(ui, mPara, ui->comboBox_Distribution->currentIndex());
+                    support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
                     support.ProcessPolyDisperse(ui,mPara);
                     ui->label_Progress->setText("<font color=\"green\"> Completed!</font>");
                     ui->slider_ConcPercentChange->setValue(0);
@@ -157,7 +157,7 @@ void MainWindow::on_pushButton_ShowDistributionAndCustom_clicked()
             if (!support.CheckDistribution(ui,mPara))   //sanity check
             {
                 support.SetWidgets(ui);
-                support.ProcessDistribution(ui, mPara, ui->comboBox_Distribution->currentIndex());
+                support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
                 mDistPlotFlag = true;
             }
         }
@@ -189,8 +189,8 @@ void MainWindow::on_pushButton_DisplayData_clicked()
     {
         DisplayDialog *display;
         display = new DisplayDialog();
-        display->show();
         display->DisplayData(ui,  mPara);
+        display->show();
     }
     else
     {
@@ -488,7 +488,7 @@ void MainWindow::on_slider_ConcPercentChange_valueChanged(int position)
 //on_slider_WL_PFPolar_valueChanged: Change Phase Function Wavelenghth Slider
 void MainWindow::on_slider_WL_PFPolar_valueChanged(int value)
 {
-   int wavel = mPara->startWavel + value*mPara->stepWavel;
+   int wavel = static_cast<int>(mPara->startWavel + value*mPara->stepWavel);
    ui->label_CurrentWL_PFPolar->setText(QString::number(wavel));
    UpdatePhaseFunctionPolarPlot();
 }
@@ -496,7 +496,7 @@ void MainWindow::on_slider_WL_PFPolar_valueChanged(int value)
 //on_slider_WL_PFLinear_valueChanged: Change Phase Function Wavelenghth Slider
 void MainWindow::on_slider_WL_PFLinear_valueChanged(int value)
 {
-   int wavel = mPara->startWavel + value*mPara->stepWavel;
+   int wavel = static_cast<int>(mPara->startWavel + value*mPara->stepWavel);
    ui->label_CurrentWL_PFLinear->setText(QString::number(wavel));
    UpdatePhaseFunctionLinearPlot();
 }
@@ -504,7 +504,7 @@ void MainWindow::on_slider_WL_PFLinear_valueChanged(int value)
 //on_slider_WL_S1S2_valueChanged: Change S1/S2 Wavelenghth Slider
 void MainWindow::on_slider_WL_S1S2_valueChanged(int value)
 {
-   int wavel = mPara->startWavel + value*mPara->stepWavel;
+   int wavel = static_cast<int>(mPara->startWavel + value*mPara->stepWavel);
    ui->label_CurrentWL_S1S2->setText(QString::number(wavel));
    UpdateS1S2Plot();
 }
@@ -796,7 +796,7 @@ void MainWindow::DisplayCurveData(QMouseEvent *event, QCustomPlot *curPlot,
             QCPGraphDataContainer::const_iterator begin = graph->data()->at(dataRange.begin()); // get range begin iterator from index
             QCPGraphDataContainer::const_iterator end = graph->data()->at(dataRange.end()); // get range end iterator from index
 
-            int n = end-begin;
+            unsigned int n = static_cast<unsigned int>(end-begin);
             if (n>0)
             {
                 dx = new double[n];

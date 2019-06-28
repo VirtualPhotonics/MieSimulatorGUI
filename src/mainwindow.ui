@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Mie Simulator v1.1: Virtual Photonics Technology Initiative - Beckman Laser Institute  </string>
+   <string>Mie Simulator v1.2: Virtual Photonics Technology Initiative - Beckman Laser Institute, University of California Irvine  </string>
   </property>
   <property name="windowIcon">
    <iconset resource="MieRes.qrc">
@@ -1288,7 +1288,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="movable">
        <bool>true</bool>
@@ -1506,16 +1506,6 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
-         <widget class="QLabel" name="label_FLabel">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#005500;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#005500; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="0" rowspan="10">
          <widget class="QCustomPlot" name="customPlot_MuspPowerLaw" native="true">
           <property name="sizePolicy">
@@ -1558,6 +1548,16 @@
           </property>
           <property name="totalSteps" stdset="0">
            <UInt>100</UInt>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLabel" name="label_FLabel">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#005500;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#005500; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
@@ -2619,7 +2619,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup_MonoPoly"/>
   <buttongroup name="buttonGroup_ConcVolFrac"/>
+  <buttongroup name="buttonGroup_MonoPoly"/>
  </buttongroups>
 </ui>
