@@ -6,8 +6,8 @@ The [Mie Simulator GUI](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki
 ## Downloads
 To download the latest version, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Downloads)
 
-## Latest Releases and Source Codes
-To access latest releases and source codes, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/releases). 
+## Releases and Source Codes
+To access all releases and source codes, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/releases). 
 
 ## Getting Started and Documentation
 To access getting started in Windows and Linux instructions and other documentation, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki)
@@ -15,7 +15,7 @@ To access getting started in Windows and Linux instructions and other documentat
 ## Acknowledgement
 Use the following acknowledgement in publications or applications that make use of this open source software or underlying technology and research:
 
-"This work was made possible through open-source software resources offered by the Virtual Photonics Technology Initiative, at the Beckman Laser Institute, University of California, Irvine."
+"__This work was made possible through open-source software resources offered by the Virtual Photonics Technology Initiative, at the Beckman Laser Institute, University of California, Irvine.__"
 
 ## Software
 _Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:_
