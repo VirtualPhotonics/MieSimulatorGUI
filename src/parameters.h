@@ -16,7 +16,7 @@ public:
     double minRadius;           // minRadius: minimum radius
     double maxRadius;           // maxRadius: maximum radius
     double stdDev;              // stdDev: Std. deviation
-    int nRadius;                // nRadius: number of radii
+    unsigned int nRadius;       // nRadius: number of radii
 
     double *scatRefRealArray;   // scatRefRealArray: refractive index of scatterer -Real  data array
     double *scatRefImagArray;   // scatRefImagArray: refractive index of scatterer -Imag  data array
@@ -30,12 +30,12 @@ public:
     double endWavel;            // endWavel: starting wavelength
     double stepWavel;           // stepWavel: starting wavelength
     double *wavelArray;         // wavel: wavelength array
-    int nWavel;                 // nWavel: number of wavelength
+    unsigned int nWavel;        // nWavel: number of wavelength
 
     double minTheta;            // minTheta: minimum angle
     double maxTheta;            // maxTheta: maximum angle
     double stepTheta;           // stepTheta: maximum angle
-    int nTheta;                 // nTheta: number of angles
+    unsigned int nTheta;        // nTheta: number of angles
 
     double **phaseFunctionAve;  // phaseFunctionAve: Average phase function
     double **phaseFunctionPara; // phaseFunctionPara: parallel phase function

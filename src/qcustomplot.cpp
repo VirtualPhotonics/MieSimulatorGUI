@@ -3055,7 +3055,7 @@ void QCPMarginGroup::clear()
     it.next();
     const QList<QCPLayoutElement*> elements = it.value();
     for (int i=elements.size()-1; i>=0; --i)
-      elements.at(i)->setMarginGroup(it.key(), 0); // removes itself from mChildren via removeChild
+      elements.at(i)->setMarginGroup(it.key(), nullptr); // removes itself from mChildren via removeChild
   }
 }
 
@@ -15564,7 +15564,7 @@ void QCustomPlot::updateLayerIndices() const
 QCPLayerable *QCustomPlot::layerableAt(const QPointF &pos, bool onlySelectable, QVariant *selectionDetails) const
 {
   QList<QVariant> details;
-  QList<QCPLayerable*> candidates = layerableListAt(pos, onlySelectable, selectionDetails ? &details : 0);
+  QList<QCPLayerable*> candidates = layerableListAt(pos, onlySelectable, selectionDetails ? &details : nullptr);
   if (selectionDetails && !details.isEmpty())
     *selectionDetails = details.first();
   if (!candidates.isEmpty())

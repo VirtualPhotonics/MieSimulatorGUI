@@ -137,7 +137,7 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
     {
         para->meanRadius = 0.5 * ui->lineEdit_MeanDiameter->text().toDouble();
         para->stdDev = ui->lineEdit_StdDev->text().toDouble();
-        para->nRadius = ui->lineEdit_NSphere->text().toInt();
+        para->nRadius = ui->lineEdit_NSphere->text().toUInt();
     }
     para->fRay = ui->doubleSpinBox_F->text().toDouble();
     para->bMie = ui->doubleSpinBox_B->text().toDouble();
@@ -155,30 +155,30 @@ void MainWindowSupport::InitializeArrays(Ui_MainWindow *ui, parameters *para, bo
     if (ui->radioButton_Phase_DTheta0_5->isChecked())
         para->nTheta = 361;    //180/(361-1) = 0.5degree step
 
-    para->stepTheta = (para->maxTheta - para->minTheta)/(double)(para->nTheta - 1);
-    para->nWavel = (floor(para->endWavel - para->startWavel) / para->stepWavel) + 1;
+    para->stepTheta = (para->maxTheta - para->minTheta)/static_cast<double>(para->nTheta - 1);
+    para->nWavel = static_cast<unsigned int>(floor(para->endWavel - para->startWavel) / para->stepWavel) + 1;
     para->wavelArray = new double [para->nWavel];
-    for (int i=0; i<para->nWavel; ++i)
+    for (unsigned int i=0; i<para->nWavel; ++i)
         para->wavelArray[i] = para->startWavel + i * para->stepWavel;
 
     para->phaseFunctionAve = new double *[para->nWavel];
-    for (int i=0; i<para->nWavel; i++)
+    for (unsigned int i=0; i<para->nWavel; i++)
         para->phaseFunctionAve[i] = new double [para->nTheta];
 
     para->phaseFunctionPara = new double *[para->nWavel];
-    for (int i=0; i<para->nWavel; i++)
+    for (unsigned int i=0; i<para->nWavel; i++)
         para->phaseFunctionPara[i] = new double [para->nTheta];
 
     para->phaseFunctionPerp = new double *[para->nWavel];
-    for (int i=0; i<para->nWavel; i++)
+    for (unsigned int i=0; i<para->nWavel; i++)
         para->phaseFunctionPerp[i] = new double [para->nTheta];
 
     para->S1 = new std::complex<double> *[para->nWavel];
-    for (int i=0; i<para->nWavel; i++)
+    for (unsigned int i=0; i<para->nWavel; i++)
         para->S1[i] = new std::complex<double> [para->nTheta];
 
     para->S2 = new std::complex<double> *[para->nWavel];
-    for (int i=0; i<para->nWavel; i++)
+    for (unsigned int i=0; i<para->nWavel; i++)
         para->S2[i] = new std::complex<double> [para->nTheta];
 
     para->cSca = new double [para->nWavel];
@@ -206,15 +206,15 @@ void MainWindowSupport::DeleteArrays(parameters *para, bool *arrayFlag)
     delete[] para->forward;
     delete[] para->backward;
 
-    for (int i=0; i<para->nWavel; i++)
+    for (unsigned int i=0; i<para->nWavel; i++)
         delete [] para->phaseFunctionAve[i];
-    for (int i=0; i<para->nWavel; i++)
+    for (unsigned int i=0; i<para->nWavel; i++)
         delete [] para->phaseFunctionPara[i];
-    for (int i=0; i<para->nWavel; i++)
+    for (unsigned int i=0; i<para->nWavel; i++)
         delete [] para->phaseFunctionPerp[i];
-    for (int i=0; i<para->nWavel; i++)
+    for (unsigned int i=0; i<para->nWavel; i++)
         delete [] para->S1[i];
-    for (int i=0; i<para->nWavel; i++)
+    for (unsigned int i=0; i<para->nWavel; i++)
         delete [] para->S2[i];    
 
     *arrayFlag = false;
@@ -226,7 +226,7 @@ void MainWindowSupport::SetWavelengthSliders(Ui_MainWindow *ui)
     double startWL = ui->lineEdit_StartWL->text().toDouble();
     double endWL = ui->lineEdit_EndWL->text().toDouble();
     double stepWL = ui->lineEdit_StepWL->text().toDouble();
-    int nWL = (floor(endWL - startWL)/stepWL) + 1;
+    int nWL = static_cast<int>(floor(endWL - startWL)/stepWL) + 1;
 
     ui->slider_WL_PFPolar->setMinimum(0);
     ui->slider_WL_PFPolar->setMaximum(nWL-1);
@@ -290,7 +290,7 @@ void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, parameters *para)
 }
 
 //Sphere distribution in poly disperse
-void MainWindowSupport::ProcessDistribution(Ui_MainWindow *ui, parameters *para, int distIndex)
+void MainWindowSupport::ProcessDistribution(Ui_MainWindow *ui, parameters *para, unsigned int distIndex)
 {
     PlotData plot;
     if (distIndex !=2)
@@ -414,7 +414,7 @@ void MainWindowSupport::ReadCustomData(parameters *para, QString fileName, bool 
     }
     else
     {
-        para->nRadius = count;
+        para->nRadius = static_cast<unsigned int>(count);
         para->radArray = new double [para->nRadius];
         para->numDensityArray = new double [para->nRadius];
         para->scatRefRealArray = new double [para->nRadius];

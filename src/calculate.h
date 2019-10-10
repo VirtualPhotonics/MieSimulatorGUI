@@ -26,9 +26,9 @@ public:
 
     void DoSimulation(Ui_MainWindow *ui, parameters *para, double* mus1000, double *g1000);
     void CalculatePowerLawAutoFit(parameters *para);
-    void DiameterRangeSetting(parameters *para, int distIndex);
-    void SetSphereRadiusAndRefIndex(parameters *para, int index, bool flagVolOrConc);
-    double CalculateForwardBackward(std::complex<double> *S1, std::complex<double> *S2, parameters *para, int start, int end);
+    void DiameterRangeSetting(parameters *para, unsigned int distIndex);
+    void SetSphereRadiusAndRefIndex(parameters *para, unsigned int index, bool flagVolOrConc);
+    double CalculateForwardBackward(std::complex<double> *S1, std::complex<double> *S2, parameters *para, unsigned int start, unsigned int end);
     double CalculateG(std::complex<double> *S1, std::complex<double> *S2, parameters *para);
 };
 

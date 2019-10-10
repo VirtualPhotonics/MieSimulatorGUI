@@ -195,13 +195,13 @@ void PlotData::ClearPlots(Ui_MainWindow *ui, parameters *para)
 //Assign values for distribution plot
 void PlotData::AssignValuesDistributionPlot(Ui_MainWindow *ui, parameters* para)
 {
-    QVector<double> xDist(para->nRadius);
-    QVector<double> yDist(para->nRadius);
+    QVector<double> xDist(static_cast<int>(para->nRadius));
+    QVector<double> yDist(static_cast<int>(para->nRadius));
     double tiny = 1e-100;  //add a small number before log calculation to avoid NaN
     double margin = (1.0 + ui->slider_ConcPercentChange->value()/200.0);
 
     double totNumDen = 0.0;
-    for (int i=0; i<para->nRadius; i++)
+    for (int i=0; i<static_cast<int>(para->nRadius); i++)
     {
         xDist[i] = 2.0 * para->radArray[i];
         yDist[i] = para->numDensityArray[i]*margin;
@@ -226,7 +226,7 @@ void PlotData::PlotDistribution(Ui_MainWindow *ui, parameters *para, QVector<dou
 
     minY = 0;
     maxY = yDist[0];
-    for(int i = 0; i<para->nRadius; i++)
+    for(int i = 0; i<static_cast<int>(para->nRadius); i++)
     {
         if (maxY < yDist[i])
                maxY = yDist[i];
@@ -260,7 +260,7 @@ void PlotData::PlotDistribution(Ui_MainWindow *ui, parameters *para, QVector<dou
     if (ui->radioButton_PolyDisperse->isChecked())
     {
         double shift = (para->maxRadius - para->minRadius)/(para->nRadius);
-        if (shift ==0)      //Array of spherical scatterers with similar radius
+        if (shift == 0.0)      //Array of spherical scatterers with similar radius
         {
             minX = para->minRadius;
             maxX = 3.0 * para->maxRadius;
@@ -296,17 +296,17 @@ void PlotData::PlotDistribution(Ui_MainWindow *ui, parameters *para, QVector<dou
 //Assign values for phase function polar plot
 void PlotData::AssignValuesPhaseFunctionPolarPlot(Ui_MainWindow *ui, parameters *para)
 {
-    QVector<double> phaseFunction(2*para->nTheta-1);
-    QVector<double> theta(2*para->nTheta-1);
+    QVector<double> phaseFunction(static_cast<int>(2*para->nTheta-1));
+    QVector<double> theta(static_cast<int>(2*para->nTheta-1));
     int indexWL = ui->slider_WL_PFPolar->value();
     ui->label_CurrentWL_PFPolar->setText(QString::number(para->startWavel + indexWL*para->stepWavel));
 
     //Set minimum and maximum values
     para->maxPolarPtheta = 0;
     para->minPolarPtheta = 1e100;
-    for (int i = 0; i < para->nWavel; i++)
+    for (int i = 0; i < static_cast<int>(para->nWavel); i++)
     {
-        for (int j = 0; j < para->nTheta; j++)
+        for (int j = 0; j < static_cast<int>(para->nTheta); j++)
         {
             //Get Max value
             if (para->phaseFunctionAve[i][j]>para->maxPolarPtheta)
@@ -326,24 +326,24 @@ void PlotData::AssignValuesPhaseFunctionPolarPlot(Ui_MainWindow *ui, parameters 
     }
 
     //Assign "rho(r)" and "theta" values in polar plot
-    for (int i=0; i<para->nTheta; i++)
+    for (int i=0; i<static_cast<int>(para->nTheta); i++)
     {
         theta[i] = 180.0 * i /(para->nTheta-1);
-        theta[2*para->nTheta-2 -i] =  360.0 - (180.0 * i /(para->nTheta-1));
+        theta[static_cast<int>(2*para->nTheta)-2 -i] =  360.0 - (180.0 * i /(para->nTheta-1));
         if (ui->radioButton_PhaseAverage->isChecked())
         {
             phaseFunction[i] = para->phaseFunctionAve[indexWL][i];
-            phaseFunction[2*para->nTheta-2 -i] = para->phaseFunctionAve[indexWL][i];
+            phaseFunction[static_cast<int>(2*para->nTheta)-2 -i] = para->phaseFunctionAve[indexWL][i];
         }
         if (ui->radioButton_PhasePara->isChecked())
         {
             phaseFunction[i] = para->phaseFunctionPara[indexWL][i];
-            phaseFunction[2*para->nTheta-2 -i] = para->phaseFunctionPara[indexWL][i];
+            phaseFunction[static_cast<int>(2*para->nTheta)-2 -i] = para->phaseFunctionPara[indexWL][i];
         }
         if (ui->radioButton_PhasePerp->isChecked())
         {
             phaseFunction[i] = para->phaseFunctionPerp[indexWL][i];
-            phaseFunction[2*para->nTheta-2 -i] = para->phaseFunctionPerp[indexWL][i];
+            phaseFunction[static_cast<int>(2*para->nTheta)-2 -i] = para->phaseFunctionPerp[indexWL][i];
         }
     }
     PlotPhaseFunctionPolar(ui, para, theta, phaseFunction);
@@ -383,38 +383,38 @@ void PlotData::AssignValuesPhaseFunctionLinearPlot(Ui_MainWindow *ui, parameters
 {
     double tiny = 1e-100;  //add a small number before log calculation to avoid NaN
 
-    QVector<double> phaseFunctionPara(2*para->nTheta-1);
-    QVector<double> phaseFunctionPerp(2*para->nTheta-1);
-    QVector<double> phaseFunctionAve(2*para->nTheta-1);
-    QVector<double> theta(2*para->nTheta-1);
+    QVector<double> phaseFunctionPara(static_cast<int>(2*para->nTheta-1));
+    QVector<double> phaseFunctionPerp(static_cast<int>(2*para->nTheta-1));
+    QVector<double> phaseFunctionAve(static_cast<int>(2*para->nTheta-1));
+    QVector<double> theta(static_cast<int>(2*para->nTheta-1));
     int indexWL = ui->slider_WL_PFLinear->value();
     ui->label_CurrentWL_PFLinear->setText(QString::number(para->startWavel + indexWL*para->stepWavel));
 
     //Assign "rho(r)" and "theta" values in polar plot
-    for (int i=0; i<para->nTheta; i++)
+    for (int i=0; i<static_cast<int>(para->nTheta); i++)
     {
         theta[i] = -180 + (180.0 * i /(para->nTheta-1));
-        theta[2*para->nTheta-2 -i] =  180 - (180.0 * i /(para->nTheta-1));
+        theta[static_cast<int>(2*para->nTheta)-2 -i] =  180 - (180.0 * i /(para->nTheta-1));
 
-        phaseFunctionPara[para->nTheta-1 -i] = para->phaseFunctionPara[indexWL][i];
-        phaseFunctionPara[para->nTheta-1 +i] = para->phaseFunctionPara[indexWL][i];
+        phaseFunctionPara[static_cast<int>(para->nTheta)-1 -i] = para->phaseFunctionPara[indexWL][i];
+        phaseFunctionPara[static_cast<int>(para->nTheta)-1 +i] = para->phaseFunctionPara[indexWL][i];
 
-        phaseFunctionPerp[para->nTheta-1 -i] = para->phaseFunctionPerp[indexWL][i];
-        phaseFunctionPerp[para->nTheta-1 +i] = para->phaseFunctionPerp[indexWL][i];
+        phaseFunctionPerp[static_cast<int>(para->nTheta)-1 -i] = para->phaseFunctionPerp[indexWL][i];
+        phaseFunctionPerp[static_cast<int>(para->nTheta)-1 +i] = para->phaseFunctionPerp[indexWL][i];
 
-        phaseFunctionAve[para->nTheta-1 -i] = para->phaseFunctionAve[indexWL][i];
-        phaseFunctionAve[para->nTheta-1 +i] = para->phaseFunctionAve[indexWL][i];
+        phaseFunctionAve[static_cast<int>(para->nTheta)-1 -i] = para->phaseFunctionAve[indexWL][i];
+        phaseFunctionAve[static_cast<int>(para->nTheta)-1 +i] = para->phaseFunctionAve[indexWL][i];
 
         if (ui->radioButton_LogYAxis->isChecked())
         {
-            phaseFunctionPara[para->nTheta-1 -i] = log10(para->phaseFunctionPara[indexWL][i]+tiny);
-            phaseFunctionPara[para->nTheta-1 +i] = log10(para->phaseFunctionPara[indexWL][i]+tiny);
+            phaseFunctionPara[static_cast<int>(para->nTheta)-1 -i] = log10(para->phaseFunctionPara[indexWL][i]+tiny);
+            phaseFunctionPara[static_cast<int>(para->nTheta)-1 +i] = log10(para->phaseFunctionPara[indexWL][i]+tiny);
 
-            phaseFunctionPerp[para->nTheta-1 -i] = log10(para->phaseFunctionPerp[indexWL][i]+tiny);
-            phaseFunctionPerp[para->nTheta-1 +i] = log10(para->phaseFunctionPerp[indexWL][i]+tiny);
+            phaseFunctionPerp[static_cast<int>(para->nTheta)-1 -i] = log10(para->phaseFunctionPerp[indexWL][i]+tiny);
+            phaseFunctionPerp[static_cast<int>(para->nTheta)-1 +i] = log10(para->phaseFunctionPerp[indexWL][i]+tiny);
 
-            phaseFunctionAve[para->nTheta-1 -i] = log10(para->phaseFunctionAve[indexWL][i]+tiny);
-            phaseFunctionAve[para->nTheta-1 +i] = log10(para->phaseFunctionAve[indexWL][i]+tiny);
+            phaseFunctionAve[static_cast<int>(para->nTheta)-1 -i] = log10(para->phaseFunctionAve[indexWL][i]+tiny);
+            phaseFunctionAve[static_cast<int>(para->nTheta)-1 +i] = log10(para->phaseFunctionAve[indexWL][i]+tiny);
         }
     }
     PlotPhaseFunctionLinear(ui, theta, phaseFunctionPara, phaseFunctionPerp, phaseFunctionAve);
@@ -495,8 +495,8 @@ void PlotData::PlotPhaseFunctionLinear(Ui_MainWindow *ui, QVector<double> x, QVe
 //Assign values for S1/S2 plot
 void PlotData::AssignValuesS1S2Plot(Ui_MainWindow *ui, parameters *para)
 {
-    QVector<double> S(para->nTheta);
-    QVector<double> theta(para->nTheta);
+    QVector<double> S(static_cast<int>(para->nTheta));
+    QVector<double> theta(static_cast<int>(para->nTheta));
     std::complex<double> *tempS;
 
     int indexWL = ui->slider_WL_S1S2->value();
@@ -508,7 +508,7 @@ void PlotData::AssignValuesS1S2Plot(Ui_MainWindow *ui, parameters *para)
     if (ui->radioButton_S2->isChecked())
         tempS = para->S2[indexWL];
 
-     for (int i=0; i<para->nTheta; i++)
+     for (int i=0; i<static_cast<int>(para->nTheta); i++)
     {
         theta[i] = 180.0 * i /(para->nTheta-1);
 
@@ -565,20 +565,26 @@ void PlotData::PlotS1S2(Ui_MainWindow *ui, parameters *para, QVector<double> x, 
 //Assign values for Scattering cross section, g and Musp plots
 void PlotData::AssignValuesAllOtherPlots(Ui_MainWindow *ui, parameters* para)
 {
-    QVector<double> x(para->nWavel);
-    QVector<double> yCsca(para->nWavel), yCext(para->nWavel), yCback(para->nWavel), ySizePara(para->nWavel);
-    QVector<double> yG(para->nWavel),yMus(para->nWavel), yMusp(para->nWavel);
-    QVector<double> yF(para->nWavel), yB(para->nWavel);
+    QVector<double> x(static_cast<int>(para->nWavel));
+    QVector<double> yCsca(static_cast<int>(para->nWavel));
+    QVector<double> yCext(static_cast<int>(para->nWavel));
+    QVector<double> yCback(static_cast<int>(para->nWavel));
+    QVector<double> ySizePara(static_cast<int>(para->nWavel));
+    QVector<double> yG(static_cast<int>(para->nWavel));
+    QVector<double> yMus(static_cast<int>(para->nWavel));
+    QVector<double> yMusp(static_cast<int>(para->nWavel));
+    QVector<double> yF(static_cast<int>(para->nWavel));
+    QVector<double> yB(static_cast<int>(para->nWavel));
 
     double tiny = 1e-100;  //add a small number before log calculation to avoid NaN
     double mus;
     double margin = (1.0 + ui->slider_ConcPercentChange->value() /200.0);
 
-    int fbLegendCheckLocation = 0.75*para->nWavel;
+    int fbLegendCheckLocation = static_cast<int>(0.75*para->nWavel);
     bool fbLegnedFlag;
     double fbLimit =75;   //75%
 
-    for (int i=0; i<para->nWavel; i++)
+    for (int i=0; i<static_cast<int>(para->nWavel); i++)
     {
         mus = para->mus[i]*margin;  // set mus according to conc slider value
 
@@ -839,15 +845,16 @@ void PlotData::PlotForwardBackward(Ui_MainWindow *ui, QVector<double> x, QVector
 //Assign values for Musp power law plots
 void PlotData::AssignValuesMuspPowerLawPlots(Ui_MainWindow *ui, parameters* para)
 {
-    QVector<double> x(para->nWavel), yMusp(para->nWavel);
-    QVector<double> yFit(para->nWavel);
+    QVector<double> x(static_cast<int>(para->nWavel));
+    QVector<double> yMusp(static_cast<int>(para->nWavel));
+    QVector<double> yFit(static_cast<int>(para->nWavel));
     double tiny = 1e-100;  //add a small number before log calculation to avoid NaN
     double tempError = 0.0;
     double error;
     double mus, fitA;
     double margin = (1.0 + ui->slider_ConcPercentChange->value() /200.0);
 
-    for (int i=0; i<para->nWavel; i++)
+    for (int i=0; i<static_cast<int>(para->nWavel); i++)
     {
         mus = para->mus[i]*margin;  // set mus according to conc slider value
 

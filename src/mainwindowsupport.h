@@ -20,7 +20,7 @@ public:
     void SetWavelengthSliders(Ui_MainWindow *ui);
     void ProcessMonoDisperse(Ui_MainWindow *ui, parameters *para);
     void ProcessPolyDisperse(Ui_MainWindow *ui, parameters *para);
-    void ProcessDistribution(Ui_MainWindow *ui, parameters *para, int distIndex);
+    void ProcessDistribution(Ui_MainWindow *ui, parameters *para, unsigned int distIndex);
     void DisableEnableRealImagButtons(Ui_MainWindow *ui);
     void DisableWidgetsDuringSimulation(Ui_MainWindow *ui, bool flag);
     void DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow *ui, bool flag);

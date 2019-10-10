@@ -33,7 +33,7 @@ double utilities::ComplexAbs(std::complex<double> a)
 }
 
 //Simpson's 1/3 rule
-double utilities::SimpsonsWeight (int i, int n)
+double utilities::SimpsonsWeight (unsigned int i, unsigned int n)
 {
     double weight = 1.0;
     if ((i!=0) && (i!=n-1))

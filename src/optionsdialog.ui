@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>244</width>
+    <width>282</width>
     <height>138</height>
    </rect>
   </property>
@@ -39,27 +39,12 @@
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>201</width>
+     <width>241</width>
      <height>112</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="2" colspan="2">
-     <widget class="QPushButton" name="pushButton_S1">
-      <property name="font">
-       <font>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>S1</string>
-      </property>
-      <property name="autoDefault">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2" colspan="2">
+    <item row="1" column="3" colspan="2">
      <widget class="QPushButton" name="pushButton_S2">
       <property name="font">
        <font>
@@ -74,22 +59,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="QPushButton" name="pushButton_PhaseFunction">
-      <property name="font">
-       <font>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Phase Function</string>
-      </property>
-      <property name="autoDefault">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1" colspan="2">
+    <item row="2" column="1" colspan="3">
      <widget class="QPushButton" name="pushButton_Cancel">
       <property name="font">
        <font>
@@ -105,7 +75,22 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0" colspan="2">
+    <item row="0" column="3" colspan="2">
+     <widget class="QPushButton" name="pushButton_S1">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>S1</string>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="3">
      <widget class="QPushButton" name="pushButton_ScatPara">
       <property name="font">
        <font>
@@ -115,6 +100,21 @@
       </property>
       <property name="text">
        <string>Scattering Parameters</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="3">
+     <widget class="QPushButton" name="pushButton_PhaseFunction">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Phase Function</string>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
       </property>
      </widget>
     </item>

@@ -14,7 +14,7 @@ public:
     void Delay();
     double ComplexAbs(std::complex<double> a);
     double ComplexAbsSquared(std::complex<double> a);
-    double SimpsonsWeight (int i, int n);
+    double SimpsonsWeight (unsigned int i, unsigned int n);
 };
 
 #endif // UTILITIES_H

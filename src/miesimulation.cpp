@@ -39,15 +39,15 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
     double m = relRef;
     double mx = m*x;
     double xstop = x+4.05*(pow(x,(1.0/3.0)))+2.0;
-    int nstop = ceil(xstop);
-    int ymod = ceil(fabs(mx));
-    int nmx = max(xstop,ymod)+15;
-    int arraySize = nstop+1;
+    unsigned int nstop = static_cast<unsigned int>(ceil(xstop));
+    unsigned int ymod = static_cast<unsigned int>(ceil(fabs(mx)));
+    unsigned int nmx = static_cast<unsigned int>(max(xstop,ymod)+15);
+    unsigned int arraySize = nstop+1;
     double x2 = x*x;
 
     double *Dn_mx = new double [nmx];
     Dn_mx[nmx-1]=0;
-    for (int N = nmx-1; N>0; N--)
+    for (unsigned int N = nmx-1; N>0; N--)
         Dn_mx[N-1] = (double(N)/mx)-(1.0/(Dn_mx[N]+double(N)/mx));
 
     // Legendre Polynomials
@@ -76,8 +76,8 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
 
     double *piCost = new double [arraySize];
     double *tauCost = new double [arraySize];
-    int n=1;
-    while ((n-1-nstop) < 0)
+    unsigned int n=1;
+    while (static_cast<int>(n-1-nstop) < 0)
     {
         double fac0 = double(n);		// n
         double fac1 = fac0+1.0;         // n+1
@@ -153,15 +153,15 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
     std::complex<double> m = cRelRef;
     std::complex<double> mx = m*x;
     double xstop = x+4.05*(pow(x,(1.0/3.0)))+2.0;
-    int nstop = ceil(xstop);
-    int ymod = ceil(util.ComplexAbs(mx));
-    int nmx = max(xstop,ymod)+15;
-    int arraySize = nstop+1;
+    unsigned int nstop = static_cast<unsigned int>(ceil(xstop));
+    unsigned int ymod = static_cast<unsigned int>(ceil(util.ComplexAbs(mx)));
+    unsigned int nmx = static_cast<unsigned int>(max(xstop,ymod)+15);
+    unsigned int arraySize = nstop+1;
     double x2 = x*x;
 
     std::complex<double> *Dn_mx = new std::complex<double> [nmx];
     Dn_mx[nmx-1] = 0;
-    for (int N = nmx-1; N>0; N--)
+    for (unsigned int N = nmx-1; N>0; N--)
         Dn_mx[N-1] = (double(N)/mx)-(1.0/(Dn_mx[N]+double(N)/mx));
 
     // Legendre Polynomials
@@ -189,8 +189,8 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
 
     double *piCost = new double [arraySize];
     double *tauCost = new double [arraySize];
-    int n=1;
-    while ((n-1-nstop) < 0)
+    unsigned int n=1;
+    while (static_cast<int>(n-1-nstop) < 0)
     {
         double fac0 = double(n);		// n
         double fac1 = fac0+1.0;		// n+1

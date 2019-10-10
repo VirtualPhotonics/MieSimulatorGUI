@@ -22,7 +22,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
     double piRadiusSquared;
     double refRelRe = 1.0;
     double refRelIm = 0.0;
-    double xPara;
+    double xPara = 0.0;
 
     std::complex<double> *curS1 = new std::complex<double> [para->nTheta];
     std::complex<double> *curS2 = new std::complex<double> [para->nTheta];
@@ -33,12 +33,12 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
     double *sumPhaseFuncPerp = new double [para->nTheta];
 
     double sumNumDen = 0.0;
-    for (int r = 0; r < para->nRadius; r++)
+    for (unsigned int r = 0; r < para->nRadius; r++)
         sumNumDen += para->numDensityArray[r];
 
     //Calculate all Mie parameters
     utilities util;
-    for (int w = 0; w < para->nWavel; w++)
+    for (unsigned int w = 0; w < para->nWavel; w++)
     {
         wavel = para->wavelArray[w]/1000;   //in microns
         ui->label_Progress->setText("<font color=\"red\">WL: <font>"+QString::number(1000*wavel)+"nm</font>");
@@ -51,7 +51,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
         sumCsca = 0.0;
         sumCext = 0.0;
         sumCback = 0.0;
-        for (int t = 0; t < para->nTheta; t++)
+        for (unsigned int t = 0; t < para->nTheta; t++)
         {
             sumS1[t] = std::complex<double>(0.0,0.0);
             sumS2[t] = std::complex<double>(0.0,0.0);
@@ -59,7 +59,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
             sumPhaseFuncPara[t] = 0.0;
             sumPhaseFuncPerp[t] = 0.0;
         }
-        for (int r = 0; r < para->nRadius; r++)
+        for (unsigned int r = 0; r < para->nRadius; r++)
         {
             xPara = k * para->radArray[r];            
             piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
@@ -69,7 +69,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
 
             if (refRelIm == 0.0)  //FarFieldSolutionForRealRefIndex is ~2x faster than FarFieldSolutionForComplexRefIndex
             {
-                for (int t = 0; t < para->nTheta; t++)
+                for (unsigned int t = 0; t < para->nTheta; t++)
                 {
                     mu = cos(para->minTheta + t * para->stepTheta);
                     sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara, refRelRe, mu);
@@ -79,7 +79,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
             }
             else
             {
-                for (int t = 0; t < para->nTheta; t++)
+                for (unsigned int t = 0; t < para->nTheta; t++)
                 {
                     mu = cos(para->minTheta + t * para->stepTheta);
                     sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara,
@@ -105,7 +105,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
 
             //S1 and S2
             double factor = 1.0 / (M_PI * xPara * xPara * qSca);   // 1/(pi *X^2 * qSca);
-            for (int t = 0; t < para->nTheta; t++)
+            for (unsigned int t = 0; t < para->nTheta; t++)
             {
                 sumS1[t] += curS1[t] * curMus;
                 sumS2[t] += curS2[t] * curMus;
@@ -129,7 +129,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
         para->g[w] = sumMusG /sumMus;
         para->forward[w] = sumForward*100.0/(sumForward+sumBackward);    //Not necessary to divide by sumMus in ratio calculation
         para->backward[w] = sumBackward*100.0/(sumForward+sumBackward);  //Not necessary to divide by sumMus in ratio calculation
-        for (int t = 0; t < para->nTheta; t++)
+        for (unsigned int t = 0; t < para->nTheta; t++)
         {
             para->S1[w][t] = sumS1[t] /sumMus;
             para->S2[w][t] = sumS2[t] /sumMus;
@@ -143,7 +143,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
     k = 2 * M_PI * para->medRef /1.0;    //k at 1000nm
     sumMus = 0.0;
     sumMusG = 0.0;
-    for (int r = 0; r < para->nRadius; r++)
+    for (unsigned int r = 0; r < para->nRadius; r++)
     {
         xPara = k * para->radArray[r];
         piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
@@ -153,7 +153,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
 
         if (refRelIm == 0.0)  //FarFieldSolutionForRealRefIndex is ~2x faster than FarFieldSolutionForComplexRefIndex
         {
-            for (int t = 0; t < para->nTheta; t++)
+            for (unsigned int t = 0; t < para->nTheta; t++)
             {
                 mu = cos(para->minTheta + t * para->stepTheta);
                 sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara, refRelRe, mu);
@@ -163,7 +163,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para,
         }
         else
         {
-            for (int t = 0; t < para->nTheta; t++)
+            for (unsigned int t = 0; t < para->nTheta; t++)
             {
                 mu = cos(para->minTheta + t * para->stepTheta);
                 sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara,
@@ -196,7 +196,7 @@ void calculate::CalculatePowerLawAutoFit(parameters *para)
     double bMie, fRay, yFit;
     double error, sumError;
     double minError = 1e100;
-    double curB, curF;
+    double curB = 0.0, curF = 0.0;
     double x, y;
 
     for (int i=0; i<=100; i++)
@@ -206,7 +206,7 @@ void calculate::CalculatePowerLawAutoFit(parameters *para)
        {
            bMie = j*0.01;   //Range: [0, 4]
            sumError = 0.0;
-           for (int k=0; k<para->nWavel; k++)
+           for (unsigned int k=0; k<para->nWavel; k++)
            {
                //Steve L Jacques,"Optical properties of biological tissues: a review" Phys. Med & Bio. 58(2013) R37-R61.
                //wavelength λ is normalized by a reference wavelength, 1000 nm
@@ -236,15 +236,18 @@ void calculate::CalculatePowerLawAutoFit(parameters *para)
 }
 
 //Calculate forward
-double calculate::CalculateForwardBackward(std::complex<double> *S1, std::complex<double> *S2,
-                                           parameters *para, int start, int end)
+double calculate::CalculateForwardBackward(std::complex<double> *S1,
+                                           std::complex<double> *S2,
+                                           parameters *para,
+                                           unsigned int start,
+                                           unsigned int end)
 {
     double S;
     double theta, twoPiSinTheta;
     double sum = 0.0;
 
     utilities util;
-    for (int i = start; i <end; i++)
+    for (unsigned int i = start; i <end; i++)
     {
         S = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i]))/2.0;
         theta = para->minTheta + i * para->stepTheta;
@@ -263,7 +266,7 @@ double calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
     double den = 0.0;
 
     utilities util;
-    for (int i = 0; i < para->nTheta; i++)
+    for (unsigned int i = 0; i < para->nTheta; i++)
     {
         S = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i]))/2.0;
         theta = para->minTheta + i * para->stepTheta;
@@ -275,7 +278,7 @@ double calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
 }
 
 //Set sphere parameters
-void calculate::SetSphereRadiusAndRefIndex(parameters *para, int index, bool flagVolOrConc)
+void calculate::SetSphereRadiusAndRefIndex(parameters *para, unsigned int index, bool flagVolOrConc)
 {
     double temp, factor;
     double totalSphereVolume = 0.0;
@@ -293,14 +296,14 @@ void calculate::SetSphereRadiusAndRefIndex(parameters *para, int index, bool fla
     else                    //Poly Disperse
     {
         funcArray = new double[para->nRadius];
-		for (int i = 0; i < para->nRadius; i++)
+        for (unsigned int i = 0; i < para->nRadius; i++)
 			funcArray[i] = 1.0;
         stepR = (para->maxRadius - para->minRadius)/(para->nRadius -1);
 
         switch (index)
         {
         case 0:     //Apply log normal distribution
-            for (int i=0; i<para->nRadius; i++)
+            for (unsigned int i=0; i<para->nRadius; i++)
             {
                 para->radArray[i] = para->minRadius + i*stepR;
                 temp = log(para->radArray[i])-log(para->meanRadius);
@@ -312,7 +315,7 @@ void calculate::SetSphereRadiusAndRefIndex(parameters *para, int index, bool fla
             }
             break;
         case 1:     //Apply Gaussian distribution
-            for (int i=0; i<para->nRadius; i++)
+            for (unsigned int i=0; i<para->nRadius; i++)
             {
                 para->radArray[i] = para->minRadius + i*stepR;
                 temp = para->radArray[i]-para->meanRadius;
@@ -330,7 +333,7 @@ void calculate::SetSphereRadiusAndRefIndex(parameters *para, int index, bool fla
         else
             factor = para->sphNumDensity/totalFuncSum;
 
-        for (int i=0; i<para->nRadius; i++)
+        for (unsigned int i=0; i<para->nRadius; i++)
         {
             para->numDensityArray[i] = funcArray[i]*factor;
             para->scatRefRealArray[i] = para->scatRefReal;
@@ -342,11 +345,11 @@ void calculate::SetSphereRadiusAndRefIndex(parameters *para, int index, bool fla
 
 //Selction of discrete sphere sizes for poly disperse distribution
 //This process is used to obtain the best distribution for assigned mean diameter
-void calculate::DiameterRangeSetting(parameters *para, int index)
+void calculate::DiameterRangeSetting(parameters *para, unsigned int index)
 {
     double curR, dR;
-    double cutoffPercent;
-    double mu, sigma;
+    double cutoffPercent = 0.0;
+    double mu, sigma = 0.0;
     double modeR;
     double curY, maxY, minY;
     int i;

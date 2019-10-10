@@ -15,6 +15,24 @@ CONFIG -= -qt-freetype
 TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
 
+unix {
+    isEmpty(PREFIX) {
+        PREFIX = /usr
+    }
+
+    target.path = $$PREFIX/bin
+
+    shortcutfiles.files = misc/MieSimulatorGUI.desktop
+    shortcutfiles.path = $$PREFIX/share/applications/
+    data.files += misc/MieSimulatorGUI.png
+    data.path = $$PREFIX/share/icons/hicolor/256x256/
+
+    INSTALLS += shortcutfiles
+    INSTALLS += data
+}
+
+INSTALLS += target
+
 RESOURCES += \
     MieRes.qrc
 
@@ -26,7 +44,9 @@ FORMS += \
 DISTFILES += \
     icon/Banner.png \
     icon/vpIcon.png \
-    vpIcon.rc
+    vpIcon.rc \
+    misc/MieSimulatorGUI.desktop \
+    misc/MieSimulatorGUI.png
 
 HEADERS += \
     qwt/qtconcurrentrun.h \
