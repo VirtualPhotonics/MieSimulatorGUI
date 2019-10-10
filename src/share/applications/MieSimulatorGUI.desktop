@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=MieSimulatorGUI
+Comment=MieSimulatorGUI - Virtual Photonics Technology Initiative - Beckman Laser Institute, University of California, Irvine
+Exec=MieSimulatorGUI
+Icon=MieSimulatorGUI
+Categories=Science;
