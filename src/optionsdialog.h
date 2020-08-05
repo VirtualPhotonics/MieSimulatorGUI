@@ -22,17 +22,17 @@ public:
     void SaveData(Ui_MainWindow *ui, parameters *para);
 
 private slots:
-    void on_pushButton_ScatPara_clicked();
-    void on_pushButton_PhaseFunction_clicked();
-    void on_pushButton_S1_clicked();
-    void on_pushButton_S2_clicked();
-    void on_pushButton_Cancel_clicked();
+    void on_pushButton_scatPara_clicked();
+    void on_pushButton_phaseFunction_clicked();
+    void on_pushButton_s1_clicked();
+    void on_pushButton_s2_clicked();
+    void on_pushButton_cancel_clicked();
 
 private:
-    bool flagScatPara;
-    bool flagPhaseFunction;
-    bool flagS1;
-    bool flagS2;
+    bool _flagScatPara;
+    bool _flagPhaseFunction;
+    bool _flagS1;
+    bool _flagS2;
     Ui::OptionsDialog *ui;
 
     void SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fileName, double margin);

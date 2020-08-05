@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Mie Simulator v1.2: Virtual Photonics Technology Initiative - Beckman Laser Institute, University of California Irvine  </string>
+   <string>Mie Simulator v1.3: Virtual Photonics Technology Initiative - Beckman Laser Institute, University of California Irvine  </string>
   </property>
   <property name="windowIcon">
    <iconset resource="MieRes.qrc">
@@ -31,10 +31,418 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="2">
+     <widget class="QTabWidget" name="tabWidget_reducedScat">
+      <property name="font">
+       <font>
+        <family>Liberation Sans</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <property name="movable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="tab_reducedScat">
+       <attribute name="title">
+        <string>Reduced Scattering Coefficient (μs')</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_10">
+        <item row="0" column="0">
+         <widget class="QCustomPlot" name="customPlot_musp" native="true">
+          <layout class="QGridLayout" name="gridLayout_17"/>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_powerLaw">
+       <attribute name="title">
+        <string>μs' Power Law Fitting</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <property name="leftMargin">
+         <number>7</number>
+        </property>
+        <property name="topMargin">
+         <number>7</number>
+        </property>
+        <property name="rightMargin">
+         <number>7</number>
+        </property>
+        <property name="bottomMargin">
+         <number>7</number>
+        </property>
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <item row="7" column="1">
+         <widget class="QLabel" name="label_fLabel">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#005500;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#005500; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1">
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_powerLaw_f">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>43</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="2">
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_powerLaw_b">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>43</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>4.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="value">
+           <double>4.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2" rowspan="7">
+         <widget class="QwtSlider" name="qwtslider_powerLaw_b" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="lowerBound" stdset="0">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="upperBound" stdset="0">
+           <double>4.000000000000000</double>
+          </property>
+          <property name="value" stdset="0">
+           <double>4.000000000000000</double>
+          </property>
+          <property name="totalSteps" stdset="0">
+           <UInt>400</UInt>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1" colspan="2">
+         <widget class="QPushButton" name="pushButton_bestFit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Best-Fit</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="10">
+         <widget class="QCustomPlot" name="customPlot_muspPowerLaw" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="0" colspan="3">
+         <layout class="QGridLayout" name="gridLayout_powerLaw">
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="label_currentA">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>80</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" rowspan="2" colspan="4">
+           <widget class="QGroupBox" name="groupBox_fittingFunction">
+            <property name="title">
+             <string>Fitting Function</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>4</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="label_fittingComplex">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;[&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#005500;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#005500; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;(λ/λref)&lt;/span&gt;&lt;span style=&quot; font-size:11pt; color:#000000; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;span style=&quot; font-size:11pt; color:#000000;&quot;&gt;⁴&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;1-&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#005500;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#005500; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;)&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;(λ/λref)&lt;/span&gt;&lt;span style=&quot; font-size:11pt; color:#000000; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#aa0000;&quot;&gt;ᵇ&lt;/span&gt;&lt;span style=&quot; font-size:9pt; color:#aa0000;&quot;&gt;ᴹᶥᵉ&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;] &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+               </property>
+               <property name="indent">
+                <number>-1</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_gB_fittingFunction_1">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>4</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_gB_fittingFunction_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>4</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="2" colspan="2">
+           <widget class="QLabel" name="label_currentMse">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>90</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="1" rowspan="7">
+         <widget class="QwtSlider" name="qwtslider_powerLaw_f" native="true">
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="upperBound" stdset="0">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="totalSteps" stdset="0">
+           <UInt>100</UInt>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="2">
+         <widget class="QLabel" name="label_bLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>10</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#aa0000;&quot;&gt;b&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#aa0000; vertical-align:sub;&quot;&gt;Mie&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QTabWidget" name="tabWidget_ns">
+      <property name="font">
+       <font>
+        <family>Liberation Sans</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab_distribution">
+       <attribute name="title">
+        <string>Concentration (Number Density: Ns)</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="0" colspan="6">
+         <widget class="QCustomPlot" name="customPlot_distribution" native="true">
+          <widget class="QLabel" name="label_currentTotNumDen">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>-10</y>
+             <width>181</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <spacer name="horizontalSpacer_tab_distribution_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="3">
+         <widget class="QRadioButton" name="radioButton_linearXaxis">
+          <property name="text">
+           <string>Linear</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
+         <widget class="QRadioButton" name="radioButton_logXaxis">
+          <property name="text">
+           <string>Log</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="5">
+         <spacer name="horizontalSpacer_tab_distribution_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>30</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="label_distXAxis">
+          <property name="text">
+           <string>X-Axis Scale</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <spacer name="horizontalSpacer_tab_distribution_1">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_sizePara">
+       <attribute name="title">
+        <string>Size Parameter</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_21">
+        <item row="0" column="0">
+         <widget class="QCustomPlot" name="customPlot_sizePara" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_input">
       <item row="8" column="0">
-       <widget class="QPushButton" name="pushButton_RunSimulation">
+       <widget class="QPushButton" name="pushButton_runSimulation">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -59,7 +467,7 @@
        </widget>
       </item>
       <item row="8" column="4">
-       <widget class="QPushButton" name="pushButton_Close">
+       <widget class="QPushButton" name="pushButton_close">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -84,7 +492,7 @@
        </widget>
       </item>
       <item row="7" column="3" colspan="2">
-       <widget class="QGroupBox" name="groupBox_Status">
+       <widget class="QGroupBox" name="groupBox_status">
         <property name="font">
          <font>
           <family>Liberation Sans</family>
@@ -108,7 +516,7 @@
           <number>2</number>
          </property>
          <item>
-          <widget class="QLabel" name="label_Progress">
+          <widget class="QLabel" name="label_progress">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
              <horstretch>0</horstretch>
@@ -133,7 +541,7 @@
        </widget>
       </item>
       <item row="5" column="3" rowspan="2" colspan="2">
-       <widget class="QGroupBox" name="groupBox_Plot">
+       <widget class="QGroupBox" name="groupBox_plot">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -169,7 +577,7 @@
           <number>3</number>
          </property>
          <item row="0" column="0">
-          <widget class="QRadioButton" name="radioButton_LinearYAxis">
+          <widget class="QRadioButton" name="radioButton_linearYaxis">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -185,7 +593,7 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QRadioButton" name="radioButton_LogYAxis">
+          <widget class="QRadioButton" name="radioButton_logYaxis">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -201,7 +609,7 @@
        </widget>
       </item>
       <item row="8" column="2">
-       <widget class="QPushButton" name="pushButton_DisplayData">
+       <widget class="QPushButton" name="pushButton_displayData">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -226,7 +634,7 @@
        </widget>
       </item>
       <item row="1" column="3" rowspan="2" colspan="2">
-       <widget class="QGroupBox" name="groupBox_Refractive">
+       <widget class="QGroupBox" name="groupBox_refractive">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -262,7 +670,7 @@
           <number>3</number>
          </property>
          <item row="1" column="0" colspan="2">
-          <widget class="QLabel" name="label_ScatRefImag">
+          <widget class="QLabel" name="label_scatRefImag">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -277,12 +685,12 @@
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="buddy">
-            <cstring>lineEdit_ScatRefImag</cstring>
+            <cstring>lineEdit_scatRefImag</cstring>
            </property>
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QLabel" name="label_ScatRefReal">
+          <widget class="QLabel" name="label_scatRefReal">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -298,12 +706,12 @@
             <string>Sphere </string>
            </property>
            <property name="buddy">
-            <cstring>lineEdit_ScatRefReal</cstring>
+            <cstring>lineEdit_scatRefReal</cstring>
            </property>
           </widget>
          </item>
          <item row="1" column="2">
-          <widget class="QLineEdit" name="lineEdit_ScatRefImag">
+          <widget class="QLineEdit" name="lineEdit_scatRefImag">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -328,7 +736,7 @@
           </widget>
          </item>
          <item row="0" column="2">
-          <widget class="QLineEdit" name="lineEdit_ScatRefReal">
+          <widget class="QLineEdit" name="lineEdit_scatRefReal">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -353,7 +761,7 @@
           </widget>
          </item>
          <item row="2" column="2">
-          <widget class="QLineEdit" name="lineEdit_MedRef">
+          <widget class="QLineEdit" name="lineEdit_medRef">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -378,7 +786,7 @@
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="label_MedRef">
+          <widget class="QLabel" name="label_medRef">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -400,7 +808,7 @@
             <string>Medium</string>
            </property>
            <property name="buddy">
-            <cstring>lineEdit_MedRef</cstring>
+            <cstring>lineEdit_medRef</cstring>
            </property>
           </widget>
          </item>
@@ -408,7 +816,7 @@
        </widget>
       </item>
       <item row="8" column="3">
-       <widget class="QPushButton" name="pushButton_SaveData">
+       <widget class="QPushButton" name="pushButton_saveData">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -433,7 +841,7 @@
        </widget>
       </item>
       <item row="5" column="0" rowspan="3" colspan="3">
-       <widget class="QGroupBox" name="groupBox_Conc">
+       <widget class="QGroupBox" name="groupBox_conc">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -463,7 +871,7 @@
           <number>2</number>
          </property>
          <item row="1" column="5" colspan="2">
-          <widget class="QLineEdit" name="lineEdit_VolFrac">
+          <widget class="QLineEdit" name="lineEdit_volFrac">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -488,7 +896,7 @@
           </widget>
          </item>
          <item row="0" column="5" colspan="2">
-          <widget class="QLineEdit" name="lineEdit_Conc_mm3">
+          <widget class="QLineEdit" name="lineEdit_conc_mm3">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -513,7 +921,7 @@
           </widget>
          </item>
          <item row="2" column="2" colspan="4">
-          <widget class="QSlider" name="slider_ConcPercentChange">
+          <widget class="QSlider" name="slider_concPercentChange">
            <property name="minimum">
             <number>-10</number>
            </property>
@@ -538,7 +946,7 @@
           </widget>
          </item>
          <item row="1" column="0" colspan="4">
-          <widget class="QRadioButton" name="radioButton_VolFrac">
+          <widget class="QRadioButton" name="radioButton_volFrac">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -555,12 +963,12 @@
             <string>Vol Frac (sph vol/1mm³) </string>
            </property>
            <attribute name="buttonGroup">
-            <string notr="true">buttonGroup_ConcVolFrac</string>
+            <string notr="true">buttonGroup_concVolFrac</string>
            </attribute>
           </widget>
          </item>
          <item row="2" column="6">
-          <widget class="QLabel" name="label_ActualConcPercent">
+          <widget class="QLabel" name="label_actualConcPercent">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -582,7 +990,7 @@
           </widget>
          </item>
          <item row="0" column="0" colspan="4">
-          <widget class="QRadioButton" name="radioButton_Conc_mm3">
+          <widget class="QRadioButton" name="radioButton_conc_mm3">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -602,12 +1010,12 @@
             <bool>true</bool>
            </property>
            <attribute name="buttonGroup">
-            <string notr="true">buttonGroup_ConcVolFrac</string>
+            <string notr="true">buttonGroup_concVolFrac</string>
            </attribute>
           </widget>
          </item>
          <item row="2" column="0" colspan="2">
-          <widget class="QLabel" name="label_ConcPercent">
+          <widget class="QLabel" name="label_concPercent">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -623,7 +1031,7 @@
           </widget>
          </item>
          <item row="1" column="4">
-          <spacer name="horizontalSpacer1">
+          <spacer name="horizontalSpacer_gB_conc_1">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -636,7 +1044,7 @@
           </spacer>
          </item>
          <item row="0" column="4">
-          <spacer name="horizontalSpacer2">
+          <spacer name="horizontalSpacer_gB_conc_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -652,7 +1060,7 @@
        </widget>
       </item>
       <item row="3" column="3" rowspan="2" colspan="2">
-       <widget class="QGroupBox" name="groupBox_WL">
+       <widget class="QGroupBox" name="groupBox_wavel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -688,7 +1096,7 @@
           <number>3</number>
          </property>
          <item row="2" column="2">
-          <widget class="QLineEdit" name="lineEdit_StepWL">
+          <widget class="QLineEdit" name="lineEdit_stepWavel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -713,7 +1121,7 @@
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QLabel" name="label_StartWL">
+          <widget class="QLabel" name="label_startWavel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -732,12 +1140,12 @@
             <bool>true</bool>
            </property>
            <property name="buddy">
-            <cstring>lineEdit_StartWL</cstring>
+            <cstring>lineEdit_startWavel</cstring>
            </property>
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label_EndWL">
+          <widget class="QLabel" name="label_endWavel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -753,12 +1161,12 @@
             <string>End</string>
            </property>
            <property name="buddy">
-            <cstring>lineEdit_EndWL</cstring>
+            <cstring>lineEdit_endWavel</cstring>
            </property>
           </widget>
          </item>
          <item row="0" column="2">
-          <widget class="QLineEdit" name="lineEdit_StartWL">
+          <widget class="QLineEdit" name="lineEdit_startWavel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -783,7 +1191,7 @@
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="label_StepWL">
+          <widget class="QLabel" name="label_stepWavel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -799,12 +1207,12 @@
             <string>Step</string>
            </property>
            <property name="buddy">
-            <cstring>lineEdit_StepWL</cstring>
+            <cstring>lineEdit_stepWavel</cstring>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <spacer name="horizontalSpacer10">
+          <spacer name="horizontalSpacer_gB_wavel_1">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -820,7 +1228,7 @@
           </spacer>
          </item>
          <item row="1" column="1">
-          <spacer name="horizontalSpacer11">
+          <spacer name="horizontalSpacer_gB_wavel_3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -836,7 +1244,7 @@
           </spacer>
          </item>
          <item row="2" column="1">
-          <spacer name="horizontalSpacer9">
+          <spacer name="horizontalSpacer_gB_wavel_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -852,7 +1260,7 @@
           </spacer>
          </item>
          <item row="1" column="2">
-          <widget class="QLineEdit" name="lineEdit_EndWL">
+          <widget class="QLineEdit" name="lineEdit_endWavel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -880,7 +1288,7 @@
        </widget>
       </item>
       <item row="1" column="0" rowspan="4" colspan="3">
-       <widget class="QGroupBox" name="groupBox_SphereData">
+       <widget class="QGroupBox" name="groupBox_sphereData">
         <property name="font">
          <font>
           <family>Arial</family>
@@ -904,7 +1312,7 @@
           <number>3</number>
          </property>
          <item row="2" column="0">
-          <widget class="QRadioButton" name="radioButton_PolyDisperse">
+          <widget class="QRadioButton" name="radioButton_polyDisperse">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -929,12 +1337,12 @@
             <string>Poly Disperse</string>
            </property>
            <attribute name="buttonGroup">
-            <string notr="true">buttonGroup_MonoPoly</string>
+            <string notr="true">buttonGroup_monoPoly</string>
            </attribute>
           </widget>
          </item>
          <item row="5" column="6">
-          <widget class="QLineEdit" name="lineEdit_NSphere">
+          <widget class="QLineEdit" name="lineEdit_nSphere">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -959,7 +1367,7 @@
           </widget>
          </item>
          <item row="0" column="0" colspan="5">
-          <widget class="QRadioButton" name="radioButton_MonoDisperse">
+          <widget class="QRadioButton" name="radioButton_monoDisperse">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -975,12 +1383,12 @@
             <bool>true</bool>
            </property>
            <attribute name="buttonGroup">
-            <string notr="true">buttonGroup_MonoPoly</string>
+            <string notr="true">buttonGroup_monoPoly</string>
            </attribute>
           </widget>
          </item>
          <item row="4" column="6">
-          <widget class="QLineEdit" name="lineEdit_StdDev">
+          <widget class="QLineEdit" name="lineEdit_stdDev">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1005,7 +1413,7 @@
           </widget>
          </item>
          <item row="3" column="0" colspan="4">
-          <widget class="QLabel" name="label_MeanDiameter">
+          <widget class="QLabel" name="label_meanDiameter">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -1018,12 +1426,12 @@
             <string> Mean Diameter (in μm)</string>
            </property>
            <property name="buddy">
-            <cstring>lineEdit_MeanDiameter</cstring>
+            <cstring>lineEdit_meanDiameter</cstring>
            </property>
           </widget>
          </item>
          <item row="3" column="6">
-          <widget class="QLineEdit" name="lineEdit_MeanDiameter">
+          <widget class="QLineEdit" name="lineEdit_meanDiameter">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1048,7 +1456,7 @@
           </widget>
          </item>
          <item row="1" column="6">
-          <widget class="QLineEdit" name="lineEdit_Diameter">
+          <widget class="QLineEdit" name="lineEdit_diameter">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1073,7 +1481,7 @@
           </widget>
          </item>
          <item row="5" column="0" colspan="4">
-          <widget class="QLabel" name="label_NSphere">
+          <widget class="QLabel" name="label_nSphere">
            <property name="minimumSize">
             <size>
              <width>125</width>
@@ -1090,12 +1498,12 @@
             <string>Num. sph. sizes (2-101)</string>
            </property>
            <property name="buddy">
-            <cstring>lineEdit_NSphere</cstring>
+            <cstring>lineEdit_nSphere</cstring>
            </property>
           </widget>
          </item>
          <item row="4" column="0" colspan="4">
-          <widget class="QLabel" name="label_StdDev">
+          <widget class="QLabel" name="label_stdDev">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -1108,12 +1516,12 @@
             <string> Std. Deviation (in μm)</string>
            </property>
            <property name="buddy">
-            <cstring>lineEdit_StdDev</cstring>
+            <cstring>lineEdit_stdDev</cstring>
            </property>
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label_Diameter">
+          <widget class="QLabel" name="label_diameter">
            <property name="minimumSize">
             <size>
              <width>90</width>
@@ -1132,12 +1540,12 @@
             <string> Diameter (in μm)</string>
            </property>
            <property name="buddy">
-            <cstring>lineEdit_Diameter</cstring>
+            <cstring>lineEdit_diameter</cstring>
            </property>
           </widget>
          </item>
          <item row="4" column="4" colspan="2">
-          <spacer name="horizontalSpacer7">
+          <spacer name="horizontalSpacer_gB_sphereData_5">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -1150,7 +1558,7 @@
           </spacer>
          </item>
          <item row="2" column="1" colspan="6">
-          <widget class="QComboBox" name="comboBox_Distribution">
+          <widget class="QComboBox" name="comboBox_distribution">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1175,7 +1583,7 @@
           </widget>
          </item>
          <item row="5" column="4" colspan="2">
-          <spacer name="horizontalSpacer8">
+          <spacer name="horizontalSpacer_gB_sphereData_6">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -1196,7 +1604,7 @@
             <number>0</number>
            </property>
            <item>
-            <spacer name="horizontalSpacer3">
+            <spacer name="horizontalSpacer_gB_sphereData_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -1209,7 +1617,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_ShowDistributionAndCustom">
+            <widget class="QPushButton" name="pushButton_showDistributionAndCustom">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -1234,7 +1642,7 @@
             </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer4">
+            <spacer name="horizontalSpacer_gB_sphereData_1">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -1249,7 +1657,7 @@
           </layout>
          </item>
          <item row="1" column="1" colspan="5">
-          <spacer name="horizontalSpacer5">
+          <spacer name="horizontalSpacer_gB_sphereData_3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -1262,7 +1670,7 @@
           </spacer>
          </item>
          <item row="3" column="4" colspan="2">
-          <spacer name="horizontalSpacer6">
+          <spacer name="horizontalSpacer_gB_sphereData_4">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -1279,13 +1687,28 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="2">
-     <widget class="QTabWidget" name="tabWidget_ReducedScat">
+    <item row="1" column="1">
+     <widget class="QTabWidget" name="tabWidget_pFunction">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>10</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="font">
        <font>
         <family>Liberation Sans</family>
         <pointsize>8</pointsize>
        </font>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
        <number>1</number>
@@ -1293,86 +1716,24 @@
       <property name="movable">
        <bool>true</bool>
       </property>
-      <widget class="QWidget" name="tab_ReducedScat">
+      <widget class="QWidget" name="tab_s1s2">
        <attribute name="title">
-        <string>Reduced Scattering Coefficient (μs')</string>
+        <string>S1/S2</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_10">
-        <item row="0" column="0">
-         <widget class="QCustomPlot" name="customPlot_Musp" native="true">
-          <layout class="QGridLayout" name="gridLayout_17"/>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_PowerLaw">
-       <attribute name="title">
-        <string>μs' Power Law Fitting</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_6">
-        <property name="leftMargin">
-         <number>7</number>
-        </property>
-        <property name="topMargin">
-         <number>7</number>
-        </property>
-        <property name="rightMargin">
-         <number>7</number>
-        </property>
-        <property name="bottomMargin">
-         <number>7</number>
-        </property>
-        <property name="spacing">
-         <number>5</number>
-        </property>
-        <item row="10" column="0" colspan="3">
-         <layout class="QGridLayout" name="gridLayout_13">
-          <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="label_FF">
+       <layout class="QGridLayout" name="gridLayout_14">
+        <item row="5" column="4">
+         <layout class="QGridLayout" name="gridLayout_s1s2">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_s1s2_curWavel">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#808080;&quot;&gt;Fitting Function:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <spacer name="horizontalSpacer15">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>1</width>
-              <height>10</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="2" colspan="3">
-           <widget class="QLabel" name="label_CurrentMSE">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>90</width>
+              <width>10</width>
               <height>0</height>
              </size>
             </property>
@@ -1384,33 +1745,478 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="3">
-           <widget class="QLabel" name="label_Fitting">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_s1s2_nm">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;[&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#005500;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#005500; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;(λ/λ₁₀₀₀)&lt;/span&gt;&lt;span style=&quot; font-size:11pt; color:#000000; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;span style=&quot; font-size:11pt; color:#000000;&quot;&gt;⁴&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;1-&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#005500;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#005500; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;)&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;(λ/λ₁₀₀₀)&lt;/span&gt;&lt;span style=&quot; font-size:11pt; color:#000000; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#aa0000;&quot;&gt;ᵇ&lt;/span&gt;&lt;span style=&quot; font-size:9pt; color:#aa0000;&quot;&gt;ᴹᶥᵉ&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;] &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>nm</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
-          <item row="1" column="4">
-           <widget class="QLabel" name="label_CurrentA">
+         </layout>
+        </item>
+        <item row="2" column="4" rowspan="3">
+         <widget class="QGroupBox" name="groupBox_s1s2_componant">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Plot</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_GBPol_2">
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="radioButton_s1s2_abs">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Abs.</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="radioButton_s1s2_real">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Re.</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QRadioButton" name="radioButton_s1s2_imag">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Im.</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="4" rowspan="2">
+         <widget class="QGroupBox" name="groupBox_s1s2_scatAmp">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Scat. Amp.</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_GBPlotScale_2">
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="radioButton_s1_amp">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>S1</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="radioButton_s2_amp">
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>S2</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="5" colspan="4">
+         <widget class="QCustomPlot" name="customPlot_s1s2" native="true">
+          <layout class="QGridLayout" name="gridLayout_2"/>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_s1s2_wavel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Wavelength</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1" colspan="3">
+         <widget class="QSlider" name="slider_s1s2_wavel">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksAbove</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_pFunctionPolar">
+       <attribute name="title">
+        <string>Phase Function (Polar)</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_9">
+        <item row="1" column="2">
+         <widget class="QGroupBox" name="groupBox_polarPlotScale">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>75</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Liberation Sans</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+          <property name="title">
+           <string>Plot Scale</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_GBPlotScale">
+           <property name="topMargin">
+            <number>6</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="radioButton_polarPlotScale_linear">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Liberation Sans</family>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Linear</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="radioButton_polarPlotScale_log">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Liberation Sans</family>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Log10</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QGroupBox" name="groupBox_dThetaStep">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>75</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Liberation Sans</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+          <property name="title">
+           <string>dtheta (dθ)</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_11">
+           <property name="topMargin">
+            <number>6</number>
+           </property>
+           <property name="rightMargin">
+            <number>6</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="radioButton_dThetaStep0_5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Liberation Sans</family>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>0.5°</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="radioButton_dThetaStep0_1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Liberation Sans</family>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>0.1°</string>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="3" colspan="2">
+         <widget class="QwtPolarPlot" name="qwtpolarplot_pFunctionPolar" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QGroupBox" name="groupBox_polarization">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>75</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Liberation Sans</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+          <property name="title">
+           <string>Polarization</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_GBPol">
+           <property name="topMargin">
+            <number>6</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="radioButton_pFunction_ave">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Liberation Sans</family>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Ave.</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="radioButton_pFunction_para">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Liberation Sans</family>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Para.</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QRadioButton" name="radioButton_pFunction_perp">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Liberation Sans</family>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Perp.</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_pFunctionPolar_wavel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Wavelength</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <layout class="QGridLayout" name="gridLayout_pFunctionPolar">
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_pFunctionPolar_nm">
+            <property name="minimumSize">
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>nm</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_pFunctionPolar_curWavel">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>80</width>
+              <width>10</width>
               <height>0</height>
              </size>
             </property>
@@ -1424,261 +2230,210 @@
           </item>
          </layout>
         </item>
-        <item row="9" column="1" colspan="2">
-         <widget class="QPushButton" name="pushButton_BestFit">
-          <property name="enabled">
-           <bool>false</bool>
+        <item row="3" column="1">
+         <widget class="QSlider" name="slider_pFunctionPolar_wavel">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="text">
-           <string>Best-Fit</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2" rowspan="7">
-         <widget class="QwtSlider" name="qwtslider_B" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="lowerBound" stdset="0">
-           <double>0.000000000000000</double>
-          </property>
-          <property name="upperBound" stdset="0">
-           <double>4.000000000000000</double>
-          </property>
-          <property name="value" stdset="0">
-           <double>4.000000000000000</double>
-          </property>
-          <property name="totalSteps" stdset="0">
-           <UInt>400</UInt>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="2">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_B">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>43</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="minimum">
-           <double>0.000000000000000</double>
-          </property>
-          <property name="maximum">
-           <double>4.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.010000000000000</double>
-          </property>
-          <property name="value">
-           <double>4.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="2">
-         <widget class="QLabel" name="label_BLabel">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>10</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#aa0000;&quot;&gt;b&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#aa0000; vertical-align:sub;&quot;&gt;Mie&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" rowspan="10">
-         <widget class="QCustomPlot" name="customPlot_MuspPowerLaw" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_F">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>43</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="maximum">
-           <double>1.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.010000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" rowspan="7">
-         <widget class="QwtSlider" name="qwtslider_F" native="true">
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="upperBound" stdset="0">
-           <double>1.000000000000000</double>
-          </property>
-          <property name="totalSteps" stdset="0">
-           <UInt>100</UInt>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QLabel" name="label_FLabel">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#005500;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#005500; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
+          <property name="tickPosition">
+           <enum>QSlider::TicksAbove</enum>
           </property>
          </widget>
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_pFunctionLinear">
+       <attribute name="title">
+        <string>Phase Function (Linear)</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_22">
+        <item row="0" column="0" colspan="3">
+         <widget class="QCustomPlot" name="customPlot_pFunctionLinear" native="true"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_pFunctionLinear_wavel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Wavelength</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSlider" name="slider_pFunctionLinear_wavel">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksAbove</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <layout class="QGridLayout" name="gridLayout_pFunctionLinear">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_pFunctionLinear_curWavel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>35</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_pFunctionLinear_nm">
+            <property name="minimumSize">
+             <size>
+              <width>32</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>nm</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QTabWidget" name="tabWidget_Ns">
+    <item row="1" column="2">
+     <widget class="QTabWidget" name="tabWidget_g">
       <property name="font">
        <font>
         <family>Liberation Sans</family>
         <pointsize>8</pointsize>
        </font>
       </property>
-      <property name="currentIndex">
-       <number>0</number>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
       </property>
-      <widget class="QWidget" name="tab_Distribution">
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <property name="movable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="tab_g">
        <attribute name="title">
-        <string>Concentration (Number Density: Ns)</string>
+        <string>Ave. Cosine of Phase Function (g)</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_8">
-        <item row="0" column="0" colspan="6">
-         <widget class="QCustomPlot" name="customPlot_Distribution" native="true">
-          <widget class="QLabel" name="label_CurrentTotNumDen">
-           <property name="geometry">
-            <rect>
-             <x>120</x>
-             <y>-10</y>
-             <width>181</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <spacer name="horizontalSpacer14">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="3">
-         <widget class="QRadioButton" name="radioButton_LinearXAxis">
-          <property name="text">
-           <string>Linear</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="4">
-         <widget class="QRadioButton" name="radioButton_LogXAxis">
-          <property name="text">
-           <string>Log</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="5">
-         <spacer name="horizontalSpacer13">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>30</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="2">
-         <widget class="QLabel" name="label_DistXAxis">
-          <property name="text">
-           <string>X-Axis Scale</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <spacer name="horizontalSpacer12">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>10</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
+         <widget class="QCustomPlot" name="customPlot_g" native="true"/>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_SizePara">
+      <widget class="QWidget" name="tab_forwardBackward">
        <attribute name="title">
-        <string>Size Parameter</string>
+        <string>Forward &amp;&amp; Backward Scat.%</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_21">
+       <layout class="QGridLayout" name="gridLayout_12">
         <item row="0" column="0">
-         <widget class="QCustomPlot" name="customPlot_SizePara" native="true"/>
+         <widget class="QCustomPlot" name="customPlot_forwardBackward" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QTabWidget" name="tabWidget_scat">
+      <property name="font">
+       <font>
+        <family>Liberation Sans</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <property name="usesScrollButtons">
+       <bool>true</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
+      </property>
+      <property name="movable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="tab_mus">
+       <attribute name="title">
+        <string>Scattering Coefficient (μs)</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="QCustomPlot" name="customPlot_mus" native="true">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_csca">
+       <attribute name="title">
+        <string>Csca</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QCustomPlot" name="customPlot_csca" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_cext">
+       <attribute name="title">
+        <string>Cext</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_19">
+        <item row="0" column="0">
+         <widget class="QCustomPlot" name="customPlot_cext" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_cback">
+       <attribute name="title">
+        <string>Cback</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_16">
+        <item row="0" column="0">
+         <widget class="QCustomPlot" name="customPlot_cback" native="true"/>
         </item>
        </layout>
       </widget>
@@ -1718,751 +2473,6 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QTabWidget" name="tabWidget_G">
-      <property name="font">
-       <font>
-        <family>Liberation Sans</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <property name="movable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="tab_G">
-       <attribute name="title">
-        <string>Ave. Cosine of Phase Function (g)</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_7">
-        <item row="0" column="0">
-         <widget class="QCustomPlot" name="customPlot_G" native="true"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_ForwardBackward">
-       <attribute name="title">
-        <string>Forward &amp;&amp; Backward Scat.%</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_12">
-        <item row="0" column="0">
-         <widget class="QCustomPlot" name="customPlot_FB" native="true"/>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QTabWidget" name="tabWidget_Scat">
-      <property name="font">
-       <font>
-        <family>Liberation Sans</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <property name="usesScrollButtons">
-       <bool>true</bool>
-      </property>
-      <property name="tabsClosable">
-       <bool>false</bool>
-      </property>
-      <property name="movable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="tab_mus">
-       <attribute name="title">
-        <string>Scattering Coefficient (μs)</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_5">
-        <item row="0" column="0">
-         <widget class="QCustomPlot" name="customPlot_Mus" native="true">
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_Csca">
-       <attribute name="title">
-        <string>Csca</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="0">
-         <widget class="QCustomPlot" name="customPlot_Csca" native="true"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_Cext">
-       <attribute name="title">
-        <string>Cext</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_19">
-        <item row="0" column="0">
-         <widget class="QCustomPlot" name="customPlot_Cext" native="true"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_Cback">
-       <attribute name="title">
-        <string>Cback</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_16">
-        <item row="0" column="0">
-         <widget class="QCustomPlot" name="customPlot_Cback" native="true"/>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QTabWidget" name="tabWidget_PhaseFunction">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>10</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Liberation Sans</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
-      </property>
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <property name="movable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="tab_S1S2">
-       <attribute name="title">
-        <string>S1/S2</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_14">
-        <item row="5" column="4">
-         <layout class="QGridLayout" name="gridLayout_WL_3">
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_CurrentWL_S1S2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>10</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_nm_S1S2">
-            <property name="text">
-             <string>nm</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="2" column="4" rowspan="3">
-         <widget class="QGroupBox" name="groupBox_Componant">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>70</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="title">
-           <string>Plot</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_GBPol_2">
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="radioButton_S1S2_Abs">
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Abs.</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QRadioButton" name="radioButton_S1S2_Real">
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Re.</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QRadioButton" name="radioButton_S1S2_Imag">
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Im.</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="0" column="4" rowspan="2">
-         <widget class="QGroupBox" name="groupBox_ScatAmp">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>70</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="title">
-           <string>Scat. Amp.</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_GBPlotScale_2">
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="radioButton_S1">
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>S1</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QRadioButton" name="radioButton_S2">
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>S2</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="0" column="0" rowspan="5" colspan="4">
-         <widget class="QCustomPlot" name="customPlot_S1S2" native="true">
-          <layout class="QGridLayout" name="gridLayout_2"/>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="label_name_S1S2_WL">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>60</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Wavelength</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1" colspan="3">
-         <widget class="QSlider" name="slider_WL_S1S2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksAbove</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_PhaseFunction">
-       <attribute name="title">
-        <string>Phase Function (Polar)</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_9">
-        <item row="1" column="2">
-         <widget class="QGroupBox" name="groupBox_PolarPlotScale">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>75</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Liberation Sans</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="title">
-           <string>Plot Scale</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_GBPlotScale">
-           <property name="topMargin">
-            <number>6</number>
-           </property>
-           <property name="bottomMargin">
-            <number>6</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="radioButton_PhaseLinear">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Linear</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QRadioButton" name="radioButton_PhaseLog">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Log10</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QGroupBox" name="groupBox_PolarThetaStep">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>75</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Liberation Sans</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="title">
-           <string>dtheta (dθ)</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_11">
-           <property name="topMargin">
-            <number>6</number>
-           </property>
-           <property name="rightMargin">
-            <number>6</number>
-           </property>
-           <property name="bottomMargin">
-            <number>6</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="radioButton_Phase_DTheta0_5">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>0.5°</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QRadioButton" name="radioButton_Phase_DTheta0_1">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>0.1°</string>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="0" column="0" rowspan="3" colspan="2">
-         <widget class="QwtPolarPlot" name="qwtpolarplot_PhaseFunctionPolar" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QGroupBox" name="groupBox_Polarization">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>75</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Liberation Sans</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="title">
-           <string>Polarization</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_GBPol">
-           <property name="topMargin">
-            <number>6</number>
-           </property>
-           <property name="bottomMargin">
-            <number>6</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="radioButton_PhaseAverage">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Ave.</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QRadioButton" name="radioButton_PhasePara">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Para.</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QRadioButton" name="radioButton_PhasePerp">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Perp.</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_name_PFPolar_WL">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>60</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Wavelength</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="2">
-         <layout class="QGridLayout" name="gridLayout_WL_2">
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_nm_PFPolar">
-            <property name="minimumSize">
-             <size>
-              <width>20</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>nm</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_CurrentWL_PFPolar">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>10</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="3" column="1">
-         <widget class="QSlider" name="slider_WL_PFPolar">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksAbove</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_PhaseFunction_Linear">
-       <attribute name="title">
-        <string>Phase Function (Linear)</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_22">
-        <item row="0" column="0" colspan="3">
-         <widget class="QCustomPlot" name="customPlot_PhaseFunctionLinear" native="true"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_name_PFLinear_WL">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>60</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Wavelength</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QSlider" name="slider_WL_PFLinear">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksAbove</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <layout class="QGridLayout" name="gridLayout_20">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_CurrentWL_PFLinear">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>35</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_nm_PFLinear">
-            <property name="minimumSize">
-             <size>
-              <width>32</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>nm</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -2498,65 +2508,65 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>radioButton_MonoDisperse</tabstop>
-  <tabstop>lineEdit_Diameter</tabstop>
-  <tabstop>radioButton_PolyDisperse</tabstop>
-  <tabstop>comboBox_Distribution</tabstop>
-  <tabstop>lineEdit_MeanDiameter</tabstop>
-  <tabstop>lineEdit_StdDev</tabstop>
-  <tabstop>lineEdit_NSphere</tabstop>
-  <tabstop>pushButton_ShowDistributionAndCustom</tabstop>
-  <tabstop>lineEdit_ScatRefReal</tabstop>
-  <tabstop>lineEdit_ScatRefImag</tabstop>
-  <tabstop>lineEdit_MedRef</tabstop>
-  <tabstop>lineEdit_StartWL</tabstop>
-  <tabstop>lineEdit_EndWL</tabstop>
-  <tabstop>lineEdit_StepWL</tabstop>
-  <tabstop>radioButton_Conc_mm3</tabstop>
-  <tabstop>radioButton_VolFrac</tabstop>
-  <tabstop>lineEdit_Conc_mm3</tabstop>
-  <tabstop>lineEdit_VolFrac</tabstop>
-  <tabstop>slider_ConcPercentChange</tabstop>
-  <tabstop>radioButton_LinearYAxis</tabstop>
-  <tabstop>radioButton_LogYAxis</tabstop>
-  <tabstop>pushButton_RunSimulation</tabstop>
-  <tabstop>pushButton_DisplayData</tabstop>
-  <tabstop>pushButton_SaveData</tabstop>
-  <tabstop>pushButton_Close</tabstop>
-  <tabstop>tabWidget_Ns</tabstop>
-  <tabstop>radioButton_LinearXAxis</tabstop>
-  <tabstop>radioButton_LogXAxis</tabstop>
-  <tabstop>tabWidget_Scat</tabstop>
-  <tabstop>tabWidget_ReducedScat</tabstop>
-  <tabstop>doubleSpinBox_F</tabstop>
-  <tabstop>doubleSpinBox_B</tabstop>
-  <tabstop>pushButton_BestFit</tabstop>
-  <tabstop>tabWidget_PhaseFunction</tabstop>
-  <tabstop>radioButton_PhaseAverage</tabstop>
-  <tabstop>radioButton_PhasePara</tabstop>
-  <tabstop>radioButton_PhasePerp</tabstop>
-  <tabstop>radioButton_PhaseLinear</tabstop>
-  <tabstop>radioButton_PhaseLog</tabstop>
-  <tabstop>radioButton_Phase_DTheta0_5</tabstop>
-  <tabstop>radioButton_Phase_DTheta0_1</tabstop>
-  <tabstop>slider_WL_PFPolar</tabstop>
-  <tabstop>radioButton_S1</tabstop>
-  <tabstop>radioButton_S2</tabstop>
-  <tabstop>radioButton_S1S2_Abs</tabstop>
-  <tabstop>radioButton_S1S2_Real</tabstop>
-  <tabstop>radioButton_S1S2_Imag</tabstop>
-  <tabstop>slider_WL_S1S2</tabstop>
-  <tabstop>slider_WL_PFLinear</tabstop>
-  <tabstop>tabWidget_G</tabstop>
+  <tabstop>radioButton_monoDisperse</tabstop>
+  <tabstop>lineEdit_diameter</tabstop>
+  <tabstop>radioButton_polyDisperse</tabstop>
+  <tabstop>comboBox_distribution</tabstop>
+  <tabstop>lineEdit_meanDiameter</tabstop>
+  <tabstop>lineEdit_stdDev</tabstop>
+  <tabstop>lineEdit_nSphere</tabstop>
+  <tabstop>pushButton_showDistributionAndCustom</tabstop>
+  <tabstop>lineEdit_scatRefReal</tabstop>
+  <tabstop>lineEdit_scatRefImag</tabstop>
+  <tabstop>lineEdit_medRef</tabstop>
+  <tabstop>lineEdit_startWavel</tabstop>
+  <tabstop>lineEdit_endWavel</tabstop>
+  <tabstop>lineEdit_stepWavel</tabstop>
+  <tabstop>radioButton_conc_mm3</tabstop>
+  <tabstop>radioButton_volFrac</tabstop>
+  <tabstop>lineEdit_conc_mm3</tabstop>
+  <tabstop>lineEdit_volFrac</tabstop>
+  <tabstop>slider_concPercentChange</tabstop>
+  <tabstop>radioButton_linearYaxis</tabstop>
+  <tabstop>radioButton_logYaxis</tabstop>
+  <tabstop>pushButton_runSimulation</tabstop>
+  <tabstop>pushButton_displayData</tabstop>
+  <tabstop>pushButton_saveData</tabstop>
+  <tabstop>pushButton_close</tabstop>
+  <tabstop>tabWidget_ns</tabstop>
+  <tabstop>radioButton_linearXaxis</tabstop>
+  <tabstop>radioButton_logXaxis</tabstop>
+  <tabstop>tabWidget_scat</tabstop>
+  <tabstop>tabWidget_reducedScat</tabstop>
+  <tabstop>doubleSpinBox_powerLaw_f</tabstop>
+  <tabstop>doubleSpinBox_powerLaw_b</tabstop>
+  <tabstop>pushButton_bestFit</tabstop>
+  <tabstop>tabWidget_pFunction</tabstop>
+  <tabstop>radioButton_pFunction_ave</tabstop>
+  <tabstop>radioButton_pFunction_para</tabstop>
+  <tabstop>radioButton_pFunction_perp</tabstop>
+  <tabstop>radioButton_polarPlotScale_linear</tabstop>
+  <tabstop>radioButton_polarPlotScale_log</tabstop>
+  <tabstop>radioButton_dThetaStep0_5</tabstop>
+  <tabstop>radioButton_dThetaStep0_1</tabstop>
+  <tabstop>slider_pFunctionPolar_wavel</tabstop>
+  <tabstop>radioButton_s1_amp</tabstop>
+  <tabstop>radioButton_s2_amp</tabstop>
+  <tabstop>radioButton_s1s2_abs</tabstop>
+  <tabstop>radioButton_s1s2_real</tabstop>
+  <tabstop>radioButton_s1s2_imag</tabstop>
+  <tabstop>slider_s1s2_wavel</tabstop>
+  <tabstop>slider_pFunctionLinear_wavel</tabstop>
+  <tabstop>tabWidget_g</tabstop>
  </tabstops>
  <resources>
   <include location="MieRes.qrc"/>
  </resources>
  <connections>
   <connection>
-   <sender>qwtslider_F</sender>
+   <sender>qwtslider_powerLaw_f</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>doubleSpinBox_F</receiver>
+   <receiver>doubleSpinBox_powerLaw_f</receiver>
    <slot>setValue(double)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2570,9 +2580,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>qwtslider_B</sender>
+   <sender>qwtslider_powerLaw_b</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>doubleSpinBox_B</receiver>
+   <receiver>doubleSpinBox_powerLaw_b</receiver>
    <slot>setValue(double)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2586,9 +2596,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>doubleSpinBox_F</sender>
+   <sender>doubleSpinBox_powerLaw_f</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>qwtslider_F</receiver>
+   <receiver>qwtslider_powerLaw_f</receiver>
    <slot>setValue(double)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2602,9 +2612,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>doubleSpinBox_B</sender>
+   <sender>doubleSpinBox_powerLaw_b</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>qwtslider_B</receiver>
+   <receiver>qwtslider_powerLaw_b</receiver>
    <slot>setValue(double)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2619,7 +2629,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup_ConcVolFrac"/>
-  <buttongroup name="buttonGroup_MonoPoly"/>
+  <buttongroup name="buttonGroup_concVolFrac"/>
+  <buttongroup name="buttonGroup_monoPoly"/>
  </buttongroups>
 </ui>

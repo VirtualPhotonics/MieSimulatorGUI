@@ -20,7 +20,7 @@ public:
     Ui::DisplayDialog *ui;
 
 private slots:
-    void on_pushButton_Close_clicked();
+    void on_pushButton_close_clicked();
 
 };
 

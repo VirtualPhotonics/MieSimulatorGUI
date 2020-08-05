@@ -10,7 +10,7 @@ QT       += core gui \
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
-TARGET = MieSimulatorGUI_v1_2
+TARGET = MieSimulatorGUI_v1_3
 CONFIG -= -qt-freetype
 TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS

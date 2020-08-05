@@ -45,7 +45,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="3" colspan="2">
-     <widget class="QPushButton" name="pushButton_S2">
+     <widget class="QPushButton" name="pushButton_s2">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
@@ -60,7 +60,7 @@
      </widget>
     </item>
     <item row="2" column="1" colspan="3">
-     <widget class="QPushButton" name="pushButton_Cancel">
+     <widget class="QPushButton" name="pushButton_cancel">
       <property name="font">
        <font>
         <family>MS Shell Dlg 2</family>
@@ -76,7 +76,7 @@
      </widget>
     </item>
     <item row="0" column="3" colspan="2">
-     <widget class="QPushButton" name="pushButton_S1">
+     <widget class="QPushButton" name="pushButton_s1">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
@@ -91,7 +91,7 @@
      </widget>
     </item>
     <item row="0" column="0" colspan="3">
-     <widget class="QPushButton" name="pushButton_ScatPara">
+     <widget class="QPushButton" name="pushButton_scatPara">
       <property name="font">
        <font>
         <family>MS Shell Dlg 2</family>
@@ -104,7 +104,7 @@
      </widget>
     </item>
     <item row="1" column="0" colspan="3">
-     <widget class="QPushButton" name="pushButton_PhaseFunction">
+     <widget class="QPushButton" name="pushButton_pFunction">
       <property name="font">
        <font>
         <pointsize>8</pointsize>

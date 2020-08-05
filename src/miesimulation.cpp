@@ -1,7 +1,7 @@
-/**********************************************************************
-** Mie Calculations are listed in this file. This far field solution is
-** based on Bohren and Huffman's (John Wiley 1983) BHMIE code
-**********************************************************************/
+//**********************************************************************
+//** Mie Calculations are listed in this file. This far field solution is
+//** based on Bohren and Huffman's (John Wiley 1983) BHMIE code
+//**********************************************************************
 
 #include "miesimulation.h"
 #include <cmath>
@@ -143,8 +143,8 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
 //cRefRel - complex relative refractive index
 //mu - cos(angle)
 void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1, std::complex<double> *cS2,
-                                                       double *qSca, double *qExt, double *qBack, double xPara, std::complex<double> cRelRef,
-                                                       double mu)
+                                                       double *qSca, double *qExt, double *qBack,
+                                                       double xPara, std::complex<double> cRelRef, double mu)
 {
     utilities util;
 
