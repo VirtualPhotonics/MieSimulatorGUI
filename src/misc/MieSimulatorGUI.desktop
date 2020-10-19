@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Mie Simulator GUI
+Name=MieSimulatorGUI
 Comment=MieSimulatorGUI by Virtual Photonics
 Exec=MieSimulatorGUI_v1_2
 Icon=MieSimulatorGUI
