@@ -2,7 +2,7 @@
 Type=Application
 Name=Mie Simulator GUI
 Comment=MieSimulatorGUI by Virtual Photonics
-Exec=MieSimulatorGUI_v1_3
+Exec=MieSimulatorGUI_v1_2
 Icon=MieSimulatorGUI
 Categories=Science;
 URL=https://virtualphotonics.org/
