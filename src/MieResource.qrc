@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/Icons">
+        <file>icon/Banner.png</file>
+        <file>icon/VPlogoMie.ico</file>
+    </qresource>
+</RCC>

@@ -1,6 +1,6 @@
-//**********************************************************************
-//** This Optionsdialog will allow users to select and save current data.
-//**********************************************************************
+/**********************************************************************
+** This Optionsdialog will allow users to select and save current data.
+**********************************************************************/
 
 #include "optionsdialog.h"
 
@@ -8,10 +8,10 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::OptionsDialog)
 {    
-    _flagScatPara = false;
-    _flagPhaseFunction = false;
-    _flagS1 = false;
-    _flagS2 = false;
+    flagScatPara = false;
+    flagPhaseFunction = false;
+    flagS1 = false;
+    flagS2 = false;
     ui->setupUi(this);
 }
 
@@ -20,31 +20,31 @@ OptionsDialog::~OptionsDialog()
     delete ui;
 }
 
-void OptionsDialog::on_pushButton_scatPara_clicked()
+void OptionsDialog::on_pushButton_ScatPara_clicked()
 {
-    _flagScatPara = true;
+    flagScatPara = true;
     this->close();
 }
 
-void OptionsDialog::on_pushButton_phaseFunction_clicked()
+void OptionsDialog::on_pushButton_PhaseFunction_clicked()
 {
-    _flagPhaseFunction = true;
+    flagPhaseFunction = true;
     this->close();
 }
 
-void OptionsDialog::on_pushButton_s1_clicked()
+void OptionsDialog::on_pushButton_S1_clicked()
 {
-    _flagS1 = true;
+    flagS1 = true;
     this->close();
 }
 
-void OptionsDialog::on_pushButton_s2_clicked()
+void OptionsDialog::on_pushButton_S2_clicked()
 {
-    _flagS2 = true;
+    flagS2 = true;
     this->close();
 }
 
-void OptionsDialog::on_pushButton_cancel_clicked()
+void OptionsDialog::on_pushButton_Cancel_clicked()
 {
     this->close();
 }
@@ -54,8 +54,8 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
     setModal(true);
     exec();
 
-    double margin = (1.0 + ui->slider_concPercentChange->value() /200.0);
-    if (_flagScatPara)
+    double margin = (1.0 + ui->slider_ConcPercentChange->value() /200.0);
+    if (flagScatPara)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
                  tr("Save Data"), "Mie_ScatteringParameters",
@@ -69,7 +69,7 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
             RememberLastDirectory(fileName);
         }
     }
-    if (_flagPhaseFunction)
+    if (flagPhaseFunction)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
                  tr("Save Data"), "Mie_PhaseFunctionData",
@@ -83,7 +83,7 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
             RememberLastDirectory(fileName);
         }
     }
-    if (_flagS1)
+    if (flagS1)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
                  tr("Save Data"), "Mie_S1Data",
@@ -97,7 +97,7 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
             RememberLastDirectory(fileName);
         }
     }
-    if (_flagS2)
+    if (flagS2)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
                  tr("Save Data"), "Mie_S2Data",
@@ -124,25 +124,25 @@ void OptionsDialog::SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fi
         return;
     }
 
-    //***************Writing Data***********************
+    /***************Writing Data***********************/
     QTextStream out(&file);
 
     //Simulation parameters
     out << "Simulation parameters:\n\n";
 
-    if(ui->radioButton_monoDisperse->isChecked())
+    if(ui->radioButton_MonoDisperse->isChecked())
     {
         out << "Distribution: Mono Disperse \n";
         out << "Diameter of spheres: " << 2.0*para->meanRadius <<" um\n";
-        if (ui->radioButton_conc_mm3->isChecked())
+        if (ui->radioButton_Conc_mm3->isChecked())
             out << "Concentration (Spheres in a volume of 1mm^3): " << para->sphNumDensity * margin<<"\n";
-        if (ui->radioButton_volFrac->isChecked())
+        if (ui->radioButton_VolFrac->isChecked())
             out << "Volume Fraction (Total sphere volume / 1mm^3): " << para->volFraction * margin<<"\n";
     }
 
-    if(ui->radioButton_polyDisperse->isChecked())
+    if(ui->radioButton_PolyDisperse->isChecked())
     {
-        int currentIndex = ui->comboBox_distribution->currentIndex();
+        int currentIndex = ui->comboBox_Distribution->currentIndex();
         if (currentIndex == 0) //Log normal distribution
             out << "Distribution: Poly Disperse - Log Normal \n";
         if (currentIndex == 1) //Gaussian distribution
@@ -154,9 +154,9 @@ void OptionsDialog::SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fi
         {
             out << "Mean diameter of spheres: " << 2.0*para->meanRadius <<" um\n";
             out << "Std. deviation: " << para->stdDev <<" um\n";
-            if (ui->radioButton_conc_mm3->isChecked())
+            if (ui->radioButton_Conc_mm3->isChecked())
                 out << "Total Concentration (Spheres in a volume of 1mm^3): " << para->sphNumDensity * margin <<"\n";
-            if (ui->radioButton_volFrac->isChecked())
+            if (ui->radioButton_VolFrac->isChecked())
                 out << "Volume Fraction (Total sphere volume / 1mm^3): " << para->volFraction * margin <<"\n";
         }
     }
@@ -172,15 +172,15 @@ void OptionsDialog::SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fi
             <<para->scatRefRealArray[i]<<"\t" << para->scatRefImagArray[i] <<"\n";
 
     out << "\n\nOutput:\n\n";
-    if (ui->radioButton_monoDisperse->isChecked())
+    if (ui->radioButton_MonoDisperse->isChecked())
     {
-        out << "Size Parameter:\n";
+        out << "Size Parameter (2*pi*R/lambda):\n";
         out << "WL(nm)\t2*pi*R/lambda\n";
         for (unsigned int i=0; i<para->nWavel; i++)
             out << para->wavelArray[i] <<"\t" << para->SizePara[i] <<"\n";
     }
 
-    out << "\nScattering Coefficient, g and Reduced Scattering Coefficient:\n";
+    out << "\nScattering Coefficient (us), g and Reduced Scattering Coefficient (us'):\n";
     out << "WL(nm)\tus(mm^-1)\tg\tus'(mm^-1)\n";
     for (unsigned int i=0; i<para->nWavel; i++)
         out << para->wavelArray[i] <<"\t" << para->mus[i]* margin << "\t" << para->g[i] <<"\t" << para->mus[i]*(1-para->g[i])* margin <<"\n";
@@ -209,15 +209,15 @@ void OptionsDialog::SavePhaseFunction(Ui_MainWindow *ui, parameters *para, QStri
         return;
     }
 
-    //***************Writing Data***********************
+    /***************Writing Data***********************/
     QTextStream out(&file);
 
     out << "Phase Function ";
-    if (ui->radioButton_pFunction_ave->isChecked())
+    if (ui->radioButton_PhaseAverage->isChecked())
         out << "(Ave): ";
-    if (ui->radioButton_pFunction_para->isChecked())
+    if (ui->radioButton_PhasePara->isChecked())
          out << "(Para): ";
-    if (ui->radioButton_pFunction_perp->isChecked())
+    if (ui->radioButton_PhasePerp->isChecked())
          out << "(Perp): ";
      out << "\n\tWL(nm)-->\nAngle(deg)";
      for (unsigned int i=0; i<para->nWavel; i++)
@@ -229,11 +229,11 @@ void OptionsDialog::SavePhaseFunction(Ui_MainWindow *ui, parameters *para, QStri
         out << 180.0 * j /(para->nTheta-1) <<"\t";
         for (unsigned int i=0; i<para->nWavel; i++)
         {
-            if (ui->radioButton_pFunction_ave->isChecked())
+            if (ui->radioButton_PhaseAverage->isChecked())
                 out << para->phaseFunctionAve[i][j] <<"\t";
-            if (ui->radioButton_pFunction_para->isChecked())
+            if (ui->radioButton_PhasePara->isChecked())
                 out << para->phaseFunctionPara[i][j];
-            if (ui->radioButton_pFunction_perp->isChecked())
+            if (ui->radioButton_PhasePerp->isChecked())
                 out << para->phaseFunctionPerp[i][j];
         }
         out << "\n";
@@ -250,7 +250,7 @@ void OptionsDialog::SaveS1(parameters *para, QString fileName)
         return;
     }
 
-    //***************Writing Data***********************
+    /***************Writing Data***********************/
     QTextStream out(&file);
 
     out << "S1 (Real, Imaginary):";
@@ -278,7 +278,7 @@ void OptionsDialog::SaveS2(parameters *para, QString fileName)
         return;
     }
 
-    //***************Writing Data***********************
+    /***************Writing Data***********************/
     QTextStream out(&file);
 
     out << "S2 (Real, Imaginary):";

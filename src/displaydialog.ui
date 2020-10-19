@@ -19,6 +19,11 @@
   <property name="windowTitle">
    <string>Display Data</string>
   </property>
+  <property name="windowIcon">
+   <iconset theme="VPlogoMie">
+    <normalon>:/Icons/icon/VPlogoMie.ico</normalon>
+   </iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="2" column="0">
     <spacer name="horizontalSpacer">
@@ -34,7 +39,7 @@
     </spacer>
    </item>
    <item row="2" column="2">
-    <widget class="QPushButton" name="pushButton_close">
+    <widget class="QPushButton" name="pushButton_Close">
      <property name="font">
       <font>
        <family>Arial</family>
@@ -59,7 +64,7 @@
     </spacer>
    </item>
    <item row="1" column="0" colspan="4">
-    <widget class="QTextBrowser" name="textBrowser_display">
+    <widget class="QTextBrowser" name="textBrowser_Display">
      <property name="font">
       <font>
        <family>Arial</family>

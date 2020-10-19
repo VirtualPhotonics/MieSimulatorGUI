@@ -15,6 +15,14 @@ CONFIG -= -qt-freetype
 TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
 
+win32 {
+    RC_ICONS = misc/MieSimulatorGUI.ico
+}
+
+macos {
+    ICON = misc/MieSimulatorGUI.icns
+}
+
 unix {
     isEmpty(PREFIX) {
         PREFIX = /usr
@@ -34,7 +42,7 @@ unix {
 INSTALLS += target
 
 RESOURCES += \
-    MieRes.qrc
+    MieResource.qrc
 
 FORMS += \
     displaydialog.ui \
@@ -42,10 +50,8 @@ FORMS += \
     optionsdialog.ui
 
 DISTFILES += \
-    icon/Banner.png \
-    icon/vpIcon.png \
-    vpIcon.rc \
     misc/MieSimulatorGUI.desktop \
+    misc/MieSimulatorGUI.ico \
     misc/MieSimulatorGUI.png
 
 HEADERS += \

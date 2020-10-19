@@ -12,78 +12,64 @@
 #include "calculate.h"
 #include "utilities.h"
 #include "optionsdialog.h"
+#include "ui_mainwindow.h"
 #include "displaydialog.h"
 #include "mainwindowsupport.h"
 #include "plotdata.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
-    void on_pushButton_showDistributionAndCustom_clicked();
-    void on_pushButton_runSimulation_clicked();
-    void on_pushButton_saveData_clicked();
-    void on_pushButton_displayData_clicked();
-    void on_pushButton_bestFit_clicked();
-    void on_pushButton_close_clicked();
-    void on_radioButton_linearYaxis_clicked();
-    void on_radioButton_logYaxis_clicked();
-    void on_radioButton_linearXaxis_clicked();
-    void on_radioButton_logXaxis_clicked();
-    void on_radioButton_monoDisperse_clicked();
-    void on_radioButton_polyDisperse_clicked();
-    void on_radioButton_conc_mm3_clicked();
-    void on_radioButton_volFrac_clicked();
-
-    void on_radioButton_polarPlotScale_linear_clicked();
-    void on_radioButton_polarPlotScale_log_clicked();
-    void on_radioButton_pFunction_ave_clicked();
-    void on_radioButton_pFunction_para_clicked();
-    void on_radioButton_pFunction_perp_clicked();
-
-    void on_radioButton_s1_amp_clicked();
-    void on_radioButton_s2_amp_clicked();
-    void on_radioButton_s1s2_abs_clicked();
-    void on_radioButton_s1s2_real_clicked();
-    void on_radioButton_s1s2_imag_clicked();
-    void on_radioButton_dThetaStep0_1_clicked();
-    void on_doubleSpinBox_powerLaw_f_valueChanged(double arg1);
-    void on_doubleSpinBox_powerLaw_b_valueChanged(double arg1);
-    void on_slider_concPercentChange_valueChanged(int value);
-    void on_slider_pFunctionPolar_wavel_valueChanged(int value);
-    void on_slider_pFunctionLinear_wavel_valueChanged(int value);
-    void on_slider_s1s2_wavel_valueChanged(int value);
-    void on_comboBox_distribution_currentIndexChanged(int value);
-
-    void mouseMove_customPlot_csca(QMouseEvent *event);
-    void mouseMove_customPlot_cext(QMouseEvent *event);
-    void mouseMove_customPlot_cback(QMouseEvent *event);
-    void mouseMove_customPlot_sizePara(QMouseEvent *event);
-    void mouseMove_customPlot_mus(QMouseEvent *event);
-    void mouseMove_customPlot_musp(QMouseEvent *event);
-    void mouseMove_customPlot_g(QMouseEvent *event);
-    void mouseMove_customPlot_forwardBackward(QMouseEvent *event);
-    void mouseMove_customPlot_s1s2(QMouseEvent *event);
-    void mouseMove_customPlot_pFunctionLinear(QMouseEvent *event);
-    void mouseMove_customPlot_distribution(QMouseEvent *event);
-    void mouseMove_customPlot_muspPowerLaw(QMouseEvent *event);
-
-private:
-    Ui::MainWindow *ui;
-    parameters *_para;
-    bool _distPlotFlag;            //Flag to check distributionPlot
-    bool _otherPlotsFlag;          //Flag to check other customplots
-    bool _arrayFlag;               //Flag to find dynamic array status to initialize or delete
-    bool _loadCustomDataCheckFlag; //Flag to check loading "Custom" data
+private slots:    
+    void on_pushButton_ShowDistributionAndCustom_clicked();
+    void on_pushButton_RunSimulation_clicked();
+    void on_pushButton_SaveData_clicked();
+    void on_pushButton_DisplayData_clicked();
+    void on_pushButton_BestFit_clicked();
+    void on_pushButton_Close_clicked();
+    void on_radioButton_LinearYAxis_clicked();
+    void on_radioButton_LogYAxis_clicked();
+    void on_radioButton_LinearXAxis_clicked();
+    void on_radioButton_LogXAxis_clicked();
+    void on_radioButton_MonoDisperse_clicked();
+    void on_radioButton_PolyDisperse_clicked();
+    void on_radioButton_Conc_mm3_clicked();
+    void on_radioButton_VolFrac_clicked();
+    void on_radioButton_PhaseLinear_clicked();
+    void on_radioButton_PhaseLog_clicked();
+    void on_radioButton_PhaseAverage_clicked();
+    void on_radioButton_PhasePara_clicked();
+    void on_radioButton_PhasePerp_clicked();
+    void on_radioButton_S1_clicked();
+    void on_radioButton_S2_clicked();
+    void on_radioButton_S1S2_Abs_clicked();
+    void on_radioButton_S1S2_Real_clicked();
+    void on_radioButton_S1S2_Imag_clicked();
+    void on_radioButton_Phase_DTheta0_1_clicked();
+    void on_doubleSpinBox_F_valueChanged(double arg1);
+    void on_doubleSpinBox_B_valueChanged(double arg1);
+    void on_radioButton_FittingSimple_clicked();
+    void on_radioButton_FittingComplex_clicked();
+    void on_radioButton_RefWavel500_clicked();
+    void on_radioButton_RefWavel600_clicked();
+    void on_radioButton_RefWavel700_clicked();
+    void on_radioButton_RefWavel800_clicked();
+    void on_radioButton_RefWavel900_clicked();
+    void on_radioButton_RefWavel1000_clicked();
+    void on_slider_ConcPercentChange_valueChanged(int value);
+    void on_slider_WL_PFPolar_valueChanged(int value);
+    void on_slider_WL_PFLinear_valueChanged(int value);
+    void on_slider_WL_S1S2_valueChanged(int value);
+    void on_comboBox_Distribution_currentIndexChanged(int value);
 
     void Initialize();
     void UpdatePhaseFunctionPolarPlot();
@@ -91,6 +77,29 @@ private:
     void UpdateS1S2Plot();
     void UpdateMuspFitPlot();
     void UpdateMuspFitErrorDisplay();
+    void MouseOverPlotScatteringCrossSection(QMouseEvent *event);
+    void MouseOverPlotExtinctionCrossSection(QMouseEvent *event);
+    void MouseOverPlotBackscatteringCrossSection(QMouseEvent *event);
+    void MouseOverPlotSizeParameter(QMouseEvent *event);
+    void MouseOverPlotMus(QMouseEvent *event);
+    void MouseOverPlotMusp(QMouseEvent *event);
+    void MouseOverPlotG(QMouseEvent *event);
+    void MouseOverPlotForwardBackward(QMouseEvent *event);
+    void MouseOverPlotS1S2(QMouseEvent *event);
+    void MouseOverPlotPhaseFunctionLinear(QMouseEvent *event);
+    void MouseOverPlotDistribution(QMouseEvent *event);
+    void MouseOverPlotMuspPowerLaw(QMouseEvent *event);
     void DisplayCurveData(QMouseEvent *event, QCustomPlot *curPlot, QString strNameX, QString strNameY);
+
+
+
+private:
+    Ui::MainWindow *ui;
+    parameters *mPara;
+    bool mDistPlotFlag;         //Flag to check distributionPlot
+    bool mOtherPlotsFlag;       //Flag to check other customplots
+    bool mArrayFlag;            //Flag to find dynamic array status to initialize or delete
+    bool mLoadCustomNoGoodFlag; //Flag to check "Custom" data
 };
+
 #endif // MAINWINDOW_H

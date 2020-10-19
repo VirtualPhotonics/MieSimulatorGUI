@@ -58,10 +58,10 @@ public:
 
     double fRay;                //fRay: fitting parameter fRay
     double bMie;                //bMie: fitting parameter bMie
-    double muspAtRefWavel;      //muspAtRefWavel:  musp value array at lambda = 1000nm
+    double muspAtRefWavel[6];   //muspAtRefWavel:  musp value array at lambda = 500, 600, 700, 800, 900 and 1000nm
     unsigned int refWavelIdx;   //refWavelIdx: current index of refWavel
     double muspFittingError;    //muspfittingError: fitting error
-    double refWavel;            //refWavel: reference lambda: 1000nm
+    double refWavel;            //refWavel: reference lambda: 500, 600, 700, 800, 900 and 1000nm
     bool fittingComplex;        //fittingComplex; False: Simple,  True: Ccomplex
 
     QwtPolarCurve *polarCurve;  //polarCurve: polarCurve data

@@ -16,6 +16,11 @@
   <property name="windowTitle">
    <string>Save Options</string>
   </property>
+  <property name="windowIcon">
+   <iconset theme="VPligiMie">
+    <normalon>:/Icons/icon/VPlogoMie.ico</normalon>
+   </iconset>
+  </property>
   <property name="toolTip">
    <string notr="true"/>
   </property>
@@ -45,7 +50,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="3" colspan="2">
-     <widget class="QPushButton" name="pushButton_s2">
+     <widget class="QPushButton" name="pushButton_S2">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
@@ -60,7 +65,7 @@
      </widget>
     </item>
     <item row="2" column="1" colspan="3">
-     <widget class="QPushButton" name="pushButton_cancel">
+     <widget class="QPushButton" name="pushButton_Cancel">
       <property name="font">
        <font>
         <family>MS Shell Dlg 2</family>
@@ -76,7 +81,7 @@
      </widget>
     </item>
     <item row="0" column="3" colspan="2">
-     <widget class="QPushButton" name="pushButton_s1">
+     <widget class="QPushButton" name="pushButton_S1">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
@@ -91,7 +96,7 @@
      </widget>
     </item>
     <item row="0" column="0" colspan="3">
-     <widget class="QPushButton" name="pushButton_scatPara">
+     <widget class="QPushButton" name="pushButton_ScatPara">
       <property name="font">
        <font>
         <family>MS Shell Dlg 2</family>
@@ -104,7 +109,7 @@
      </widget>
     </item>
     <item row="1" column="0" colspan="3">
-     <widget class="QPushButton" name="pushButton_pFunction">
+     <widget class="QPushButton" name="pushButton_PhaseFunction">
       <property name="font">
        <font>
         <pointsize>8</pointsize>

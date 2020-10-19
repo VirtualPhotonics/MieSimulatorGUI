@@ -1,7 +1,7 @@
-//**********************************************************************
-//** Mie Calculations are listed in this file. This far field solution is
-//** based on Bohren and Huffman's (John Wiley 1983) BHMIE code
-//**********************************************************************
+/**********************************************************************
+** Mie Calculations are listed in this file. This far field solution is
+** based on Bohren and Huffman's (John Wiley 1983) BHMIE code
+**********************************************************************/
 
 #include "miesimulation.h"
 #include <cmath>
