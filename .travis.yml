@@ -17,10 +17,7 @@ before_install:
      sudo apt-get update -qq;
    fi
    
- - if [ "$OS" = "osx" ]; then  
-     QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13;
-   fi
- 
+
 install:
  - if [ "$OS" = "linux" ]; then  
      sudo apt-get -y install qt510base libgl1-mesa-dev;
