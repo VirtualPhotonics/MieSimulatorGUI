@@ -23,10 +23,6 @@ install:
      sudo apt-get -y install qt510base libgl1-mesa-dev;
      source /opt/qt*/bin/qt*-env.sh;
    fi
-
- - if [ "$OS" = "osx" ]; then  
-     ./configure -platform macx-clang QMAKE_APPLE_DEVICE_ARCHS="x86_64 x86_64h";
-   fi
    
 script:
  
