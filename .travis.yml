@@ -39,10 +39,6 @@ if [ $TRAVIS_OS_NAME = 'linux' ]; then
   	- wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
   	- bash upload.sh MieSimulatorGUI*.AppImage*
   
-	branches:
-  	except:
-    	- # Do not build tags that we create when we upload to GitHub Releases
-    	- /^(?i:continuous)/
 fi
 
 if [ $TRAVIS_OS_NAME = 'osx' ]; then
