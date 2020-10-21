@@ -25,8 +25,8 @@ install:
    fi
    
 script:
- - if [ "$OS" = "linux" ]; then 
-     qmake "CONFIG+=MieSimulatorGUI" src/MieSimulatorGUI.pro;
+ - qmake "CONFIG+=MieSimulatorGUI" src/MieSimulatorGUI.pro;
+ - if [ "$OS" = "linux" ]; then      
      make -j$(nproc);
      make INSTALL_ROOT=appdir -j$(nproc) install ; 
      find appdir/;
