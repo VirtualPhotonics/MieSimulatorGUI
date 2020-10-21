@@ -28,7 +28,8 @@ script:
  - if [ "$OS" = "linux" ]; then 
      qmake "CONFIG+=MieSimulatorGUI" src/MieSimulatorGUI.pro;
      make -j$(nproc);
-     make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
+     make INSTALL_ROOT=appdir -j$(nproc) install ; 
+     find appdir/;
      wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage";
      chmod a+x linuxdeployqt-continuous-x86_64.AppImage;
      ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/MieSimulatorGUI.desktop -appimage;
