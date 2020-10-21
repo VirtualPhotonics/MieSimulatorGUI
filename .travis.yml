@@ -13,29 +13,29 @@ matrix:
 
 before_install:
  - if [ "$OS" = "linux" ]; then  
-     - sudo:true
-     - sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty -y
-     - sudo apt-get update -qq
+     sudo:true;
+     sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty -y;
+     sudo apt-get update -qq;
    fi
     
 install:
  - if [ "$OS" = "linux" ]; then  
-     sudo apt-get -y install qt510base libgl1-mesa-dev
-     source /opt/qt*/bin/qt*-env.sh
+     sudo apt-get -y install qt510base libgl1-mesa-dev;
+     source /opt/qt*/bin/qt*-env.sh;
    fi
    
 script:
  - if [ "$OS" = "linux" ]; then 
-     qmake "CONFIG+=MieSimulatorGUI" src/MieSimulatorGUI.pro
-     make -j$(nproc)
+     qmake "CONFIG+=MieSimulatorGUI" src/MieSimulatorGUI.pro;
+     make -j$(nproc);
      make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
-     wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-     chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-     ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/MieSimulatorGUI.desktop -appimage
+     wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage";
+     chmod a+x linuxdeployqt-continuous-x86_64.AppImage;
+     ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/MieSimulatorGUI.desktop -appimage;
    fi
    
 after_success: 
  - if [ "$OS" = "linux" ]; then 
-     wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-     bash upload.sh MieSimulatorGUI*.AppImage*
+     wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh;
+     bash upload.sh MieSimulatorGUI*.AppImage*;
    fi
