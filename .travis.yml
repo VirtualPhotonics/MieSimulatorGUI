@@ -8,20 +8,20 @@ matrix:
       compiler: clang
 
 before_install:
- - if ["$TRAVIS_OS_NAME" = "linux" ]; then  
+ - if ["$OS" = "linux" ]; then  
      sudo:true
      sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty -y
      sudo apt-get update -qq
    fi
     
 install:
- - if ["$TRAVIS_OS_NAME" = "linux" ]; then  
+ - if ["$OS" = "linux" ]; then  
      sudo apt-get -y install qt510base libgl1-mesa-dev
      source /opt/qt*/bin/qt*-env.sh
    fi
    
 script:
- - if ["$TRAVIS_OS_NAME" = "linux" ]; then 
+ - if ["$OS" = "linux" ]; then 
      qmake "CONFIG+=MieSimulatorGUI" src/MieSimulatorGUI.pro
      make -j$(nproc)
      make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
@@ -31,7 +31,7 @@ script:
    fi
    
 after_success: 
- - if ["$TRAVIS_OS_NAME" = "linux" ]; then 
+ - if ["$OS" = "linux" ]; then 
      wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
      bash upload.sh MieSimulatorGUI*.AppImage*
    fi
