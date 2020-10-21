@@ -31,3 +31,12 @@ branches:
     - # Do not build tags that we create when we upload to GitHub Releases
     - /^(?i:continuous)/
 
+os: osx
+
+install:
+  - sudo apt-get -y install qt510base libgl1-mesa-dev
+  - source /opt/qt*/bin/qt*-env.sh
+
+script:
+  - qmake "CONFIG+=MieSimulatorGUI" src/MieSimulatorGUI.pro
+  - make -j$(nproc)
