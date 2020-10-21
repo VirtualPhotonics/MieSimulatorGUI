@@ -14,7 +14,6 @@ These are the only naming conventions that should be used in the Mie Simulator G
 * __Test methods__ should be underscore delimited. Example: __Test_Methods__
 
 
-
 ## Indenting
 Code should be indented with 4 space characters, if a tab character is used, make sure your source-code editor replaces tabs with 4 spaces.
 ## Braces
