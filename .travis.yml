@@ -50,6 +50,11 @@ deploy:
   provider: releases
   api_key: "GITHUB_OAUTH_TOKEN"
   skip_cleanup: true
-  file: "MieSimulatorGUI.app"
+  if [ "$OS" = "linux" ]; then 
+     file: "MieSimulatorGUI*.AppImage";
+  fi
+  if [ "$OS" = "osx" ]; then 
+     file: "MieSimulatorGUI.app";
+  fi
   on:
     tags: true 
