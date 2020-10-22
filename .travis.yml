@@ -1,5 +1,4 @@
 language: cpp
-buildnumber = $$(TRAVIS_BUILD_NUMBER)
 
 matrix:
   include:
@@ -51,16 +50,10 @@ after_success:
      bash upload.sh MieSimulatorGUI*.app*;
    fi
 
-branches:
-  except:
-    - # Do not build tags that we create when we upload to GitHub Releases
-    - /^(?i:continuous)/
 
 deploy:
   provider: releases
   api_key: "GITHUB_OAUTH_TOKEN"
   skip_cleanup: true
-  draft: true
   on:
-    tags:true
-  
+    tags:continuous  
