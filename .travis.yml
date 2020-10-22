@@ -1,4 +1,5 @@
 language: cpp
+buildnumber = $$(TRAVIS_BUILD_NUMBER)
 
 matrix:
   include:
@@ -61,5 +62,5 @@ deploy:
   skip_cleanup: true
   draft: true
   on:
-    tag:continuous
+    tags:true
   
