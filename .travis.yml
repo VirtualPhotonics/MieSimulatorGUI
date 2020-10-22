@@ -6,23 +6,21 @@ matrix:
       os: linux
       compiler: gcc
       dist: trusty
+      sudo: true
+      before_install:
+      - sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty -y
+      - sudo apt-get update -qq
+      - sudo apt-get -y install qt510base libgl1-mesa-dev
+      - source /opt/qt*/bin/qt*-env.sh
     - env: OS=osx
       os: osx
+      osx_image: xcode7.2
       compiler: clang
-
-before_install:
- - sudo true;
- - if [ "$OS" = "linux" ]; then 
-     sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty -y;
-     sudo apt-get update -qq;
-   fi
-   
-
-install:
- - if [ "$OS" = "linux" ]; then  
-     sudo apt-get -y install qt510base libgl1-mesa-dev;
-     source /opt/qt*/bin/qt*-env.sh;
-   fi
+      before_install:
+      - brew install qt5
+      - brew link qt5 --force
+    - env: OS=windows
+      os: windows
    
 script:
  
@@ -37,7 +35,9 @@ script:
    fi
 
  - if [ "$OS" = "osx" ]; then     
-     qmake -spec macx-xcode src/MieSimulatorGUI.pro;      
+     qmake -spec macx-xcode src/MieSimulatorGUI.pro;
+     xcodebuild -list -project MieSimulatorGUI.xcodeproj;
+     xcodebuild -scheme MieSimulatorGUI build;      
    fi
    
 after_success: 
