@@ -19,12 +19,10 @@ matrix:
       before_install:
       - brew install qt5
       - brew link qt5 --force
-    - env: OS=windows
-      os: windows
-      
-   
-script:
+    #- env: OS=windows
+    #  os: windows
  
+script: 
  - if [ "$OS" = "linux" ]; then     
      qmake "CONFIG+=MieSimulatorGUI" src/MieSimulatorGUI.pro; 
      make -j$(nproc);
@@ -37,11 +35,10 @@ script:
 
  - if [ "$OS" = "osx" ]; then
      qmake -config release -spec macx-xcode src/MieSimulatorGUI.pro;
-     xcodebuild -configuration "Release" -list -project MieSimulatorGUI_continuous.xcodeproj;
+     xcodebuild -list -project MieSimulatorGUI_continuous.xcodeproj;
      xcodebuild -scheme MieSimulatorGUI_continuous -configuration "Release";      
    fi
-   
-
+  
 after_success: 
  - if [ "$OS" = "linux" ]; then 
      wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh;
@@ -52,4 +49,14 @@ after_success:
      wget -c https://github.com/VirtualPhotonics/MieSimulatorGUI/releases/tag/continuous/upload.sh; 
      bash upload.sh MieSimulatorGUI*.app*;
    fi
+
+branches:
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)/
+
+deploy:
+  provider: releases
+  api_key: "GITHUB_TOKEN"
+  skip_cleanup: true
   
