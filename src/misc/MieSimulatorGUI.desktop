@@ -2,6 +2,6 @@
 Type=Application
 Name=MieSimulatorGUI
 Comment=MieSimulatorGUI by Virtual Photonics
-Exec=MieSimulatorGUI_v1_3
+Exec=MieSimulatorGUI_continuous
 Icon=MieSimulatorGUI
 Categories=Science;
