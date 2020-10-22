@@ -45,15 +45,11 @@ after_success:
      bash upload.sh MieSimulatorGUI*.AppImage*;
    fi
 
- - if [ "$OS" = "osx" ]; then
-     wget -c https://github.com/VirtualPhotonics/MieSimulatorGUI/releases/tag/continuous/upload.sh; 
-     bash upload.sh MieSimulatorGUI*.app*;
-   fi
-
 
 deploy:
   provider: releases
   api_key: "GITHUB_OAUTH_TOKEN"
   skip_cleanup: true
+  file: "MieSimulatorGUI.app"
   on:
-    tags:continuous  
+    tags: true 
