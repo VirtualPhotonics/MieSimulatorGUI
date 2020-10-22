@@ -21,6 +21,12 @@ matrix:
       - brew link qt5 --force
     - env: OS=windows
       os: windows
+      before_install:
+      - dir C:/Program\ Files\ \(x86\)/Windows\ Kits/10/bin/10.0.17134.0/x64
+      - cmd.exe /C 'cd && "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86 && cd && cd "C:/Users/travis/build/VirtualPhotonics/MieSimulatorGUI" && dir'
+      - curl -vLO http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe 
+      - "./qt-unified-windows-x86-online.exe --verbose --script qt-installer-windows.qs"
+      - ls -la C:/Qt/5.12.3/msvc2017/bin/qtenv2.bat
    
 script:
  
@@ -37,9 +43,13 @@ script:
  - if [ "$OS" = "osx" ]; then     
      qmake -spec macx-xcode src/MieSimulatorGUI.pro;
      xcodebuild -list -project MieSimulatorGUI_continuous.xcodeproj;
-     xcodebuild -scheme MieSimulatorGUI_continuous build;      
+     xcodebuild -scheme MieSimulatorGUI_continuous build release;      
    fi
    
+ - if [ "$OS" = "windows" ]; then     
+     cmd.exe /C 'cd && "C:\Qt\5.12.3\msvc2017\bin\qtenv2.bat" && cd && "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86 && cd "C:\Users\travis\build\VirtualPhotonics\MieSimulatorGUI" && cd && qmake MieSimulatorGUI.pro && nmake'     
+   fi
+
 after_success: 
  - if [ "$OS" = "linux" ]; then 
      wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh;
