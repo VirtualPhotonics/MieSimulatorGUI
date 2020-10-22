@@ -36,7 +36,7 @@ script:
 
  - if [ "$OS" = "osx" ]; then     
      qmake -spec macx-xcode src/MieSimulatorGUI.pro;
-     xcodebuild -list -project MieSimulatorGUI.xcodeproj;
+     xcodebuild -list -project MieSimulatorGUI_v1_3.xcodeproj;
      xcodebuild -scheme MieSimulatorGUI build;      
    fi
    
