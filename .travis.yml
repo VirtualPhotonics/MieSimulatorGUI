@@ -40,14 +40,16 @@ script:
      ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/MieSimulatorGUI.desktop -appimage;
    fi
 
- - if [ "$OS" = "osx" ]; then     
+ - if [ "$OS" = "osx" ]; then
+     make clean
+     qmake -config release     
      qmake -spec macx-xcode src/MieSimulatorGUI.pro;
      xcodebuild -list -project MieSimulatorGUI_continuous.xcodeproj;
-     xcodebuild -scheme MieSimulatorGUI_continuous build release;      
+     xcodebuild -scheme MieSimulatorGUI_continuous build;      
    fi
    
  - if [ "$OS" = "windows" ]; then     
-     cmd.exe /C 'cd && "C:\Qt\5.12.3\msvc2017\bin\qtenv2.bat" && cd && "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86 && cd "C:\Users\travis\build\VirtualPhotonics\MieSimulatorGUI" && cd && qmake MieSimulatorGUI.pro && nmake'     
+     cmd.exe /C 'cd && "C:\Qt\5.12.3\msvc2017\bin\qtenv2.bat" && cd && "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86 && cd "C:\Users\travis\build\VirtualPhotonics\MieSimulatorGUI" && cd && qmake MieSimulatorGUI.pro && nmake';     
    fi
 
 after_success: 
