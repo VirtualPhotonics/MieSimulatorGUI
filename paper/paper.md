@@ -4,9 +4,11 @@ title: >-
   scattering by spherical dielectric particles
 tags:
   - Mie scattering
-  - Mie theory
-  - scattering
-  - spherical particles
+  - Lorenz-Mie theory
+  - Scattering
+  - Spherical particles
+  - Scattering efficiency
+  - Phase function
 authors:
   - name: Janaka C. Ranasinghesagara
     orcid: 0000-0002-6069-6527
@@ -54,7 +56,7 @@ The `MieSimulatorGUI` employs the `BHMIE` code `[@Bohren1983]` and procedures de
 
 The `MieSimulatorGUI` is a cross-platform GUI application developed using the C/C++ programming language within the [Qt](https://www.qt.io/) framework. The GUI contains six interactive panels as shown in Fig. \autoref{fig:Figure1}. 
 
-![Figure 1: Six interactive panels of `MieSimulatorGUI`: (a) Input selection, (b) Particle size distribution, (c) Scattering coefficient, (d) Phase function, (e) Reduced Scattering,  and (f) Scattering Asymmetry \label{fig:Figure1}](Figure1.png){width=100%}
+![Figure 1: Six interactive panels of `MieSimulatorGUI`: (a) Input selection, (b) Particle size distribution, (c) Scattering coefficient, (d) Phase function, (e) Reduced Scattering,  and (f) Scattering Asymmetry \label{fig:Figure1}](Figure1.png)
 Figure 1: Six interactive panels of `MieSimulatorGUI`: (a) Input selection, (b) Particle size distribution, (c) Scattering coefficient, (d) Phase function, (e) Reduced Scattering, and (f) Scattering Asymmetry
 
 ## Input Selection Panel
@@ -82,7 +84,7 @@ The scattering asymmetry (anisotropy) panel displays the directional properties 
 
 ## Reduced Scattering Panel
 
-This panel shows the reduced scattering coefficient (*µ*<sub>s</sub>'), calculated as the product of the scattering coefficient (*µ*<sub>s</sub>) and (1-*g*). *µ*<sub>s</sub>' is crucial in various fields, particularly in biomedical optics, because it allows for the non-invasive quantification of tissue properties. Users can use  *µ*<sub>s</sub>' 'Power Law Fitting' tab to compute the fitting parameters that provide a simplified functional form for the wavelength dependence of *µ*<sub>s</sub>' as described in `[@Jacques2013]`.
+This panel shows the reduced scattering coefficient (*µ*<sub>s</sub>'), calculated as the product of the scattering coefficient (*µ*<sub>s</sub>) and (1-*g*). *µ*<sub>s</sub>' is crucial in various fields, particularly in biomedical optics, because it allows for the non-invasive quantification of tissue properties. Users can use `µs' Power Law Fitting`  tab to compute the fitting parameters that provide a simplified functional form for the wavelength dependence of *µ*<sub>s</sub>' as described in `[@Jacques2013]`.
 
 
 
