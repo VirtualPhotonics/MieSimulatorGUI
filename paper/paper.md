@@ -1,33 +1,38 @@
 ---
-title: 'MieSimulatorGUI: A user-friendly tool to compute and visualize light scattering by spherical dielectric particles'
-
+title: >-
+  MieSimulatorGUI: A user-friendly tool to compute and visualize light
+  scattering by spherical dielectric particles
 tags:
-- Mie scattering
-- Mie theory
-- scattering
-- spherical particles
-  authors:
-- name: Janaka C. Ranasinghesagara
-  orcid: 0000-0002-6069-6527
-  affiliation: "1, 2" # (Multiple affiliations must be quoted)
-- name: Carole Hayakawa
-  orcid: 0000-0001-5696-160X
-  affiliation: "1, 2" # (Multiple affiliations must be quoted)
-- name: Lisa Glover
-  orcid: 0009-0009-0291-5099
-  affiliation: 2 
-- name: Vasan Venugopalan
-  orcid: 0000-0003-4781-1049
-  corresponding: true
-  email: vvenugop@uci.edu
-  affiliation: "1, 2" # (Multiple affiliations must be quoted)
-  affiliations:
-  - name: Department of Chemical and Biomolecular Engineering, University of California, Irvine, California 92697, United States
+  - Mie scattering
+  - Mie theory
+  - scattering
+  - spherical particles
+authors:
+  - name: Janaka C. Ranasinghesagara
+    orcid: 0000-0002-6069-6527
+    affiliation: '1, 2'
+  - name: Carole Hayakawa
+    orcid: 0000-0001-5696-160X
+    affiliation: '1, 2'
+  - name: Lisa Glover
+    orcid: 0009-0009-0291-5099
+    affiliation: 2
+  - name: Vasan Venugopalan
+    orcid: 0000-0003-4781-1049
+    corresponding: true
+    email: vvenugop@uci.edu
+    affiliation: '1, 2'
+affiliations:
+  - name: >-
+      Department of Chemical and Biomolecular Engineering, University of
+      California, Irvine, California 92697, United States
     index: 1
-  - name: Beckman Laser Institute and Medical Clinic, University of California, Irvine, California 92697, United States
+  - name: >-
+      Beckman Laser Institute and Medical Clinic, University of California,
+      Irvine, California 92697, United States
     index: 2
-    date: 8 July 2025
-    bibliography: paper.bib
+date: 8 July 2025
+bibliography: paper.bib
 
 ---
 
