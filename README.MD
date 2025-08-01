@@ -12,10 +12,14 @@ To download the latest version, click [here](https://github.com/VirtualPhotonics
 To access all releases and source codes, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/releases). 
 
 ## Documentation
- * Getting started in Windows, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-in-Windows)
- * Getting started in Linux, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-in-Linux)
- * To access breif description of inputs, outputs, and execution of the tool, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Mie-Simulator-GUI-Running-Application)
 
+ * Getting started with the application and source code	
+	
+	- For Windows, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-on-Windows)
+	- For Linux, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-on-Linux)
+	- For MacOS, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-on-Mac)
+ * Description of GUI panels and running application, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Mie-Simulator-GUI-Running-Application)
+ 
 ## Acknowledgement
 Use the following acknowledgement in publications or applications that make use of this open source software or underlying technology and research:
 
@@ -31,4 +35,4 @@ _THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPL
 ## Copyright
 Virtual Tissue Simulator (VTS) Project.
 
-Copyright ©2020 [Virtual Photonics Technology Initiative](https://virtualphotonics.org/).
+Copyright ©2025 [Virtual Photonics Technology Initiative](https://virtualphotonics.org/).
