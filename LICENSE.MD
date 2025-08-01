@@ -17,9 +17,9 @@ _THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPL
 ## GNU LESSER GENERAL PUBLIC LICENSE (LGPLv3) for Qt
 
 
-GNU LESSER GENERAL PUBLIC LICENSE
+### <p style="text-align: center;"> GNU LESSER GENERAL PUBLIC LICENSE
 
-Version 3, 29 June 2007
+#### <p style="text-align: center;">Version 3, 29 June 2007
 
 #### Copyright © 2007 Free Software Foundation, Inc. <https://fsf.org/>
 
