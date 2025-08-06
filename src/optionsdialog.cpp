@@ -134,7 +134,7 @@ void OptionsDialog::SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fi
     {
         out << "Distribution: Mono Disperse \n";
         out << "Diameter of spheres: " << 2.0*para->meanRadius <<" um\n";
-        if (ui->radioButton_Conc_mm3->isChecked())
+        if (ui->radioButton_NumDen->isChecked())
             out << "Concentration (Spheres in a volume of 1mm^3): " << para->sphNumDensity * margin<<"\n";
         if (ui->radioButton_VolFrac->isChecked())
             out << "Volume Fraction (Total sphere volume / 1mm^3): " << para->volFraction * margin<<"\n";
@@ -154,7 +154,7 @@ void OptionsDialog::SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fi
         {
             out << "Mean diameter of spheres: " << 2.0*para->meanRadius <<" um\n";
             out << "Std. deviation: " << para->stdDev <<" um\n";
-            if (ui->radioButton_Conc_mm3->isChecked())
+            if (ui->radioButton_NumDen->isChecked())
                 out << "Total Concentration (Spheres in a volume of 1mm^3): " << para->sphNumDensity * margin <<"\n";
             if (ui->radioButton_VolFrac->isChecked())
                 out << "Volume Fraction (Total sphere volume / 1mm^3): " << para->volFraction * margin <<"\n";

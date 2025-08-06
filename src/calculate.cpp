@@ -1,5 +1,6 @@
 #include "calculate.h"
-
+#include "miesimulation.h"
+#include "utilities.h"
 
 calculate::calculate()
 {
@@ -22,6 +23,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para)
     double refRelRe = 1.0;
     double refRelIm = 0.0;
     double xPara = 0.0;
+    double stepTheta = (maxTheta - minTheta)/static_cast<double>(para->nTheta - 1);
 
     std::complex<double> *curS1 = new std::complex<double> [para->nTheta];
     std::complex<double> *curS2 = new std::complex<double> [para->nTheta];
@@ -70,7 +72,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para)
             {
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
-                    mu = cos(para->minTheta + t * para->stepTheta);
+                    mu = cos(minTheta + t * stepTheta);
                     sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara, refRelRe, mu);
                     curS1[t] = cS1;
                     curS2[t] = cS2;
@@ -80,7 +82,7 @@ void calculate::DoSimulation(Ui_MainWindow *ui, parameters *para)
             {
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
-                    mu = cos(para->minTheta + t * para->stepTheta);
+                    mu = cos(minTheta + t * stepTheta);
                     sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara,
                                                            std::complex<double>(refRelRe,-refRelIm), mu);  //multiply by -1 to use "n-ik" convention
                     curS1[t] = cS1;
@@ -156,6 +158,7 @@ void calculate::ComputeMuspAtRefWavel(parameters *para)
     double refRelRe = 1.0;
     double refRelIm = 0.0;
     double xPara = 0.0;
+    double stepTheta = (maxTheta - minTheta)/static_cast<double>(para->nTheta - 1);
 
     std::complex<double> *curS1 = new std::complex<double> [para->nTheta];
     std::complex<double> *curS2 = new std::complex<double> [para->nTheta];
@@ -182,7 +185,7 @@ void calculate::ComputeMuspAtRefWavel(parameters *para)
             {
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
-                    mu = cos(para->minTheta + t * para->stepTheta);
+                    mu = cos(minTheta + t * stepTheta);
                     sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara, refRelRe, mu);
                     curS1[t] = cS1;
                     curS2[t] = cS2;
@@ -192,7 +195,7 @@ void calculate::ComputeMuspAtRefWavel(parameters *para)
             {
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
-                    mu = cos(para->minTheta + t * para->stepTheta);
+                    mu = cos(minTheta + t * stepTheta);
                     sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara,
                                                            std::complex<double>(refRelRe,-refRelIm), mu);  //multiply by -1 to use "n-ik" convention
                     curS1[t] = cS1;
@@ -301,12 +304,13 @@ double calculate::CalculateForwardBackward(std::complex<double> *S1,
     double S;
     double theta, twoPiSinTheta;
     double sum = 0.0;
+    double stepTheta = (maxTheta - minTheta)/static_cast<double>(para->nTheta - 1);
 
     utilities util;
     for (unsigned int i = start; i <end; i++)
     {
         S = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i]))/2.0;
-        theta = para->minTheta + i * para->stepTheta;
+        theta = minTheta + i * stepTheta;
         twoPiSinTheta = 2.0 * M_PI * sin(theta);
         sum += S * twoPiSinTheta * util.SimpsonsWeight (i-start, end-start);
     }
@@ -320,12 +324,13 @@ double calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
     double theta, twoPiSinTheta;
     double num = 0.0;
     double den = 0.0;
+    double stepTheta = (maxTheta - minTheta)/static_cast<double>(para->nTheta - 1);
 
     utilities util;
     for (unsigned int i = 0; i < para->nTheta; i++)
     {
         S = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i]))/2.0;
-        theta = para->minTheta + i * para->stepTheta;
+        theta = minTheta + i * stepTheta;
         twoPiSinTheta = 2.0 * M_PI * sin(theta);
         num += S * cos(theta) * twoPiSinTheta * util.SimpsonsWeight (i, para->nTheta);
         den += S * twoPiSinTheta * util.SimpsonsWeight (i, para->nTheta);

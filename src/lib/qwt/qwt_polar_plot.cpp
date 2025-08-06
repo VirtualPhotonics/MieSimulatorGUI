@@ -7,15 +7,15 @@
  *****************************************************************************/
 
 #include "qwt_polar_plot.h"
-#include "qwt/qwt_polar_canvas.h"
-#include "qwt/qwt_polar_layout.h"
-#include "qwt/qwt_painter.h"
-#include "qwt/qwt_scale_engine.h"
-#include "qwt/qwt_scale_div.h"
-#include "qwt/qwt_text_label.h"
-#include "qwt/qwt_round_scale_draw.h"
-#include "qwt/qwt_legend.h"
-#include "qwt/qwt_dyngrid_layout.h"
+#include "qwt_polar_canvas.h"
+#include "qwt_polar_layout.h"
+#include "qwt_painter.h"
+#include "qwt_scale_engine.h"
+#include "qwt_scale_div.h"
+#include "qwt_text_label.h"
+#include "qwt_round_scale_draw.h"
+#include "qwt_legend.h"
+#include "qwt_dyngrid_layout.h"
 #include <qpointer.h>
 #include <qpaintengine.h>
 #include <qpainter.h>

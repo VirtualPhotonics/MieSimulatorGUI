@@ -2,7 +2,6 @@
 #define MIESIMULATION_H
 
 #include <complex>
-#include "utilities.h"
 
 class MieSimulation
 {

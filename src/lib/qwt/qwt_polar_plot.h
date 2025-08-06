@@ -9,12 +9,12 @@
 #ifndef QWT_POLAR_PLOT_H
 #define QWT_POLAR_PLOT_H
 
-#include "qwt/qwt_polar_global.h"
-#include "qwt/qwt_polar.h"
-#include "qwt/qwt_polar_itemdict.h"
-#include "qwt/qwt_interval.h"
-#include "qwt/qwt_scale_map.h"
-#include "qwt/qwt_point_polar.h"
+#include "qwt_polar_global.h"
+#include "qwt_polar.h"
+#include "qwt_polar_itemdict.h"
+#include "qwt_interval.h"
+#include "qwt_scale_map.h"
+#include "qwt_point_polar.h"
 #include <qframe.h>
 
 class QwtRoundScaleDraw;

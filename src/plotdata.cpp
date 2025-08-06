@@ -3,6 +3,9 @@
 **********************************************************************/
 
 #include "plotdata.h"
+#include "lib/qcustomplot.h"
+#include "lib/qwt/qwt_polar_curve.h"
+#include "lib/qwt/qwt_scale_engine.h"
 
 const QwtInterval radialInterval( 0.0, 10.0 );
 const QwtInterval azimuthInterval( 0.0, 360.0 );
@@ -302,26 +305,26 @@ void PlotData::AssignValuesPhaseFunctionPolarPlot(Ui_MainWindow *ui, parameters 
     ui->label_CurrentWL_PFPolar->setText(QString::number(para->startWavel + indexWL*para->stepWavel));
 
     //Set minimum and maximum values
-    para->maxPolarPtheta = 0;
-    para->minPolarPtheta = 1e100;
+    double maxPolarPtheta = 0;
+    double minPolarPtheta = 1e100;
     for (int i = 0; i < static_cast<int>(para->nWavel); i++)
     {
         for (int j = 0; j < static_cast<int>(para->nTheta); j++)
         {
             //Get Max value
-            if (para->phaseFunctionAve[i][j]>para->maxPolarPtheta)
-                para->maxPolarPtheta = para->phaseFunctionAve[i][j];
-            if (para->phaseFunctionPara[i][j]>para->maxPolarPtheta)
-                para->maxPolarPtheta = para->phaseFunctionPara[i][j];
-            if (para->phaseFunctionPerp[i][j]>para->maxPolarPtheta)
-                para->maxPolarPtheta = para->phaseFunctionPerp[i][j];
+            if (para->phaseFunctionAve[i][j]>maxPolarPtheta)
+                maxPolarPtheta = para->phaseFunctionAve[i][j];
+            if (para->phaseFunctionPara[i][j]>maxPolarPtheta)
+                maxPolarPtheta = para->phaseFunctionPara[i][j];
+            if (para->phaseFunctionPerp[i][j]>maxPolarPtheta)
+                maxPolarPtheta = para->phaseFunctionPerp[i][j];
             //Get Min value
-            if (para->phaseFunctionAve[i][j]<para->minPolarPtheta)
-                para->minPolarPtheta = para->phaseFunctionAve[i][j];
-            if (para->phaseFunctionPara[i][j]<para->minPolarPtheta)
-                para->minPolarPtheta = para->phaseFunctionPara[i][j];
-            if (para->phaseFunctionPerp[i][j]<para->minPolarPtheta)
-                para->minPolarPtheta = para->phaseFunctionPerp[i][j];
+            if (para->phaseFunctionAve[i][j]<minPolarPtheta)
+                minPolarPtheta = para->phaseFunctionAve[i][j];
+            if (para->phaseFunctionPara[i][j]<minPolarPtheta)
+                minPolarPtheta = para->phaseFunctionPara[i][j];
+            if (para->phaseFunctionPerp[i][j]<minPolarPtheta)
+                minPolarPtheta = para->phaseFunctionPerp[i][j];
         }
     }
 
@@ -346,16 +349,21 @@ void PlotData::AssignValuesPhaseFunctionPolarPlot(Ui_MainWindow *ui, parameters 
             phaseFunction[static_cast<int>(2*para->nTheta)-2 -i] = para->phaseFunctionPerp[indexWL][i];
         }
     }
-    PlotPhaseFunctionPolar(ui, para, theta, phaseFunction);
+    PlotPhaseFunctionPolar(ui, para, theta, phaseFunction,minPolarPtheta, maxPolarPtheta );
 }
 
 //Plot phase function polar plot
-void PlotData::PlotPhaseFunctionPolar(Ui_MainWindow *ui, parameters *para, QVector<double> theta, QVector<double> phaseFunction)
+void PlotData::PlotPhaseFunctionPolar(Ui_MainWindow *ui,
+                                      parameters *para,
+                                      QVector<double> theta,
+                                      QVector<double> phaseFunction,
+                                      double minPolarPtheta,
+                                      double maxPolarPtheta)
 {
     //Polar plot: phase function
-    QwtInterval radial( 0, para->maxPolarPtheta );
+    QwtInterval radial( 0, maxPolarPtheta );
     QwtInterval azimuth( 0.0, 360.0 );
-    ui->qwtpolarplot_PhaseFunctionPolar->setScale(QwtPolar::Radius, 0, para->maxPolarPtheta);
+    ui->qwtpolarplot_PhaseFunctionPolar->setScale(QwtPolar::Radius, 0, maxPolarPtheta);
     ui->qwtpolarplot_PhaseFunctionPolar->setScale(QwtPolar::Azimuth, 0, 360, 360/12);
 
     para->polarCurve->detach();
@@ -368,7 +376,7 @@ void PlotData::PlotPhaseFunctionPolar(Ui_MainWindow *ui, parameters *para, QVect
         ui->qwtpolarplot_PhaseFunctionPolar->setScaleEngine( QwtPolar::Radius, new QwtLinearScaleEngine() );
     if (ui->radioButton_PhaseLog->isChecked())
     {
-        ui->qwtpolarplot_PhaseFunctionPolar->setScale(QwtPolar::Radius, para->minPolarPtheta, para->maxPolarPtheta);
+        ui->qwtpolarplot_PhaseFunctionPolar->setScale(QwtPolar::Radius, minPolarPtheta, maxPolarPtheta);
         ui->qwtpolarplot_PhaseFunctionPolar->setScaleEngine( QwtPolar::Radius, new QwtLogScaleEngine() );
     }
     ui->qwtpolarplot_PhaseFunctionPolar->replot();

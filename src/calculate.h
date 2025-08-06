@@ -3,11 +3,7 @@
 
 #include "ui_mainwindow.h"
 #include <complex>
-#include <qmath.h>
 #include "parameters.h"
-#include "miesimulation.h"
-#include "utilities.h"
-
 
 class calculate
 {
@@ -15,14 +11,16 @@ public:
     calculate(void);
     ~calculate(void);
 
-    double wavel;		// wavel: wavelength of the light in the medium (in microns)
-    double mu;          // mu: cos angle
-    double k;           // k: wavevector
+    double wavel;                   // wavel: wavelength of the light in the medium (in microns)
+    double mu;                      // mu: cos angle
+    double k;                       // k: wavevector
     std::complex<double> cS2;		// complex parallel component: far field
     std::complex<double> cS1;		// complex perpendicular component: far field
     double qSca;                    // scattering efficiency
     double qExt;                    // extinction efficiency
     double qBack;                   // backscattering efficiency
+    double minTheta = 0;
+    double maxTheta = M_PI;
 
     void DoSimulation(Ui_MainWindow *ui, parameters *para);
     void ComputeMuspAtRefWavel(parameters *para);

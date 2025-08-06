@@ -4,18 +4,10 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <qmath.h>
-#include "qwt/qwt_polar_grid.h"
-#include "qwt/qwt_polar_curve.h"
-#include "qwt/qwt_scale_engine.h"
-#include "qcustomplot.h"
+#include "lib/qcustomplot.h"
 #include "parameters.h"
-#include "calculate.h"
-#include "utilities.h"
-#include "optionsdialog.h"
 #include "ui_mainwindow.h"
-#include "displaydialog.h"
-#include "mainwindowsupport.h"
-#include "plotdata.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -42,7 +34,7 @@ private slots:
     void on_radioButton_LogXAxis_clicked();
     void on_radioButton_MonoDisperse_clicked();
     void on_radioButton_PolyDisperse_clicked();
-    void on_radioButton_Conc_mm3_clicked();
+    void on_radioButton_NumDen_clicked();
     void on_radioButton_VolFrac_clicked();
     void on_radioButton_PhaseLinear_clicked();
     void on_radioButton_PhaseLog_clicked();

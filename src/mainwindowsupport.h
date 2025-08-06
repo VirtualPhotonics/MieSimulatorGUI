@@ -3,17 +3,16 @@
 
 #include <QMessageBox>
 #include <qmath.h>
-#include "qcustomplot.h"
+#include "lib/qcustomplot.h"
 #include "parameters.h"
 #include "calculate.h"
-#include "plotdata.h"
 
 class MainWindowSupport
 {
 public:
     MainWindowSupport(void);
     void SetWidgets(Ui_MainWindow *ui);
-    void InitializeGUI(Ui_MainWindow *ui);
+    void InitializeGUI(Ui_MainWindow *ui, parameters *para);
     void LoadInputData(Ui_MainWindow *ui, parameters *para);
     void InitializeArrays(Ui_MainWindow *ui, parameters *para, bool *arrayFlag);
     void DeleteArrays(parameters *para, bool *arrayFlag);

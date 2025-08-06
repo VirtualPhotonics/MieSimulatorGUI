@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include "ui_mainwindow.h"
-#include "ui_displaydialog.h"
 #include "ui_optionsdialog.h"
 #include "parameters.h"
 

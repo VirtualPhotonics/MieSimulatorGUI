@@ -34,7 +34,7 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
 	{
 		ui->textBrowser_Display->append("Distribution: Mono Disperse");
 		ui->textBrowser_Display->append("Diameter of spheres: " + QString::number(2.0*para->meanRadius) + " um");
-		if (mainUi->radioButton_Conc_mm3->isChecked())
+		if (mainUi->radioButton_NumDen->isChecked())
 			ui->textBrowser_Display->append("Concentration (Spheres in a volume of 1mm^3): "
 				+ QString::number(para->sphNumDensity * margin));
 		if (mainUi->radioButton_VolFrac->isChecked())
@@ -58,7 +58,7 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
 			ui->textBrowser_Display->append("Mean diameter of spheres: "
 				+ QString::number(2.0*para->meanRadius) + " um");
 			ui->textBrowser_Display->append("Std. deviation: " + QString::number(para->stdDev) + " um\n");
-			if (mainUi->radioButton_Conc_mm3->isChecked())
+			if (mainUi->radioButton_NumDen->isChecked())
 				ui->textBrowser_Display->append("Total Concentration (Spheres in a volume of 1mm^3): " 
 					+ QString::number(para->sphNumDensity * margin));
 			if (mainUi->radioButton_VolFrac->isChecked())

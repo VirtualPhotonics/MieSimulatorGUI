@@ -4,21 +4,21 @@
 **********************************************************************/
 
 #include "mainwindowsupport.h"
-
+#include "plotdata.h"
 
 MainWindowSupport::MainWindowSupport(void)
 {
 }
 
 // Initialize GUI
-void MainWindowSupport::InitializeGUI(Ui_MainWindow *ui)
+void MainWindowSupport::InitializeGUI(Ui_MainWindow *ui, parameters *para)
 {
     //Set variable limits
     ui->lineEdit_StartWL->setValidator( new QDoubleValidator(1e-15, 1e15, 12) );
     ui->lineEdit_EndWL->setValidator( new QDoubleValidator(1e-15, 1e15, 12) );
     ui->lineEdit_StepWL->setValidator( new QDoubleValidator(1e-15, 1e15, 12) );
     ui->lineEdit_Diameter->setValidator( new QDoubleValidator(1e-15, 1e15, 12) );
-    ui->lineEdit_Conc_mm3->setValidator( new QDoubleValidator(1e-50, 1e50, 12) );
+    ui->lineEdit_NumDen->setValidator( new QDoubleValidator(1e-50, 1e50, 12) );
     ui->lineEdit_VolFrac->setValidator( new QDoubleValidator(1e-50, 1e50, 12) );
     ui->lineEdit_MeanDiameter->setValidator( new QDoubleValidator(1e-15, 1e15, 12) );
     ui->lineEdit_StdDev->setValidator( new QDoubleValidator(1e-15, 1e15, 12) );
@@ -34,20 +34,20 @@ void MainWindowSupport::InitializeGUI(Ui_MainWindow *ui)
     ui->comboBox_Distribution->addItem("Custom");
     ui->comboBox_Distribution->setDisabled(true);
 
-    ui->lineEdit_StartWL->setText("600");
-    ui->lineEdit_EndWL->setText("1000");
-    ui->lineEdit_StepWL->setText("10");
+    ui->lineEdit_StartWL->setText(QString::number(para->startWavel));
+    ui->lineEdit_EndWL->setText(QString::number(para->endWavel));
+    ui->lineEdit_StepWL->setText(QString::number(para->stepWavel));
 
-    ui->lineEdit_Diameter->setText("0.1");
-    ui->lineEdit_ScatRefReal->setText("1.377");
-    ui->lineEdit_ScatRefImag->setText("0.0");
-    ui->lineEdit_MedRef->setText("1.333");
+    ui->lineEdit_Diameter->setText(QString::number(para->meanRadius));
+    ui->lineEdit_ScatRefReal->setText(QString::number(para->scatRefReal));
+    ui->lineEdit_ScatRefImag->setText(QString::number(para->scatRefImag));
+    ui->lineEdit_MedRef->setText(QString::number(para->medRef));
 
-    ui->lineEdit_MeanDiameter->setText("0.1");
-    ui->lineEdit_StdDev->setText("0.25");
-    ui->lineEdit_NSphere->setText("31");
-    ui->lineEdit_Conc_mm3->setText("1e8");
-    ui->lineEdit_VolFrac->setText("0.1");
+    ui->lineEdit_MeanDiameter->setText(QString::number(para->meanRadius));
+    ui->lineEdit_StdDev->setText(QString::number(para->stdDev));
+    ui->lineEdit_NSphere->setText(QString::number(para->nRadius));
+    ui->lineEdit_NumDen->setText(QString::number(para->sphNumDensity));
+    ui->lineEdit_VolFrac->setText(QString::number(para->volFraction));
 }
 
 //Reset widgets
@@ -85,15 +85,15 @@ void MainWindowSupport::SetWidgets(Ui_MainWindow *ui)
         ui->label_NSphere->setDisabled(trueFlag);
 
         //Enable or disable according to the selection
-        if (ui->radioButton_Conc_mm3->isChecked())
+        if (ui->radioButton_NumDen->isChecked())
         {
-            ui->lineEdit_Conc_mm3->setDisabled(false);
+            ui->lineEdit_NumDen->setDisabled(false);
             ui->lineEdit_VolFrac->setDisabled(true);
         }
 
         if (ui->radioButton_VolFrac->isChecked())
         {
-            ui->lineEdit_Conc_mm3->setDisabled(true);
+            ui->lineEdit_NumDen->setDisabled(true);
             ui->lineEdit_VolFrac->setDisabled(false);
         }
     }
@@ -118,8 +118,8 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
     para->scatRefReal = ui->lineEdit_ScatRefReal->text().toDouble();
     para->scatRefImag = ui->lineEdit_ScatRefImag->text().toDouble();
     para->medRef = ui->lineEdit_MedRef->text().toDouble();
-    if (ui->radioButton_Conc_mm3->isChecked())
-        para->sphNumDensity = ui->lineEdit_Conc_mm3->text().toDouble();
+    if (ui->radioButton_NumDen->isChecked())
+        para->sphNumDensity = ui->lineEdit_NumDen->text().toDouble();
     if (ui->radioButton_VolFrac->isChecked())
         para->volFraction = ui->lineEdit_VolFrac->text().toDouble();
 
@@ -182,14 +182,11 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
 //Initialize dynamic arrays.
 void MainWindowSupport::InitializeArrays(Ui_MainWindow *ui, parameters *para, bool *arrayFlag)
 {
-    para->minTheta = 0;
-    para->maxTheta = M_PI;
     if (ui->radioButton_Phase_DTheta0_1->isChecked())
         para->nTheta = 1801;    //180/(1801-1) = 0.1degree step
     if (ui->radioButton_Phase_DTheta0_5->isChecked())
         para->nTheta = 361;    //180/(361-1) = 0.5degree step
 
-    para->stepTheta = (para->maxTheta - para->minTheta)/static_cast<double>(para->nTheta - 1);
     para->nWavel = static_cast<unsigned int>(floor(para->endWavel - para->startWavel) / para->stepWavel) + 1;
     para->wavelArray = new double [para->nWavel];
     for (unsigned int i=0; i<para->nWavel; ++i)
@@ -331,7 +328,7 @@ void MainWindowSupport::ProcessDistribution(Ui_MainWindow *ui, parameters *para,
         //Find size of spheres
         if (ui->radioButton_VolFrac->isChecked())
             flagVolOrConc = true;
-        if (ui->radioButton_Conc_mm3->isChecked())
+        if (ui->radioButton_NumDen->isChecked())
             flagVolOrConc = false;
         mCalc->DiameterRangeSetting(para, distIndex);
         mCalc->SetSphereRadiusAndRefIndex(para, distIndex, flagVolOrConc);
@@ -362,7 +359,7 @@ void MainWindowSupport::DisableWidgetsDuringSimulation(Ui_MainWindow *ui, parame
     ui->pushButton_RunSimulation->setDisabled(flag);
     ui->radioButton_MonoDisperse->setDisabled(flag);
     ui->radioButton_PolyDisperse->setDisabled(flag);
-    ui->radioButton_Conc_mm3->setDisabled(flag);
+    ui->radioButton_NumDen->setDisabled(flag);
     ui->radioButton_VolFrac->setDisabled(flag);
     ui->radioButton_LinearYAxis->setDisabled(flag);
     ui->radioButton_LogYAxis->setDisabled(flag);
@@ -395,14 +392,14 @@ void MainWindowSupport::DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow
     ui->lineEdit_NSphere->setDisabled(flag);
     ui->lineEdit_ScatRefReal->setDisabled(flag);
     ui->lineEdit_ScatRefImag->setDisabled(flag);
-    ui->lineEdit_Conc_mm3->setDisabled(flag);
+    ui->lineEdit_NumDen->setDisabled(flag);
     ui->lineEdit_VolFrac->setDisabled(flag);
     ui->label_MeanDiameter->setDisabled(flag);
     ui->label_StdDev->setDisabled(flag);
     ui->label_NSphere->setDisabled(flag);
     ui->label_ScatRefReal->setDisabled(flag);
     ui->label_ScatRefImag->setDisabled(flag);
-    ui->radioButton_Conc_mm3->setDisabled(flag);
+    ui->radioButton_NumDen->setDisabled(flag);
     ui->radioButton_VolFrac->setDisabled(flag);
     if (flag)
         ui->pushButton_ShowDistributionAndCustom->setText("Load Custom Data");
@@ -557,7 +554,7 @@ bool MainWindowSupport::CheckInputParameters(Ui_MainWindow *ui, parameters *para
         msgBox.exec();
         return 1;
     }
-    if (ui->radioButton_Conc_mm3->isChecked())
+    if (ui->radioButton_NumDen->isChecked())
     {
         if (para->sphNumDensity <= 0.0)
         {
@@ -591,7 +588,7 @@ bool MainWindowSupport::CheckInputParameters(Ui_MainWindow *ui, parameters *para
     }
     if (ui->radioButton_MonoDisperse->isChecked())
     {
-        if (ui->radioButton_Conc_mm3->isChecked())
+        if (ui->radioButton_NumDen->isChecked())
         {
             double volume = 4.0 * M_PI *para->meanRadius * para->meanRadius * para->meanRadius / 3.0;
             if (para->sphNumDensity*volume >= 1e9)

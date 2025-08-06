@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset theme="VPlogoMie">
-    <normalon>:/Icons/icon/VPlogoMie.ico</normalon>
+    <normalon>../icon/VPlogoMie.ico</normalon>
    </iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">

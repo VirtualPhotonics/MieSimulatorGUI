@@ -3,6 +3,14 @@
 **********************************************************************/
 
 #include "mainwindow.h"
+#include "lib/qwt/qwt_polar_curve.h"
+#include "calculate.h"
+#include "utilities.h"
+#include "plotdata.h"
+#include "optionsdialog.h"
+#include "displaydialog.h"
+#include "mainwindowsupport.h"
+
 
 /***********************Starting Main window and initializations ******************************/
 MainWindow::MainWindow(QWidget *parent) :
@@ -46,7 +54,7 @@ void MainWindow::Initialize()
     mPara->polarCurve = new QwtPolarCurve();
 
     MainWindowSupport support;
-    support.InitializeGUI(ui);    
+    support.InitializeGUI(ui, mPara);
     support.SetWidgets(ui);
 
     PlotData plot;
@@ -350,7 +358,7 @@ void MainWindow::on_radioButton_PolyDisperse_clicked()
 void MainWindow::on_radioButton_VolFrac_clicked()
 {
     mPara->volFraction = ui->lineEdit_VolFrac->text().toDouble();
-    ui->lineEdit_Conc_mm3->setText(QString::number(mPara->sphNumDensity));
+    ui->lineEdit_NumDen->setText(QString::number(mPara->sphNumDensity));
 
     MainWindowSupport support;
     support.SetWidgets(ui);
@@ -360,10 +368,10 @@ void MainWindow::on_radioButton_VolFrac_clicked()
     mDistPlotFlag = false;
 }
 
-//radioButton_Conc_mm3_clicked: Select Concentraction (number of spheres in 1 cubic mm)
-void MainWindow::on_radioButton_Conc_mm3_clicked()
+//radioButton_NumDen_clicked: Select Concentraction (number of spheres in 1 cubic mm)
+void MainWindow::on_radioButton_NumDen_clicked()
 {
-    mPara->sphNumDensity = ui->lineEdit_Conc_mm3->text().toDouble();
+    mPara->sphNumDensity = ui->lineEdit_NumDen->text().toDouble();
     ui->lineEdit_VolFrac->setText(QString::number(mPara->volFraction));
 
     MainWindowSupport support;
@@ -440,6 +448,7 @@ void MainWindow::on_radioButton_Phase_DTheta0_1_clicked()
     QMessageBox msgBox;
 
     msgBox.setIcon(QMessageBox::Warning);
+    msgBox.setMinimumSize(320,180);
     msgBox.setWindowTitle("Warning");
     msgBox.setText("This selection will increase the simulation time.");
     msgBox.setInformativeText("Do you want to continue?");
@@ -467,10 +476,10 @@ void MainWindow::on_slider_ConcPercentChange_valueChanged(int position)
     double margin = (1.0 + position /200.0);
     ui->label_ActualConcPercent->setText(QString::number(position/2.0)+"%");
 
-    if (ui->radioButton_Conc_mm3->isChecked())
+    if (ui->radioButton_NumDen->isChecked())
     {
         value =  mPara->sphNumDensity * margin;
-        ui->lineEdit_Conc_mm3->setText(QString::number(value));
+        ui->lineEdit_NumDen->setText(QString::number(value));
     }
     if (ui->radioButton_VolFrac->isChecked())
     {
@@ -652,14 +661,15 @@ void MainWindow::UpdatePhaseFunctionPolarPlot()
 //Update Phase Function (Polar) plot
 void MainWindow::UpdateMuspFitErrorDisplay()
 {
-    ui->label_CurrentMSE->setText("<font color=\"red\">M.S. Error = </font>"+QString::number(mPara->muspFittingError,'g',6));
-    ui->label_CurrentA->setText("<font color=\"blue\">a = </font>"+
+    ui->label_CurrentMSE->setText("<font color=\"red\">M.S. Error = "
+                                  "</font>"+QString::number(mPara->muspFittingError,'g',6));
+    ui->label_CurrentA->setText("<font color=\"blue\">A = </font>"+
                                 QString::number(mPara->muspAtRefWavel[mPara->refWavelIdx],'g',6)+
                                 " mm<sup>-1</sup>");
 }
 
 
-/********************************** When 'PolyDisperse:Custom' is selected **********************************/
+/********************************** When 'PolyDisperse:Custom' is selected ***********************/
 
 //comboBox_Distribution_valueChanged, read data from a file
 void MainWindow::on_comboBox_Distribution_currentIndexChanged(int value)

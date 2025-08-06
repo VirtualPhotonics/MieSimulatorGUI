@@ -23,11 +23,11 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Mie Simulator v1.3: Virtual Photonics Technology Initiative - Beckman Laser Institute, University of California Irvine  </string>
+   <string>Mie Simulator v2.0: Virtual Photonics Technology Initiative - Beckman Laser Institute, University of California Irvine  </string>
   </property>
   <property name="windowIcon">
    <iconset theme="VPlogoMie">
-    <normalon>:/Icons/icon/VPlogoMie.ico</normalon>
+    <normalon>../icon/VPlogoMie.ico</normalon>
    </iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -54,7 +54,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>50</weight>
             <italic>false</italic>
             <bold>false</bold>
            </font>
@@ -72,7 +71,6 @@
             <font>
              <family>Arial</family>
              <pointsize>9</pointsize>
-             <weight>50</weight>
              <italic>false</italic>
              <bold>false</bold>
             </font>
@@ -150,7 +148,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -188,7 +185,6 @@
            <font>
             <family>Arial</family>
             <pointsize>6</pointsize>
-            <weight>50</weight>
             <italic>false</italic>
             <bold>false</bold>
            </font>
@@ -299,7 +295,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -313,7 +308,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -331,7 +325,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -346,7 +339,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -376,7 +368,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -390,7 +381,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -408,7 +398,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -501,7 +490,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -527,7 +515,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -551,7 +538,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -581,7 +567,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -610,7 +595,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -634,7 +618,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -684,7 +667,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -710,7 +692,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -734,7 +715,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -755,7 +735,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -878,7 +857,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>50</weight>
             <italic>false</italic>
             <bold>false</bold>
            </font>
@@ -903,7 +881,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>50</weight>
             <bold>false</bold>
            </font>
           </property>
@@ -951,7 +928,6 @@
              <font>
               <family>Arial</family>
               <pointsize>8</pointsize>
-              <weight>50</weight>
               <bold>false</bold>
              </font>
             </property>
@@ -975,7 +951,6 @@
              <font>
               <family>Arial</family>
               <pointsize>8</pointsize>
-              <weight>50</weight>
               <bold>false</bold>
              </font>
             </property>
@@ -1022,7 +997,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="MieResource.qrc">:/Icons/icon/Banner.png</pixmap>
+       <pixmap resource="../MieResource.qrc">:/Icons/icon/Banner.png</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -1052,7 +1027,6 @@
          <font>
           <family>Arial</family>
           <pointsize>9</pointsize>
-          <weight>50</weight>
           <bold>false</bold>
          </font>
         </property>
@@ -1079,7 +1053,6 @@
          <font>
           <family>Arial</family>
           <pointsize>9</pointsize>
-          <weight>50</weight>
           <bold>false</bold>
          </font>
         </property>
@@ -1094,7 +1067,6 @@
          <font>
           <family>Arial</family>
           <pointsize>8</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1132,7 +1104,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1165,7 +1136,6 @@
          <font>
           <family>Arial</family>
           <pointsize>8</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1191,7 +1161,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1209,7 +1178,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1239,7 +1207,6 @@
          <font>
           <family>Arial</family>
           <pointsize>9</pointsize>
-          <weight>50</weight>
           <bold>false</bold>
          </font>
         </property>
@@ -1266,7 +1233,6 @@
          <font>
           <family>Arial</family>
           <pointsize>8</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1292,7 +1258,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <italic>true</italic>
              <bold>false</bold>
             </font>
@@ -1320,7 +1285,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1356,7 +1320,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1389,7 +1352,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1422,7 +1384,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1449,7 +1410,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1482,7 +1442,6 @@
          <font>
           <family>Arial</family>
           <pointsize>9</pointsize>
-          <weight>50</weight>
           <bold>false</bold>
          </font>
         </property>
@@ -1503,7 +1462,6 @@
          <font>
           <family>Arial</family>
           <pointsize>8</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1547,7 +1505,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1557,7 +1514,7 @@
           </widget>
          </item>
          <item row="0" column="5" colspan="2">
-          <widget class="QLineEdit" name="lineEdit_Conc_mm3">
+          <widget class="QLineEdit" name="lineEdit_NumDen">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1580,7 +1537,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1595,7 +1551,6 @@
             <font>
              <family>Arial</family>
              <pointsize>9</pointsize>
-             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -1628,7 +1583,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1658,7 +1612,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1671,12 +1624,11 @@
           </widget>
          </item>
          <item row="0" column="0" colspan="4">
-          <widget class="QRadioButton" name="radioButton_Conc_mm3">
+          <widget class="QRadioButton" name="radioButton_NumDen">
            <property name="font">
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1703,7 +1655,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1762,7 +1713,6 @@
          <font>
           <family>Arial</family>
           <pointsize>8</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1806,7 +1756,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1827,7 +1776,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1854,7 +1802,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1890,7 +1837,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1911,7 +1857,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -1995,7 +1940,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2013,7 +1957,6 @@
          <font>
           <family>Arial</family>
           <pointsize>8</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -2051,7 +1994,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2087,7 +2029,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2120,7 +2061,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2135,7 +2075,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2171,7 +2110,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2204,7 +2142,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2225,7 +2162,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2243,7 +2179,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2267,7 +2202,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2310,7 +2244,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2377,7 +2310,6 @@
               <font>
                <family>Arial</family>
                <pointsize>8</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -2439,7 +2371,6 @@
             <font>
              <family>Arial</family>
              <pointsize>8</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -2471,7 +2402,7 @@
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="movable">
        <bool>true</bool>
@@ -2525,7 +2456,6 @@
        <font>
         <family>Arial</family>
         <pointsize>9</pointsize>
-        <weight>50</weight>
         <italic>false</italic>
         <bold>false</bold>
        </font>
@@ -2534,7 +2464,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -2556,7 +2486,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>50</weight>
             <italic>false</italic>
             <bold>false</bold>
            </font>
@@ -2576,7 +2505,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>50</weight>
             <italic>false</italic>
             <bold>false</bold>
            </font>
@@ -2596,7 +2524,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>50</weight>
             <italic>false</italic>
             <bold>false</bold>
            </font>
@@ -2616,7 +2543,6 @@
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <weight>50</weight>
             <italic>false</italic>
             <bold>false</bold>
            </font>
@@ -2751,7 +2677,6 @@
            <font>
             <family>Arial</family>
             <pointsize>9</pointsize>
-            <weight>50</weight>
             <bold>false</bold>
            </font>
           </property>
@@ -2768,7 +2693,6 @@
              <font>
               <family>Arial</family>
               <pointsize>8</pointsize>
-              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
@@ -2791,7 +2715,6 @@
                 <font>
                  <family>Liberation Sans</family>
                  <pointsize>9</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -2809,12 +2732,11 @@
                 <font>
                  <family>Arial</family>
                  <pointsize>8</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; color:#0000ff;&quot;&gt;a&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;(λ/λref)&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#fc1907; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#ab2300; vertical-align:super;&quot;&gt;b&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; color:#0000ff;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;(λ/λref)&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#fc1907; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#ab2300; vertical-align:super;&quot;&gt;b&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2846,7 +2768,6 @@
                 <font>
                  <family>Liberation Sans</family>
                  <pointsize>9</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -2864,13 +2785,12 @@
                 <font>
                  <family>Arial</family>
                  <pointsize>8</pointsize>
-                 <weight>50</weight>
                  <italic>false</italic>
                  <bold>false</bold>
                 </font>
                </property>
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; color:#0000ff;&quot;&gt;a&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;[&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#159e04;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#15a204; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;(λ/λref)&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#000000; vertical-align:super;&quot;&gt;-4&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#000000;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;1-&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#139103;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#139103; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#000000;&quot;&gt;)&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;(λ/λref)&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#000000; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#a21902; vertical-align:super;&quot;&gt;bMie&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;] &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; color:#0000ff;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;[&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#159e04;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#15a204; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;(λ/λref)&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#000000; vertical-align:super;&quot;&gt;-4&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#000000;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;1-&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#139103;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#139103; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#000000;&quot;&gt;)&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;(λ/λref)&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#000000; vertical-align:super;&quot;&gt;-&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#a21902; vertical-align:super;&quot;&gt;bMie&lt;/span&gt;&lt;span style=&quot; font-size:10pt; color:#000000;&quot;&gt;] &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2961,7 +2881,6 @@
              <font>
               <family>Arial</family>
               <pointsize>8</pointsize>
-              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
@@ -2987,7 +2906,6 @@
                 <font>
                  <family>Arial</family>
                  <pointsize>9</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -3002,7 +2920,6 @@
                 <font>
                  <family>Arial</family>
                  <pointsize>9</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -3017,7 +2934,6 @@
                 <font>
                  <family>Arial</family>
                  <pointsize>9</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -3032,7 +2948,6 @@
                 <font>
                  <family>Arial</family>
                  <pointsize>9</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -3050,7 +2965,6 @@
                 <font>
                  <family>Arial</family>
                  <pointsize>9</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -3065,7 +2979,6 @@
                 <font>
                  <family>Arial</family>
                  <pointsize>9</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -3125,7 +3038,6 @@
            <font>
             <family>Arial</family>
             <pointsize>9</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -3143,7 +3055,6 @@
            <font>
             <family>Arial</family>
             <pointsize>9</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -3223,18 +3134,18 @@
   <customwidget>
    <class>QwtSlider</class>
    <extends>QWidget</extends>
-   <header>qwt_slider.h</header>
+   <header>lib/qwt/qwt_slider.h</header>
   </customwidget>
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
-   <header>qcustomplot.h</header>
+   <header>lib/qcustomplot.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QwtPolarPlot</class>
    <extends>QWidget</extends>
-   <header>qwt_polar_plot.h</header>
+   <header>lib/qwt/qwt_polar_plot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -3253,9 +3164,9 @@
   <tabstop>lineEdit_StartWL</tabstop>
   <tabstop>lineEdit_EndWL</tabstop>
   <tabstop>lineEdit_StepWL</tabstop>
-  <tabstop>radioButton_Conc_mm3</tabstop>
+  <tabstop>radioButton_NumDen</tabstop>
   <tabstop>radioButton_VolFrac</tabstop>
-  <tabstop>lineEdit_Conc_mm3</tabstop>
+  <tabstop>lineEdit_NumDen</tabstop>
   <tabstop>lineEdit_VolFrac</tabstop>
   <tabstop>slider_ConcPercentChange</tabstop>
   <tabstop>radioButton_LinearYAxis</tabstop>
@@ -3291,7 +3202,7 @@
   <tabstop>tabWidget_G</tabstop>
  </tabstops>
  <resources>
-  <include location="MieResource.qrc"/>
+  <include location="../MieResource.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -3360,7 +3271,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup_ConcVolFrac"/>
   <buttongroup name="buttonGroup_MonoPoly"/>
+  <buttongroup name="buttonGroup_ConcVolFrac"/>
  </buttongroups>
 </ui>

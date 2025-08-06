@@ -7,10 +7,10 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#include "qwt/qwt_slider.h"
-#include "qwt/qwt_painter.h"
-#include "qwt/qwt_scale_draw.h"
-#include "qwt/qwt_scale_map.h"
+#include "qwt_slider.h"
+#include "qwt_painter.h"
+#include "qwt_scale_draw.h"
+#include "qwt_scale_map.h"
 #include <qevent.h>
 #include <qdrawutil.h>
 #include <qpainter.h>

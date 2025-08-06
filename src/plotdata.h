@@ -2,12 +2,8 @@
 #define PLOTDATA_H
 
 #include "ui_mainwindow.h"
-#include "qcustomplot.h"
 #include "parameters.h"
-#include "calculate.h"
-#include "qwt/qwt_polar_grid.h"
-#include "qwt/qwt_polar_curve.h"
-#include "qwt/qwt_scale_engine.h"
+#include "lib/qwt/qwt_polar_grid.h"
 
 class PlotData
 {
@@ -27,8 +23,7 @@ public:
     void AssignValuesS1S2Plot(Ui_MainWindow *ui, parameters *para);
     void AssignValuesAllOtherPlots(Ui_MainWindow *ui, parameters* para);
     void AssignValuesMuspPowerLawPlots(Ui_MainWindow *ui, parameters* para);
-    void PlotDistribution(Ui_MainWindow *ui, parameters *para, QVector<double> x, QVector<double> yDist);
-    void PlotPhaseFunctionPolar(Ui_MainWindow *ui, parameters *para, QVector<double> theta, QVector<double> phaseFunction);
+    void PlotDistribution(Ui_MainWindow *ui, parameters *para, QVector<double> x, QVector<double> yDist);    
     void PlotPhaseFunctionLinear(Ui_MainWindow *ui, QVector<double> x, QVector<double> yPara,
                                            QVector<double> yPerp, QVector<double> yAve);
     void PlotS1S2(Ui_MainWindow *ui, parameters *para, QVector<double> x, QVector<double> yS);
@@ -44,6 +39,8 @@ public:
     void PlotMuspPowerLaw(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp, QVector<double> yFit);    
 
 private:
+    void PlotPhaseFunctionPolar(Ui_MainWindow *ui, parameters *para, QVector<double> theta, QVector<double> phaseFunction,
+                                double minPolarPtheta, double maxPolarPtheta);
     QwtPolarGrid *mGrid;
 };
 
@@ -90,7 +87,8 @@ public:
     }
     virtual QwtPointPolar sample( size_t i ) const
     {
-        return QwtPointPolar( d_azimuth[i],d_radial[i]);
+        int j = static_cast<int>(i);
+        return QwtPointPolar( d_azimuth[j],d_radial[j]);
     }
 
     virtual QRectF boundingRect() const

@@ -10,8 +10,8 @@
 #ifndef QWT_SLIDER_H
 #define QWT_SLIDER_H
 
-#include "qwt/qwt_global.h"
-#include "qwt/qwt_abstract_slider.h"
+#include "qwt_global.h"
+#include "qwt_abstract_slider.h"
 
 class QwtScaleDraw;
 
