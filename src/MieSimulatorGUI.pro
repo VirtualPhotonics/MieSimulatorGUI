@@ -45,9 +45,9 @@ RESOURCES += \
     MieResource.qrc
 
 FORMS += \
-    displaydialog.ui \
-    mainwindow.ui \
-    optionsdialog.ui
+    forms/displaydialog.ui \
+    forms/mainwindow.ui \
+    forms/optionsdialog.ui
 
 DISTFILES += \
     misc/MieSimulatorGUI.desktop \
@@ -114,18 +114,17 @@ HEADERS += \
     lib/qwt/qwt_transform.h \
     lib/qwt/qwt_widget_overlay.h \
     lib/qcustomplot.h \
-    calculate.h \
-    displaydialog.h \
-    mainwindow.h \
-    mainwindowsupport.h \
-    miesimulation.h \
-    optionsdialog.h \
-    parameters.h \
-    plotdata.h \
+    core/calculate.h \
+    core/miesimulation.h \
+    core/parameters.h \
+    core/plotdata.h \
+    core/utilities.h \
+    forms/displaydialog.h \
+    forms/mainwindow.h \
+    forms/mainwindowsupport.h \
+    forms/optionsdialog.h
 
-    utilities.h
-
-SOURCES += \
+SOURCES += \    
     lib/qwt/qwt_abstract_legend.cpp \
     lib/qwt/qwt_abstract_scale.cpp \
     lib/qwt/qwt_abstract_scale_draw.cpp \
@@ -179,14 +178,14 @@ SOURCES += \
     lib/qwt/qwt_transform.cpp \
     lib/qwt/qwt_widget_overlay.cpp \
     lib/qcustomplot.cpp \
-    calculate.cpp \
-    displaydialog.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    mainwindowsupport.cpp \
-    miesimulation.cpp \
-    optionsdialog.cpp \
-    parameters.cpp \
-    plotdata.cpp \    
-    utilities.cpp
+    core/calculate.cpp \
+    core/miesimulation.cpp \
+    core/parameters.cpp \
+    core/plotdata.cpp \
+    core/utilities.cpp \
+    forms/displaydialog.cpp \
+    forms/mainwindow.cpp \
+    forms/mainwindowsupport.cpp \
+    forms/optionsdialog.cpp \
+    main.cpp
 
