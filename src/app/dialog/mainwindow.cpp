@@ -179,7 +179,15 @@ void MainWindow::on_pushButton_SaveData_clicked()
     if (mOtherPlotsFlag)
     {
         OptionsDialog saveOptions;
-        saveOptions.SaveData(ui, mPara);
+        saveOptions.SaveData(ui->radioButton_MonoDisperse,
+                             ui->radioButton_PolyDisperse,
+                             ui->radioButton_NumDen,
+                             ui->radioButton_VolFrac,
+                             ui->comboBox_Distribution,
+                             ui->slider_ConcPercentChange,
+                             ui->radioButton_PhaseAverage,
+                             ui->radioButton_PhasePara,
+                             ui->radioButton_PhasePerp,mPara);
     }
     else
     {
@@ -197,7 +205,16 @@ void MainWindow::on_pushButton_DisplayData_clicked()
     {
         DisplayDialog *display;
         display = new DisplayDialog();
-        display->DisplayData(ui,  mPara);
+        display->DisplayData(ui->radioButton_MonoDisperse,
+                             ui->radioButton_PolyDisperse,
+                             ui->radioButton_NumDen,
+                             ui->radioButton_VolFrac,
+                             ui->comboBox_Distribution,
+                             ui->slider_ConcPercentChange,
+                             ui->slider_WL_PFPolar,
+                             ui->radioButton_PhaseAverage,
+                             ui->radioButton_PhasePara,
+                             ui->radioButton_PhasePerp,  mPara);
         display->show();
     }
     else

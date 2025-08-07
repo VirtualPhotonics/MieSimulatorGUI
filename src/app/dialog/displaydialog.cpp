@@ -23,28 +23,38 @@ void DisplayDialog::on_pushButton_Close_clicked()
 	this->close();
 }
 
-void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
+void DisplayDialog::DisplayData(QRadioButton *radioButton_MonoDisperse,
+                                QRadioButton *radioButton_PolyDisperse,
+                                QRadioButton *radioButton_NumDen,
+                                QRadioButton *radioButton_VolFrac,
+                                QComboBox *comboBox_Distribution,
+                                QSlider *slider_ConcPercentChange,
+                                QSlider *slider_WL_PFPolar,
+                                QRadioButton *radioButton_PhaseAverage,
+                                QRadioButton *radioButton_PhasePara,
+                                QRadioButton *radioButton_PhasePerp,
+                                parameters *para)
 {
-	double margin = (1.0 + mainUi->slider_ConcPercentChange->value() / 200.0);
+    double margin = (1.0 + slider_ConcPercentChange->value() / 200.0);
 
 	//Simulation parameters
     ui->textBrowser_Display->setText("Simulation parameters:\n");
 
-	if (mainUi->radioButton_MonoDisperse->isChecked())
+    if (radioButton_MonoDisperse->isChecked())
 	{
-		ui->textBrowser_Display->append("Distribution: Mono Disperse");
+        ui->textBrowser_Display->append("Distribution: Mono Disperse");
 		ui->textBrowser_Display->append("Diameter of spheres: " + QString::number(2.0*para->meanRadius) + " um");
-		if (mainUi->radioButton_NumDen->isChecked())
+        if (radioButton_NumDen->isChecked())
 			ui->textBrowser_Display->append("Concentration (Spheres in a volume of 1mm^3): "
 				+ QString::number(para->sphNumDensity * margin));
-		if (mainUi->radioButton_VolFrac->isChecked())
+        if (radioButton_VolFrac->isChecked())
 			ui->textBrowser_Display->append("Volume Fraction (Total sphere volume / 1mm^3): "
 				+ QString::number(para->volFraction * margin));
 	}
 
-	if (mainUi->radioButton_PolyDisperse->isChecked())
+    if (radioButton_PolyDisperse->isChecked())
 	{
-		int currentIndex = mainUi->comboBox_Distribution->currentIndex();
+        int currentIndex = comboBox_Distribution->currentIndex();
 		if (currentIndex == 0) //Log normal distribution
 			ui->textBrowser_Display->append("Distribution: Poly Disperse - Log Normal");
 		if (currentIndex == 1) //Gaussian distribution
@@ -58,10 +68,10 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
 			ui->textBrowser_Display->append("Mean diameter of spheres: "
 				+ QString::number(2.0*para->meanRadius) + " um");
 			ui->textBrowser_Display->append("Std. deviation: " + QString::number(para->stdDev) + " um\n");
-			if (mainUi->radioButton_NumDen->isChecked())
+            if (radioButton_NumDen->isChecked())
 				ui->textBrowser_Display->append("Total Concentration (Spheres in a volume of 1mm^3): " 
 					+ QString::number(para->sphNumDensity * margin));
-			if (mainUi->radioButton_VolFrac->isChecked())
+            if (radioButton_VolFrac->isChecked())
 				ui->textBrowser_Display->append("Volume Fraction (Total sphere volume / 1mm^3): " 
 					+ QString::number(para->volFraction * margin));
 		}
@@ -78,7 +88,7 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
 			+ QString::number(para->scatRefRealArray[i]) + "\t" + QString::number(para->scatRefImagArray[i]) );
 
      ui->textBrowser_Display->append("\n\nOutput:");
-    if (mainUi->radioButton_MonoDisperse->isChecked())
+    if (radioButton_MonoDisperse->isChecked())
     {
         ui->textBrowser_Display->append("\nSize Parameter (2*pi*R/lambda):");
         ui->textBrowser_Display->append("WL(nm)\t2*pi*R/lambda");
@@ -110,25 +120,25 @@ void DisplayDialog::DisplayData(Ui_MainWindow *mainUi, parameters *para)
                                         QString::number(para->forward[i]) + "\t" +
                                         QString::number(para->backward[i]));
 
-    int indexWL = mainUi->slider_WL_PFPolar->value();
+    int indexWL = slider_WL_PFPolar->value();
 	double currentWL = para->startWavel + indexWL*para->stepWavel;
 
     ui->textBrowser_Display->append("\nPhase Function @ Wavelength of " + QString::number(currentWL) + " nm:");
-	if (mainUi->radioButton_PhaseAverage->isChecked())
+    if (radioButton_PhaseAverage->isChecked())
         ui->textBrowser_Display->append("Angle(deg)\tPhase Function (Ave)");
-    if (mainUi->radioButton_PhasePara->isChecked())
+    if (radioButton_PhasePara->isChecked())
         ui->textBrowser_Display->append("Angle(deg)\tPhase Function (Para)");
-    if (mainUi->radioButton_PhasePerp->isChecked())
+    if (radioButton_PhasePerp->isChecked())
         ui->textBrowser_Display->append("Angle(deg)\tPhase Function (Perp)");
     for (unsigned int i = 0; i<para->nTheta; i++)
     {
-        if (mainUi->radioButton_PhaseAverage->isChecked())
+        if (radioButton_PhaseAverage->isChecked())
             ui->textBrowser_Display->append(QString::number(180.0 * i / (para->nTheta - 1)) + "\t" +
                                             QString::number(para->phaseFunctionAve[indexWL][i]));
-        if (mainUi->radioButton_PhasePara->isChecked())
+        if (radioButton_PhasePara->isChecked())
             ui->textBrowser_Display->append(QString::number(180.0 * i / (para->nTheta - 1)) + "\t" +
                                             QString::number(para->phaseFunctionPara[indexWL][i]));
-        if (mainUi->radioButton_PhasePerp->isChecked())
+        if (radioButton_PhasePerp->isChecked())
             ui->textBrowser_Display->append(QString::number(180.0 * i / (para->nTheta - 1)) + "\t" +
                                             QString::number(para->phaseFunctionPerp[indexWL][i]));
     }

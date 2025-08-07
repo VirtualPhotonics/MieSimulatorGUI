@@ -3,6 +3,8 @@
 **********************************************************************/
 
 #include "optionsdialog.h"
+#include <QFileDialog>
+#include <QMessageBox>
 
 OptionsDialog::OptionsDialog(QWidget *parent) :
     QDialog(parent),
@@ -49,12 +51,21 @@ void OptionsDialog::on_pushButton_Cancel_clicked()
     this->close();
 }
 
-void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
+void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
+                             QRadioButton *radioButton_PolyDisperse,
+                             QRadioButton *radioButton_NumDen,
+                             QRadioButton *radioButton_VolFrac,
+                             QComboBox *comboBox_Distribution,
+                             QSlider *slider_ConcPercentChange,
+                             QRadioButton *radioButton_PhaseAverage,
+                             QRadioButton *radioButton_PhasePara,
+                             QRadioButton *radioButton_PhasePerp,
+                             parameters *para)
 {
     setModal(true);
     exec();
 
-    double margin = (1.0 + ui->slider_ConcPercentChange->value() /200.0);
+    double margin = (1.0 + slider_ConcPercentChange->value() /200.0);
     if (flagScatPara)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
@@ -65,9 +76,14 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
             return;
         else
         {
-            SaveScatPara(ui, para,fileName,margin);
+            SaveScatPara(radioButton_MonoDisperse,
+                         radioButton_PolyDisperse,
+                         radioButton_NumDen, radioButton_VolFrac,
+                         comboBox_Distribution, para,fileName,margin);
             RememberLastDirectory(fileName);
         }
+
+
     }
     if (flagPhaseFunction)
     {
@@ -79,7 +95,9 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
             return;
         else
         {
-            SavePhaseFunction(ui, para,fileName);
+            SavePhaseFunction(radioButton_PhaseAverage,
+                              radioButton_PhasePara,
+                              radioButton_PhasePerp, para,fileName);
             RememberLastDirectory(fileName);
         }
     }
@@ -114,7 +132,14 @@ void OptionsDialog::SaveData(Ui_MainWindow *ui, parameters *para)
 
 }
 
-void OptionsDialog::SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fileName, double margin)
+void OptionsDialog::SaveScatPara(QRadioButton *radioButton_MonoDisperse,
+                                 QRadioButton *radioButton_PolyDisperse,
+                                 QRadioButton *radioButton_NumDen,
+                                 QRadioButton *radioButton_VolFrac,
+                                 QComboBox *comboBox_Distribution,
+                                 parameters *para,
+                                 QString fileName,
+                                 double margin)
 {    
 
     QFile file(fileName);
@@ -130,19 +155,19 @@ void OptionsDialog::SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fi
     //Simulation parameters
     out << "Simulation parameters:\n\n";
 
-    if(ui->radioButton_MonoDisperse->isChecked())
+    if(radioButton_MonoDisperse->isChecked())
     {
         out << "Distribution: Mono Disperse \n";
         out << "Diameter of spheres: " << 2.0*para->meanRadius <<" um\n";
-        if (ui->radioButton_NumDen->isChecked())
+        if (radioButton_NumDen->isChecked())
             out << "Concentration (Spheres in a volume of 1mm^3): " << para->sphNumDensity * margin<<"\n";
-        if (ui->radioButton_VolFrac->isChecked())
+        if (radioButton_VolFrac->isChecked())
             out << "Volume Fraction (Total sphere volume / 1mm^3): " << para->volFraction * margin<<"\n";
     }
 
-    if(ui->radioButton_PolyDisperse->isChecked())
+    if(radioButton_PolyDisperse->isChecked())
     {
-        int currentIndex = ui->comboBox_Distribution->currentIndex();
+        int currentIndex = comboBox_Distribution->currentIndex();
         if (currentIndex == 0) //Log normal distribution
             out << "Distribution: Poly Disperse - Log Normal \n";
         if (currentIndex == 1) //Gaussian distribution
@@ -154,9 +179,9 @@ void OptionsDialog::SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fi
         {
             out << "Mean diameter of spheres: " << 2.0*para->meanRadius <<" um\n";
             out << "Std. deviation: " << para->stdDev <<" um\n";
-            if (ui->radioButton_NumDen->isChecked())
+            if (radioButton_NumDen->isChecked())
                 out << "Total Concentration (Spheres in a volume of 1mm^3): " << para->sphNumDensity * margin <<"\n";
-            if (ui->radioButton_VolFrac->isChecked())
+            if (radioButton_VolFrac->isChecked())
                 out << "Volume Fraction (Total sphere volume / 1mm^3): " << para->volFraction * margin <<"\n";
         }
     }
@@ -172,7 +197,7 @@ void OptionsDialog::SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fi
             <<para->scatRefRealArray[i]<<"\t" << para->scatRefImagArray[i] <<"\n";
 
     out << "\n\nOutput:\n\n";
-    if (ui->radioButton_MonoDisperse->isChecked())
+    if (radioButton_MonoDisperse->isChecked())
     {
         out << "Size Parameter (2*pi*R/lambda):\n";
         out << "WL(nm)\t2*pi*R/lambda\n";
@@ -199,7 +224,10 @@ void OptionsDialog::SaveScatPara(Ui_MainWindow *ui, parameters *para, QString fi
     out << "\n";
 }
 
-void OptionsDialog::SavePhaseFunction(Ui_MainWindow *ui, parameters *para, QString fileName)
+void OptionsDialog::SavePhaseFunction(QRadioButton *radioButton_PhaseAverage,
+                                      QRadioButton *radioButton_PhasePara,
+                                      QRadioButton *radioButton_PhasePerp,
+                                       parameters *para, QString fileName)
 {
 
     QFile file(fileName);
@@ -213,11 +241,11 @@ void OptionsDialog::SavePhaseFunction(Ui_MainWindow *ui, parameters *para, QStri
     QTextStream out(&file);
 
     out << "Phase Function ";
-    if (ui->radioButton_PhaseAverage->isChecked())
+    if (radioButton_PhaseAverage->isChecked())
         out << "(Ave): ";
-    if (ui->radioButton_PhasePara->isChecked())
+    if (radioButton_PhasePara->isChecked())
          out << "(Para): ";
-    if (ui->radioButton_PhasePerp->isChecked())
+    if (radioButton_PhasePerp->isChecked())
          out << "(Perp): ";
      out << "\n\tWL(nm)-->\nAngle(deg)";
      for (unsigned int i=0; i<para->nWavel; i++)
@@ -229,12 +257,12 @@ void OptionsDialog::SavePhaseFunction(Ui_MainWindow *ui, parameters *para, QStri
         out << 180.0 * j /(para->nTheta-1) <<"\t";
         for (unsigned int i=0; i<para->nWavel; i++)
         {
-            if (ui->radioButton_PhaseAverage->isChecked())
+            if (radioButton_PhaseAverage->isChecked())
                 out << para->phaseFunctionAve[i][j] <<"\t";
-            if (ui->radioButton_PhasePara->isChecked())
-                out << para->phaseFunctionPara[i][j];
-            if (ui->radioButton_PhasePerp->isChecked())
-                out << para->phaseFunctionPerp[i][j];
+            if (radioButton_PhasePara->isChecked())
+                out << para->phaseFunctionPara[i][j]<<"\t";
+            if (radioButton_PhasePerp->isChecked())
+                out << para->phaseFunctionPerp[i][j]<<"\t";
         }
         out << "\n";
     }
