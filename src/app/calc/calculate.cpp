@@ -101,9 +101,10 @@ void calculate::DoSimulation(QLabel *progress, parameters *para)
             //G calculation
             sumMusG += CalculateG(curS1, curS2, para) * curMus;
             //Forward Scattering
-            sumForward += CalculateForwardBackward(curS1, curS2, para, 0, (para->nTheta-1)/2)* curMus;
+            sumForward += CalculateForwardBackward(curS1, curS2, para, 1, (para->nTheta-1)/2)* curMus;
             //Backward Scattering
-            sumBackward += CalculateForwardBackward(curS1, curS2, para, ((para->nTheta-1)/2), para->nTheta)* curMus;
+            sumBackward += CalculateForwardBackward(curS1, curS2, para, ((para->nTheta-1)/2)+1, para->nTheta-1)* curMus;
+
             //Coefficients
             sumCsca += piRadiusSquared * qSca * para->numDensityArray[r];
             sumCext += piRadiusSquared * qExt * para->numDensityArray[r];
@@ -493,7 +494,7 @@ void calculate::DiameterRangeSetting(parameters *para, unsigned int index)
         if (curR < para->meanRadius)
             para->minRadius = para->meanRadius - curR;
         else
-            para->minRadius = 1e-8;
+            para->minRadius = 1e-10;
         break;    
     }
 }
