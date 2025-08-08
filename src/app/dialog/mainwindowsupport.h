@@ -1,7 +1,6 @@
 #ifndef MAINWINDOWSUPPORT_H
 #define MAINWINDOWSUPPORT_H
 
-#include <QMessageBox>
 #include <qmath.h>
 #include "lib/qcustomplot.h"
 #include "parameters.h"
@@ -24,9 +23,7 @@ public:
     void DisableEnableRealImagButtons(Ui_MainWindow *ui);
     void DisableWidgetsDuringSimulation(Ui_MainWindow *ui, parameters *para, bool flag);
     void DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow *ui, bool flag);
-	void ReadCustomData(parameters * para, QString fileName, bool * dataValidFlag);
-    bool CheckInputParameters(Ui_MainWindow *ui, parameters *para);
-    bool CheckDistribution(Ui_MainWindow *ui, parameters *para);   
+    void ReadCustomData(parameters * para, QString fileName, bool * dataValidFlag);
 
 private:
     QCustomPlot *mCustomPlot;    

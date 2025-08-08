@@ -4,12 +4,20 @@
 #include <complex>
 #include <qmath.h>
 #include "lib/qwt/qwt_polar_curve.h"
+#include <QRadioButton>
+#include <QComboBox>
 
 class parameters
 {
 public:
     parameters(void);
     ~parameters(void);
+
+    bool CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
+                               QRadioButton *radioButton_NumDen,
+                               QRadioButton *radioButton_VolFrac);
+    bool CheckDistributionParameters(QComboBox *comboBox_Distribution);
+
 
     double *radArray = nullptr;         // radArray: radius Array
     double *numDensityArray = nullptr;  // numDensityArray: Number Density array
