@@ -87,7 +87,9 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
     else
     {
 
-        if (!support.CheckInputParameters(ui,mPara))    //sanity check
+        if (!mPara->CheckCommonParameters(ui->radioButton_MonoDisperse,
+                                          ui->radioButton_NumDen,
+                                          ui->radioButton_VolFrac))
         {
             //Disable widgets
             support.DisableWidgetsDuringSimulation(ui, mPara, true);
@@ -111,7 +113,7 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
             //Poly disperse
             if (ui->radioButton_PolyDisperse->isChecked())
             {
-                if (!support.CheckDistribution(ui,mPara))   //sanity check
+                if (!mPara->CheckDistributionParameters(ui->comboBox_Distribution))   //sanity check
                 {
                     support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
                     support.ProcessPolyDisperse(ui,mPara);
@@ -160,9 +162,11 @@ void MainWindow::on_pushButton_ShowDistributionAndCustom_clicked()
     else
     {
         support.LoadInputData(ui, mPara);
-        if (!support.CheckInputParameters(ui,mPara))    //sanity check
+        if (!mPara->CheckCommonParameters(ui->radioButton_MonoDisperse,
+                                          ui->radioButton_NumDen,
+                                          ui->radioButton_VolFrac))    //sanity check
         {
-            if (!support.CheckDistribution(ui,mPara))   //sanity check
+            if (!mPara->CheckDistributionParameters(ui->comboBox_Distribution))   //sanity check
             {
                 support.SetWidgets(ui);
                 support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));

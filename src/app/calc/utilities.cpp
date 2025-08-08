@@ -21,27 +21,21 @@ void utilities::Delay()
 }
 
 //Intensity calculation (Amplitude^2)
-double utilities::ComplexAbsSquared(std::complex<double> a)
+double utilities::ComplexAbsSquared(std::complex<double> c)
 {
-    return (a.real()*a.real() + a.imag()*a.imag());
+    return (c.real()*c.real() + c.imag()*c.imag());
 }
 
 //Absolute value (amplitude) calculation
-double utilities::ComplexAbs(std::complex<double> a)
+double utilities::ComplexAbs(std::complex<double> c)
 {
-    return sqrt(ComplexAbsSquared(a));
+    return sqrt(ComplexAbsSquared(c));
 }
 
 //Simpson's 1/3 rule
 double utilities::SimpsonsWeight (unsigned int i, unsigned int n)
 {
-    double weight = 1.0;
-    if ((i!=0) && (i!=n-1))
-    {
-        if ((i+1)%2==0)
-            weight = 4.0;
-        else
-            weight = 2.0;
-    }
-    return weight /3.0;
+    if (i == 0 || i == n - 1)  return 1.0 / 3.0;
+    if (i % 2 != 0)   return 4.0 / 3.0;
+    return 2.0 / 3.0;
 }
