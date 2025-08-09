@@ -355,6 +355,11 @@ void calculate::SetSphereRadiusAndRefIndex(parameters *para, unsigned int index,
 
     if (para->nRadius == 1)  //Mono Disperse
     {
+        if (flagVolOrConc)  //If volume fraction is selected, update number density
+        {
+           double sphereVolume = 4.0 * M_PI *para->meanRadius * para->meanRadius * para->meanRadius / 3.0;
+            para->sphNumDensity = 1e9 * para->volFraction /sphereVolume ;
+        }
         para->radArray[0] = para->meanRadius;
         para->numDensityArray[0] = para->sphNumDensity;
         para->scatRefRealArray[0] = para->scatRefReal;

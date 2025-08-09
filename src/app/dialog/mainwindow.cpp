@@ -102,7 +102,7 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
             //Mono disperse
             if (ui->radioButton_MonoDisperse->isChecked())
             {
-                support.ProcessDistribution(ui, mPara, 3);
+                support.ProcessDistribution(ui, mPara, 3);  // index = 3: mono disperse
                 support.ProcessMonoDisperse(ui,mPara);
                 ui->label_Progress->setText("<font color=\"green\"> Completed!</font>");
                 ui->slider_ConcPercentChange->setValue(0);

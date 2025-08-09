@@ -128,11 +128,6 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
     {
         para->meanRadius = 0.5 * ui->lineEdit_Diameter->text().toDouble();
         para->nRadius = 1;
-        if (ui->radioButton_VolFrac->isChecked())
-        {
-            double volume = 4.0 * M_PI *para->meanRadius * para->meanRadius * para->meanRadius / 3.0;
-            para->sphNumDensity = para->volFraction * 1e9 /volume ;
-        }
     }
     if ((ui->radioButton_PolyDisperse->isChecked()) && (ui->comboBox_Distribution->currentIndex() != 2))
     {
