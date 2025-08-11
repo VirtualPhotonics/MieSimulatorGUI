@@ -7,6 +7,11 @@
 #include <QRadioButton>
 #include <QComboBox>
 
+struct ParameterValidationResult {
+    bool isValid;
+    QString errorMessage;
+};
+
 class parameters
 {
 public:
@@ -17,6 +22,10 @@ public:
                                QRadioButton *radioButton_NumDen,
                                QRadioButton *radioButton_VolFrac);
     bool CheckDistributionParameters(QComboBox *comboBox_Distribution);
+    ParameterValidationResult CheckValidityCommonParameters(bool monoDisperseSelection,
+                                                            bool numDenSelection,
+                                                            bool volFracSelection);
+    ParameterValidationResult CheckValidityDistributionParameters(int comboBoxIndex);
 
 
     double *radArray = nullptr;         // radArray: radius Array
