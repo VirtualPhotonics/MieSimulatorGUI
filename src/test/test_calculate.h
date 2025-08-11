@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QTest>
-
 #include "../app/parameters.h"
 #include "../app/calc/calculate.h"
 

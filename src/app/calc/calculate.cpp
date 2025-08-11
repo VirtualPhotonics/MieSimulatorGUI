@@ -358,7 +358,7 @@ void calculate::SetSphereRadiusAndRefIndex(parameters *para, unsigned int index,
         if (flagVolOrConc)  //If volume fraction is selected, update number density
         {
            double sphereVolume = 4.0 * M_PI *para->meanRadius * para->meanRadius * para->meanRadius / 3.0;
-            para->sphNumDensity = 1e9 * para->volFraction /sphereVolume ;
+           para->sphNumDensity = std::round(1e9 * para->volFraction /sphereVolume) ;
         }
         para->radArray[0] = para->meanRadius;
         para->numDensityArray[0] = para->sphNumDensity;
@@ -407,7 +407,7 @@ void calculate::SetSphereRadiusAndRefIndex(parameters *para, unsigned int index,
 
         for (unsigned int i=0; i<para->nRadius; i++)
         {
-            para->numDensityArray[i] = funcArray[i]*factor;
+            para->numDensityArray[i] = std::round(funcArray[i]*factor);
             para->scatRefRealArray[i] = para->scatRefReal;
             para->scatRefImagArray[i] = para->scatRefImag;
         }
