@@ -1,3 +1,7 @@
+##################################################
+## app project file
+##################################################
+
 QT += core gui widgets printsupport
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets

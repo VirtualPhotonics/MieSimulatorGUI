@@ -1,10 +1,11 @@
+/**********************************************************************
+** Tests for functions in calculate.cpp
+**********************************************************************/
+
 #include <QDebug>
 #include <QtMath>
 #include <complex>
-
 #include "test_calculate.h"
-
-QTEST_MAIN(TestCalculate)
 
 TestCalculate::TestCalculate()
 {
@@ -118,10 +119,9 @@ void TestCalculate::cleanup()
     mPara = nullptr;
 }
 
-// Test case for DoSimulationdata
+// Test case: Check DoSimulationdata
 void TestCalculate::test_DoSimulationdata()
 {
-    // Set up a simple mono-disperse case at 632.8nm and 7
     mPara->nRadius = 1;
     mPara->nTheta = 361;
     mPara->nWavel = 1;
@@ -140,19 +140,18 @@ void TestCalculate::test_DoSimulationdata()
     QLabel mockLabel;
     mCalc->DoSimulation(&mockLabel, mPara);
 
-    double expectedMus1 = 93.3690054109;
+    double expectedMus = 93.36900541;
+    double expectedG = 0.861445339;
+    double expectedForward = 96.201215357;
+    double expectedBackward = 3.7987846427;
 
-    QCOMPARE(mPara->mus[0], expectedMus1);
-
-    // Verify that the g factor is not NaN
-    QVERIFY(!std::isnan(mPara->g[0]));
-
-    // Verify that forward/backward scattering is non-zero
-    QVERIFY(mPara->forward[0] > 0.0);
-    QVERIFY(mPara->backward[0] > 0.0);
+    QVERIFY(fabs(mPara->mus[0] - expectedMus) <1e-8);
+    QVERIFY(fabs(mPara->g[0] - expectedG) <1e-8);
+    QVERIFY(fabs(mPara->forward[0] - expectedForward) <1e-8);
+    QVERIFY(fabs(mPara->backward[0] - expectedBackward) <1e-8);
 }
 
-// Test case for DiameterRangeSetting with log-normal distribution
+// Test case: Check DiameterRangeSetting with log-normal distribution
 void TestCalculate::test_DiameterRangeSetting_logNormal()
 {
     mPara->meanRadius = 1.0;
@@ -167,7 +166,7 @@ void TestCalculate::test_DiameterRangeSetting_logNormal()
     QVERIFY(mPara->maxRadius > mPara->meanRadius);
 }
 
-// Test case for DiameterRangeSetting with Gaussian distribution
+// Test case: Check DiameterRangeSetting with Gaussian distribution
 void TestCalculate::test_DiameterRangeSetting_gaussian()
 {
     mPara->meanRadius = 1.0;
@@ -180,11 +179,10 @@ void TestCalculate::test_DiameterRangeSetting_gaussian()
     QVERIFY(mPara->minRadius < mPara->meanRadius);
     QVERIFY(mPara->maxRadius > mPara->minRadius);
     QVERIFY(mPara->maxRadius > mPara->meanRadius);
-    // For large radii with small stDev, the difference between max and mean should be
-    // roughly equal to mean and min.
     QCOMPARE(mPara->maxRadius - mPara->meanRadius, mPara->meanRadius - mPara->minRadius);
 }
 
+// Test case: Check DiameterRangeSetting for mono-disperse spheres
 void TestCalculate::test_DiameterRangeSetting_monoDisperse()
 {
     mPara->meanRadius = 5.0;
@@ -193,7 +191,7 @@ void TestCalculate::test_DiameterRangeSetting_monoDisperse()
     QCOMPARE(mPara->maxRadius, 5.0);
 }
 
-// Test case for SetSphereRadiusAndRefIndex for mono-disperse spheres
+// Test case: SetSphereRadiusAndRefIndex for mono-disperse spheres
 void TestCalculate::test_SetSphereRadiusAndRefIndex_monoDisperse()
 {
     mPara->nRadius = 1;
@@ -202,7 +200,8 @@ void TestCalculate::test_SetSphereRadiusAndRefIndex_monoDisperse()
     mPara->scatRefReal = 1.5;
     mPara->scatRefImag = 0.1;
 
-    mCalc->SetSphereRadiusAndRefIndex(mPara, 0, true); // The distribution index doesn't matter for nRadius=1.
+    // The distribution index doesn't matter for nRadius=1.
+    mCalc->SetSphereRadiusAndRefIndex(mPara, 0, true);
 
     //The elements in Array[0] are the same as the initial values
     QCOMPARE(mPara->radArray[0], mPara->meanRadius);
@@ -211,7 +210,7 @@ void TestCalculate::test_SetSphereRadiusAndRefIndex_monoDisperse()
     QCOMPARE(mPara->scatRefImagArray[0], mPara->scatRefImag);
 }
 
-// Test case for SetSphereRadiusAndRefIndex for poly-disperse with volume fraction
+// Test case: SetSphereRadiusAndRefIndex for poly-disperse with volume fraction
 void TestCalculate::test_SetSphereRadiusAndRefIndex_poly_logNormal_volfrac()
 {
     mPara->nRadius = 21;
@@ -234,7 +233,7 @@ void TestCalculate::test_SetSphereRadiusAndRefIndex_poly_logNormal_volfrac()
     QVERIFY(sumNumDensity > 0.0);
 }
 
-// Test case for SetSphereRadiusAndRefIndex for poly-disperse with concentration.
+// Test case: SetSphereRadiusAndRefIndex for poly-disperse with concentration.
 void TestCalculate::test_SetSphereRadiusAndRefIndex_poly_gaussian_conc()
 {
     mPara->nRadius = 21;
@@ -246,9 +245,10 @@ void TestCalculate::test_SetSphereRadiusAndRefIndex_poly_gaussian_conc()
     mCalc->DiameterRangeSetting(mPara, 1);
     mCalc->SetSphereRadiusAndRefIndex(mPara, 1, false); // 1 = Gaussian, false = use concentration.
 
-    // Check if the arrays have been populated.
-    QVERIFY(mPara->radArray[0] > 0);
-    QVERIFY(mPara->numDensityArray[0] > 0);
+    //The elements in Array[0] are the same as the initial values
+    QCOMPARE(mPara->radArray[0], 1e-10);
+    QCOMPARE(mPara->numDensityArray[0], 466260);
+
     // Check that the sum of the number densities is not zero.
     double sumNumDensity = 0.0;
     for (unsigned int i = 0; i < mPara->nRadius; ++i) {
@@ -257,7 +257,7 @@ void TestCalculate::test_SetSphereRadiusAndRefIndex_poly_gaussian_conc()
     QVERIFY(qFuzzyCompare(sumNumDensity, mPara->sphNumDensity));
 }
 
-// Test case for CalculateG.
+// Test case: Check CalculateG.
 void TestCalculate::test_CalculateG()
 {
     std::complex<double> S1[361], S2[361];
@@ -273,7 +273,7 @@ void TestCalculate::test_CalculateG()
     QVERIFY(g_value< 1e-12);
 }
 
-// Test case for CalculateForwardBackward.
+// Test case: Check CalculateForwardBackward.
 void TestCalculate::test_CalculateForwardBackward()
 {
     std::complex<double> S1[361], S2[361];
@@ -291,10 +291,11 @@ void TestCalculate::test_CalculateForwardBackward()
     QVERIFY(fabs(forward - backward) <1e-12);
 }
 
-// Test case for CalculatePowerLawAutoFitSimple.
+// Test case: Check CalculatePowerLawAutoFitSimple.
 void TestCalculate::test_CalculatePowerLawAutoFitSimple()
 {
     //Test for complex power law with b=2.
+    double b = 2.0;
     mPara->refWavel = 800;
     mPara->refWavelIdx = 3;
     mPara->muspAtRefWavel[3] = 10.0;
@@ -306,23 +307,25 @@ void TestCalculate::test_CalculatePowerLawAutoFitSimple()
 
     for (unsigned int i = 0; i < mPara->nWavel; ++i) {
         mPara->wavelArray[i] = 600.0 + 50.0 * i; // Wavelengths from 600 to 1000 nm.
-        mPara->mus[i] = mPara->muspAtRefWavel[3] * pow(mPara->wavelArray[i] / mPara->refWavel, -2.0);
+        mPara->mus[i] = mPara->muspAtRefWavel[3] * pow(mPara->wavelArray[i] / mPara->refWavel, -b);
         mPara->g[i] = 0; //Assume g= 0;
     }
     mCalc->CalculatePowerLawAutoFitSimple(mPara);
 
     // The calculated bMie should be very close to 2.0.
-    QCOMPARE(mPara->bMie, 2.0);
+    QCOMPARE(mPara->bMie, b);
 }
 
-// Test case for CalculatePowerLawAutoFitComplex.
+// Test case: Check CalculatePowerLawAutoFitComplex.
 void TestCalculate::test_CalculatePowerLawAutoFitComplex()
 {
     //Test for complex power law with fRay=0.5 and bMie=1.5.
+    double fRay = 0.5;
+    double bMie = 1.5;
     mPara->refWavel = 800;
     mPara->refWavelIdx = 3;
     mPara->muspAtRefWavel[3] = 10.0;
-    mPara->nWavel = 9;
+    mPara->nWavel = 9;    
 
     mPara->wavelArray = new double[mPara->nWavel];
     mPara->mus = new double[mPara->nWavel];
@@ -331,14 +334,15 @@ void TestCalculate::test_CalculatePowerLawAutoFitComplex()
     for (unsigned int i = 0; i < mPara->nWavel; ++i) {
         mPara->wavelArray[i] = 600.0 + 50.0 * i; // Wavelengths from 600 to 1000 nm.
         double x = mPara->wavelArray[i] / mPara->refWavel;
-        mPara->mus[i] = mPara->muspAtRefWavel[3] * (0.5 * pow(x, -4.0) + (1.0 - 0.5) * pow(x, -1.5));
+        mPara->mus[i] = mPara->muspAtRefWavel[3] * (fRay * pow(x, -4.0) + (1.0 - fRay) * pow(x, -bMie));
         mPara->g[i] = 0; //Assume g= 0;
     }
     mCalc->CalculatePowerLawAutoFitComplex(mPara);
 
+
     // The calculated values should be close to the expected values.
-    QCOMPARE(mPara->fRay, 0.5);
-    QCOMPARE(mPara->bMie, 1.5);
+    QCOMPARE(mPara->fRay, fRay);
+    QCOMPARE(mPara->bMie, bMie);
 }
 
 // Sanity check for the ComputeMuspAtRefWavel method.

@@ -1,5 +1,10 @@
+##################################################
+## main project file
+##################################################
+
 TEMPLATE = subdirs
+CONFIG += ordered
 
 SUBDIRS += \
-    app \
-    test
+    test \
+    app

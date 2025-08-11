@@ -1,40 +1,36 @@
-# This is the project file for the unit test.
+##################################################
+## test project file for unit tests
+##################################################
 
-# Set the template to create an application executable.
 TEMPLATE = app
 
-# Add the Qt Test library, which is required for unit testing.
-# We also include 'widgets' as the app under test is a GUI app,
-# and some functions might implicitly require it (though not directly in 'calculate').
 QT += testlib widgets
 
-# The target name for our test executable.
-TARGET = test_calculate
-
-# Configure the build to be in debug and release modes.
+TARGET = MieSimulatorGUI_test
 CONFIG += warn_on console
+DEFINES += QT_DEPRECATED_WARNINGS
 
-# Include the headers from the main application to access the classes we want to test.
 INCLUDEPATH += ../app \
                ../app/calc
 
-# Add the sources for our test suite and the classes we are testing.
-# We include the calculate.cpp directly, as well as mock implementations for its dependencies.
-# The `mock_` files are simple stubs that allow us to test the `calculate` class in isolation.
 SOURCES += \
+    test_main.cpp \
+    test_parameters.cpp \
     test_calculate.cpp \
+    test_miesimulation.cpp \
+    test_utilities.cpp \
     ../app/parameters.cpp \
     ../app/calc/calculate.cpp \
     ../app/calc/miesimulation.cpp \
     ../app/calc/utilities.cpp
 
-# Add the headers for the test suite and the classes we are testing.
-HEADERS += \
+HEADERS += \    
+    test_parameters.h \
     test_calculate.h \
+    test_miesimulation.h \
+    test_utilities.h \
     ../app/parameters.h \
     ../app/calc/calculate.h \
     ../app/calc/miesimulation.h \
     ../app/calc/utilities.h
 
-# Define some preprocessor macros if needed.
-DEFINES += QT_TESTLIB_WIDGETS_LIB
