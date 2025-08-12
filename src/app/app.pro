@@ -6,6 +6,8 @@ QT += core gui widgets printsupport
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
+QMAKE_POST_LINK += "&& cd ../test && $(MAKE) && ./$$TARGET"
+
 TARGET = MieSimulatorGUI_v2_0
 CONFIG -= -qt-freetype
 TEMPLATE = app

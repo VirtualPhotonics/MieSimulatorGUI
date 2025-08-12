@@ -247,7 +247,7 @@ void OptionsDialog::SavePhaseFunction(QRadioButton *radioButton_PhaseAverage,
          out << "(Para): ";
     if (radioButton_PhasePerp->isChecked())
          out << "(Perp): ";
-     out << "\n\tWL(nm)-->\nAngle(deg)";
+     out << "\n\tWL(nm)-->\nAngle(deg)\t";
      for (unsigned int i=0; i<para->nWavel; i++)
         out << para->wavelArray[i] <<"\t";
      out << "\n";
