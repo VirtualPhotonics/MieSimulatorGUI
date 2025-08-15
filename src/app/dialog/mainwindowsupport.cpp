@@ -52,7 +52,7 @@ void MainWindowSupport::InitializeGUI(Ui_MainWindow *ui, parameters *para)
 }
 
 //Reset widgets
-void MainWindowSupport::SetWidgets(Ui_MainWindow *ui)
+void MainWindowSupport::SetWidgets(Ui_MainWindow *ui, parameters *para)
 {
     bool falseFlag, trueFlag;
 
@@ -76,7 +76,7 @@ void MainWindowSupport::SetWidgets(Ui_MainWindow *ui)
     ui->radioButton_LogXAxis->setDisabled(trueFlag);
     ui->label_DistXAxis->setDisabled(trueFlag);
 
-    if (ui->comboBox_Distribution->currentIndex() !=2)  // if not "Custom"
+    if (ui->comboBox_Distribution->currentIndex() != para->Custom)  // if not "Custom"
     {
         ui->lineEdit_MeanDiameter->setDisabled(trueFlag);
         ui->label_MeanDiameter->setDisabled(trueFlag);
@@ -129,7 +129,7 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
         para->meanRadius = 0.5 * ui->lineEdit_Diameter->text().toDouble();
         para->nRadius = 1;
     }
-    if ((ui->radioButton_PolyDisperse->isChecked()) && (ui->comboBox_Distribution->currentIndex() != 2))
+    if ((ui->radioButton_PolyDisperse->isChecked()) && (ui->comboBox_Distribution->currentIndex() != para->Custom))
     {
         para->meanRadius = 0.5 * ui->lineEdit_MeanDiameter->text().toDouble();
         para->stdDev = ui->lineEdit_StdDev->text().toDouble();
@@ -145,32 +145,32 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
     if (ui->radioButton_RefWavel500->isChecked())
     {
         para->refWavel = 500.0;
-        para->refWavelIdx = 0;
+        para->refWavelIdx = para->wavel500;
     }
     if (ui->radioButton_RefWavel600->isChecked())
     {
         para->refWavel = 600.0;
-        para->refWavelIdx = 1;
+        para->refWavelIdx = para->wavel600;
     }
     if (ui->radioButton_RefWavel700->isChecked())
     {
         para->refWavel = 700.0;
-        para->refWavelIdx = 2;
+        para->refWavelIdx = para->wavel700;
     }
     if (ui->radioButton_RefWavel800->isChecked())
     {
         para->refWavel = 800.0;
-        para->refWavelIdx = 3;
+        para->refWavelIdx = para->wavel800;
     }
     if (ui->radioButton_RefWavel900->isChecked())
     {
         para->refWavel = 900.0;
-        para->refWavelIdx = 4;
+        para->refWavelIdx = para->wavel900;
     }
     if (ui->radioButton_RefWavel1000->isChecked())
     {
         para->refWavel = 1000.0;
-        para->refWavelIdx = 5;
+        para->refWavelIdx = para->wavel1000;
     }
     SetWavelengthSliders(ui);
 }
@@ -320,6 +320,7 @@ void MainWindowSupport::ProcessDistribution(Ui_MainWindow *ui, parameters *para,
         para->numDensityArray = new double [para->nRadius];
         para->scatRefRealArray = new double [para->nRadius];
         para->scatRefImagArray = new double [para->nRadius];
+        para->medRefArray = new double [para->nRadius];
 
         //Find size of spheres
         if (ui->radioButton_VolFrac->isChecked())
@@ -364,17 +365,17 @@ void MainWindowSupport::DisableWidgetsDuringSimulation(Ui_MainWindow *ui, parame
     ui->pushButton_BestFit->setDisabled(flag);
     ui->label_ConcPercent->setDisabled(flag);
     ui->label_ActualConcPercent->setDisabled(flag);
-    ui->slider_ConcPercentChange->setDisabled(flag);    
-    ui->qwtslider_B->setDisabled(flag);   
+    ui->slider_ConcPercentChange->setDisabled(flag);
+    ui->slider_B->setDisabled(flag);
     ui->doubleSpinBox_B->setDisabled(flag);
     if (!para->fittingComplex)
     {
-        ui->qwtslider_F->setDisabled(true);
+        ui->slider_F->setDisabled(true);
         ui->doubleSpinBox_F->setDisabled(true);
     }
     if (para->fittingComplex)
     {
-        ui->qwtslider_F->setDisabled(flag);
+        ui->slider_F->setDisabled(flag);
         ui->doubleSpinBox_F->setDisabled(flag);
     }
 }
@@ -425,8 +426,32 @@ void MainWindowSupport::ReadCustomData(parameters *para, QString fileName, bool 
     {
         line = in.readLine();
         QStringList list = line.split(QRegExp(",|;|\t"));
-        if (list.size()!=4)
+        if (!(list.size()==4 || list.size()==5))
             badLines++;
+        else
+        {
+            if (list.size()==4)
+            {
+                bool check1, check2, check3, check4;
+                list.at(0).toDouble(&check1);
+                list.at(1).toDouble(&check2);
+                list.at(2).toDouble(&check3);
+                list.at(3).toDouble(&check4);
+                if (!check1 || !check2 || !check3 || !check4)
+                    badLines++;
+            }
+            if (list.size()==5)
+            {
+                bool check1, check2, check3, check4, check5;
+                list.at(0).toDouble(&check1);
+                list.at(1).toDouble(&check2);
+                list.at(2).toDouble(&check3);
+                list.at(3).toDouble(&check4);
+                list.at(4).toDouble(&check5);
+                if (!check1 || !check2 || !check3 || !check4 || !check5)
+                    badLines++;
+            }
+        }
         count++;
     }while (!line.isNull());
     file.close();
@@ -447,7 +472,7 @@ void MainWindowSupport::ReadCustomData(parameters *para, QString fileName, bool 
         para->numDensityArray = new double [para->nRadius];
         para->scatRefRealArray = new double [para->nRadius];
         para->scatRefImagArray = new double [para->nRadius];
-
+        para->medRefArray = new double [para->nRadius];
 
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         QTextStream in(&file);
@@ -465,6 +490,21 @@ void MainWindowSupport::ReadCustomData(parameters *para, QString fileName, bool 
                  para->numDensityArray[idx] = list.at(1).toDouble();
                  para->scatRefRealArray[idx] = list.at(2).toDouble();
                  para->scatRefImagArray[idx] = list.at(3).toDouble();
+                 para->medRefArray[idx] = para->medRef; //use default
+                 sumRad += para->radArray[idx];
+                 if (para->radArray[idx] >maxRad)
+                     maxRad = para->radArray[idx];
+                 if (para->radArray[idx] < minRad)
+                     minRad = para->radArray[idx];
+                 idx++;
+            }
+            if (list.size()==5)
+            {
+                 para->radArray[idx] = list.at(0).toDouble()/2.0;
+                 para->numDensityArray[idx] = list.at(1).toDouble();
+                 para->scatRefRealArray[idx] = list.at(2).toDouble();
+                 para->scatRefImagArray[idx] = list.at(3).toDouble();
+                 para->medRefArray[idx] = list.at(4).toDouble();
                  sumRad += para->radArray[idx];
                  if (para->radArray[idx] >maxRad)
                      maxRad = para->radArray[idx];

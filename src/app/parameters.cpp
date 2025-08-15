@@ -165,10 +165,12 @@ bool parameters::CheckDistributionParameters(QComboBox *comboBox_Distribution)
 {
     int comboBoxIndex =0;
 
-    if (comboBox_Distribution->currentIndex() == 0)
+    if (comboBox_Distribution->currentIndex() == LogNormal)
         comboBoxIndex = 0;
-    if (comboBox_Distribution->currentIndex() == 1)
+    if (comboBox_Distribution->currentIndex() == Gaussian)
         comboBoxIndex = 1;
+    if (comboBox_Distribution->currentIndex() == Custom)
+        comboBoxIndex = 2;
 
     ParameterValidationResult check = CheckValidityDistributionParameters(comboBoxIndex);
 

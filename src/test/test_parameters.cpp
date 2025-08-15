@@ -171,7 +171,7 @@ void TestParameters::test_CheckValidityCommonParameters_invalidVolumeExceedsLimi
     mPara->sphNumDensity = 239.0;
     ParameterValidationResult result = mPara->CheckValidityCommonParameters(true, true, false);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Concentration x Sphere Volume exceeds 1mm\xc2\xb3! Reduce Concentration (Conc)."));
+    QCOMPARE(result.errorMessage, QString("Concentration x Sphere Volume exceeds 1mm³! Reduce Concentration (Conc)."));
 }
 
 // Test case: Ensures a valid set of parameters passes the distribution check (for Log Normal)

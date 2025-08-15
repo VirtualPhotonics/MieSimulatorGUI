@@ -780,18 +780,18 @@ void PlotData::PlotMuspCurveForPowerLawFit(Ui_MainWindow *ui, parameters *para, 
     else
         flag = false;
 
-    ui->qwtslider_B->setDisabled(flag);    
+    ui->slider_B->setDisabled(flag);
     ui->doubleSpinBox_B->setDisabled(flag);    
     ui->pushButton_BestFit->setDisabled(flag);    
 
     if ((!para->fittingComplex) || (para->nWavel==1))
     {
-        ui->qwtslider_F->setDisabled(true);
+        ui->slider_F->setDisabled(true);
         ui->doubleSpinBox_F->setDisabled(true);
     }
     else
     {
-        ui->qwtslider_F->setDisabled(false);
+        ui->slider_F->setDisabled(false);
         ui->doubleSpinBox_F->setDisabled(false);
     }
 }

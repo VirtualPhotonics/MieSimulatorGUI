@@ -47,8 +47,6 @@ private slots:
     void on_radioButton_S1S2_Real_clicked();
     void on_radioButton_S1S2_Imag_clicked();
     void on_radioButton_Phase_DTheta0_1_clicked();
-    void on_doubleSpinBox_F_valueChanged(double arg1);
-    void on_doubleSpinBox_B_valueChanged(double arg1);
     void on_radioButton_FittingSimple_clicked();
     void on_radioButton_FittingComplex_clicked();
     void on_radioButton_RefWavel500_clicked();
@@ -62,7 +60,21 @@ private slots:
     void on_slider_WL_PFLinear_valueChanged(int value);
     void on_slider_WL_S1S2_valueChanged(int value);
     void on_comboBox_Distribution_currentIndexChanged(int value);
+    void on_pushButton_SavePlot_Mus_clicked();
+    void on_pushButton_SavePlot_Csca_clicked();
+    void on_pushButton_SavePlot_Cext_clicked();
+    void on_pushButton_SavePlot_Cback_clicked();
+    void on_pushButton_SavePlot_Musp_clicked();
+    void on_pushButton_SavePlot_MuspPowerLaw_clicked();
+    void on_pushButton_SavePlot_Distribution_clicked();
+    void on_pushButton_SavePlot_SizePara_clicked();
+    void on_pushButton_SavePlot_S1S2_clicked();
+    //void on_pushButton_SavePlot_PhaseFunctionPolar_clicked();
+    void on_pushButton_SavePlot_PhaseFunctionLinear_clicked();
+    void on_pushButton_SavePlot_G_clicked();
+    void on_pushButton_SavePlot_FB_clicked();
 
+private:
     void Initialize();
     void UpdatePhaseFunctionPolarPlot();
     void UpdatePhaseFunctionLinearPlot();
@@ -82,8 +94,14 @@ private slots:
     void MouseOverPlotDistribution(QMouseEvent *event);
     void MouseOverPlotMuspPowerLaw(QMouseEvent *event);
     void DisplayCurveData(QMouseEvent *event, QCustomPlot *curPlot, QString strNameX, QString strNameY);
-
-
+    void SavePlot(QCustomPlot *curPlot, QString fileName);
+    //void SavePolarPlot(QwtPolarPlot *curPlot, QString fileName);
+    void RememberLastDirectory(QString fileName);    
+    void Slider_F_valueChanged(int value);
+    void Slider_B_valueChanged(int value);
+    void DoubleSpinBox_F_valueChanged (double value);
+    void DoubleSpinBox_B_valueChanged (double value);
+    void CalculateFittingAndDisplay();
 
 private:
     Ui::MainWindow *ui;

@@ -168,14 +168,14 @@ void OptionsDialog::SaveScatPara(QRadioButton *radioButton_MonoDisperse,
     if(radioButton_PolyDisperse->isChecked())
     {
         int currentIndex = comboBox_Distribution->currentIndex();
-        if (currentIndex == 0) //Log normal distribution
+        if (currentIndex == para->LogNormal) //Log normal distribution
             out << "Distribution: Poly Disperse - Log Normal \n";
-        if (currentIndex == 1) //Gaussian distribution
+        if (currentIndex == para->Gaussian) //Gaussian distribution
             out << "Distribution: Poly Disperse - Gaussian \n";
-        if (currentIndex == 2) //Custom distribution
+        if (currentIndex == para->Custom) //Custom distribution
             out << "Distribution: Poly Disperse - Custom \n";
         out << "Number of discrete sphere sizes: " << para->nRadius <<"\n";
-        if (currentIndex != 2)
+        if (currentIndex != para->Custom)
         {
             out << "Mean diameter of spheres: " << 2.0*para->meanRadius <<" um\n";
             out << "Std. deviation: " << para->stdDev <<" um\n";
@@ -186,15 +186,17 @@ void OptionsDialog::SaveScatPara(QRadioButton *radioButton_MonoDisperse,
         }
     }
 
-    out << "Wavelength Range: " << para->startWavel << "nm to "  << para->endWavel << "nm in "
+    out << "\nWavelength Range: " << para->startWavel << "nm to "  << para->endWavel << "nm in "
         << para->stepWavel <<"nm steps\n";
-    out << "\nRefractive index of the medium: " << para->medRef <<"\n\n";
 
-    out << "Sphere Data:\n";
-    out << "Dia.(um)\tNum. Den.(in a vol. of 1mm^3)\tRef. Index (real | imag)\n";
+    out << "\nSphere and Medium Data:\n";
+    out << "Dia.(um)\tNum. Den.(in a vol. of 1mm^3)\tRef. Index of sphere (real | imag)\n";
     for (unsigned int i=0; i<para->nRadius; i++)
-        out << 2.0 * para->radArray[i] <<"\t" << para->numDensityArray[i]*margin<<"\t"
-            <<para->scatRefRealArray[i]<<"\t" << para->scatRefImagArray[i] <<"\n";
+        out << 2.0 * para->radArray[i] <<"\t"
+            << para->numDensityArray[i]*margin<<"\t"
+            <<para->scatRefRealArray[i]<<"\t"
+            << para->scatRefImagArray[i] <<"\t"
+            << para->medRefArray[i] <<"\n";
 
     out << "\n\nOutput:\n\n";
     if (radioButton_MonoDisperse->isChecked())

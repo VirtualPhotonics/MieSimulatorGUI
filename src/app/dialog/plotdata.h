@@ -36,7 +36,7 @@ public:
     void PlotMuspCurveForPowerLawFit(Ui_MainWindow *ui, parameters *para, QVector<double> x, QVector<double> yMusp);
     void PlotG(Ui_MainWindow *ui, QVector<double> x, QVector<double> yG);
     void PlotForwardBackward(Ui_MainWindow *ui, QVector<double> x, QVector<double> yF, QVector<double> yB, bool legendFlag);
-    void PlotMuspPowerLaw(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp, QVector<double> yFit);    
+    void PlotMuspPowerLaw(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp, QVector<double> yFit);
 
 private:
     void PlotPhaseFunctionPolar(Ui_MainWindow *ui, parameters *para, QVector<double> theta, QVector<double> phaseFunction,

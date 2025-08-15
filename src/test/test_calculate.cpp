@@ -25,6 +25,7 @@ void TestCalculate::init()
     mPara->numDensityArray = new double[mPara->nRadius];
     mPara->scatRefRealArray = new double[mPara->nRadius];
     mPara->scatRefImagArray = new double[mPara->nRadius];
+    mPara->medRefArray = new double[mPara->nRadius];
     mPara->wavelArray = new double[mPara->nWavel];
     mPara->mus = new double[mPara->nWavel];
     mPara->g = new double[mPara->nWavel];
@@ -89,6 +90,7 @@ void TestCalculate::cleanup()
     if (mPara->numDensityArray) delete[] mPara->numDensityArray;
     if (mPara->scatRefRealArray) delete[] mPara->scatRefRealArray;
     if (mPara->scatRefImagArray) delete[] mPara->scatRefImagArray;
+    if (mPara->medRefArray) delete[] mPara->medRefArray;
     if (mPara->wavelArray) delete[] mPara->wavelArray;
     if (mPara->mus) delete[] mPara->mus;
     if (mPara->g) delete[] mPara->g;
@@ -297,7 +299,7 @@ void TestCalculate::test_CalculatePowerLawAutoFitSimple()
     //Test for complex power law with b=2.
     double b = 2.0;
     mPara->refWavel = 800;
-    mPara->refWavelIdx = 3;
+    mPara->refWavelIdx = mPara->wavel800;
     mPara->muspAtRefWavel[3] = 10.0;
     mPara->nWavel = 9;
 
@@ -323,7 +325,7 @@ void TestCalculate::test_CalculatePowerLawAutoFitComplex()
     double fRay = 0.5;
     double bMie = 1.5;
     mPara->refWavel = 800;
-    mPara->refWavelIdx = 3;
+    mPara->refWavelIdx = mPara->wavel800;
     mPara->muspAtRefWavel[3] = 10.0;
     mPara->nWavel = 9;    
 

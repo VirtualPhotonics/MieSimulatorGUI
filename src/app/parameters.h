@@ -27,6 +27,20 @@ public:
                                                             bool volFracSelection);
     ParameterValidationResult CheckValidityDistributionParameters(int comboBoxIndex);
 
+    enum distType {
+        LogNormal    = 0,       // poly-disperse: Log Normal
+        Gaussian     = 1,       // poly-disperse: Gaussian
+        Custom       = 2,       // poly-disperse: Custom
+        MonoDisperse = 3        // mono-disperse
+    };
+    enum refWavel {
+        wavel500  = 0,      // Ref wavelength = 500 nm
+        wavel600  = 1,      // Ref wavelength = 600 nm
+        wavel700  = 2,      // Ref wavelength = 700 nm
+        wavel800  = 3,      // Ref wavelength = 800 nm
+        wavel900  = 4,      // Ref wavelength = 900 nm
+        wavel1000 = 5       // Ref wavelength = 1000 nm
+    };
 
     double *radArray = nullptr;         // radArray: radius Array
     double *numDensityArray = nullptr;  // numDensityArray: Number Density array
@@ -38,6 +52,7 @@ public:
 
     double *scatRefRealArray = nullptr; // scatRefRealArray: refractive index of scatterer -Real  data array
     double *scatRefImagArray = nullptr; // scatRefImagArray: refractive index of scatterer -Imag  data array
+    double *medRefArray = nullptr;      // medRefArray: refractive index of medium  data array
     double scatRefReal = 1.377;         // scatRefReal: refractive index of scatterer - Real
     double scatRefImag = 0.0;           // scatRefImg: refractive index of scatterer - Imaginary ((n-ik): negative sign convention as Scott Prahl's Mie calculator)
     double medRef = 1.333;              // medRef: refractive index of medium
@@ -70,13 +85,15 @@ public:
 
     double fRay = 1.0;                         //fRay: fitting parameter fRay
     double bMie = 4.0;                         //bMie: fitting parameter bMie
-    double muspAtRefWavel[6] = {1,1,1,1,1,1};  //muspAtRefWavel:  musp value array at lambda = 500, 600, 700, 800, 900 and 1000nm
-    unsigned int refWavelIdx = 0;              //refWavelIdx: current index of refWavel
+    double muspAtRefWavel[6] = {1,2,3,4,5,6};  //muspAtRefWavel:  musp value array at lambda = 500, 600, 700, 800, 900 and 1000nm
+    unsigned int refWavelIdx = wavel500;              //refWavelIdx: current index of refWavel
     double muspFittingError = 0;               //muspfittingError: fitting error
     double refWavel = 1000;                    //refWavel: reference lambda: 500, 600, 700, 800, 900 and 1000nm
     bool fittingComplex = true;                //fittingComplex; False: Simple,  True: Ccomplex
 
     QwtPolarCurve *polarCurve = nullptr;       //polarCurve: polarCurve data
+
+
 };
 
 #endif // PARAMETERS_H

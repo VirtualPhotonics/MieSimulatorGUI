@@ -48,8 +48,7 @@ void calculate::DoSimulation(QLabel *progress, parameters *para)
     {
         wavel = para->wavelArray[w]/1000;   //in microns
         progress->setText("<font color=\"red\">WL: <font>"+QString::number(1000*wavel)+"nm</font>");
-        util.Delay();
-        k = 2 * M_PI * para->medRef /wavel;
+        util.Delay();        
         sumMus = 0.0;
         sumMusG = 0.0;
         sumForward = 0.0;
@@ -67,11 +66,12 @@ void calculate::DoSimulation(QLabel *progress, parameters *para)
         }
         for (unsigned int r = 0; r < para->nRadius; r++)
         {
+            k = 2 * M_PI * para->medRefArray[r] /wavel;
             xPara = k * para->radArray[r];            
             piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
 
-            refRelRe = para->scatRefRealArray[r] / para->medRef;
-            refRelIm = para->scatRefImagArray[r] / para->medRef;
+            refRelRe = para->scatRefRealArray[r] / para->medRefArray[r];
+            refRelIm = para->scatRefImagArray[r] / para->medRefArray[r];
 
             if (refRelIm == 0.0)  //FarFieldSolutionForRealRefIndex is ~2x faster than FarFieldSolutionForComplexRefIndex
             {
@@ -174,18 +174,20 @@ void calculate::ComputeMuspAtRefWavel(parameters *para)
     for (unsigned int i = 0; i< 6; i++)
     {
         double lambda = 0.5 + 0.1*i;            // in um
-        //Calculate mus and g at reference wavelength for musp fitting plot
-        k = 2 * M_PI * para->medRef /lambda;    //k at reference wavelength
+
 
         sumMus = 0.0;
         sumMusG = 0.0;
         for (unsigned int r = 0; r < para->nRadius; r++)
         {
+            //Calculate mus and g at reference wavelength for musp fitting plot
+            k = 2 * M_PI * para->medRefArray[r] /lambda;    //k at reference wavelength
+
             xPara = k * para->radArray[r];
             piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
 
-            refRelRe = para->scatRefRealArray[r] / para->medRef;
-            refRelIm = para->scatRefImagArray[r] / para->medRef;
+            refRelRe = para->scatRefRealArray[r] / para->medRefArray[r];
+            refRelIm = para->scatRefImagArray[r] / para->medRefArray[r];
 
             if (refRelIm == 0.0)  //FarFieldSolutionForRealRefIndex is ~2x faster than FarFieldSolutionForComplexRefIndex
             {
@@ -364,6 +366,7 @@ void calculate::SetSphereRadiusAndRefIndex(parameters *para, unsigned int index,
         para->numDensityArray[0] = para->sphNumDensity;
         para->scatRefRealArray[0] = para->scatRefReal;
         para->scatRefImagArray[0] = para->scatRefImag;
+        para->medRefArray[0] = para->medRef;
     }
     else                    //Poly Disperse
     {
@@ -410,6 +413,7 @@ void calculate::SetSphereRadiusAndRefIndex(parameters *para, unsigned int index,
             para->numDensityArray[i] = std::round(funcArray[i]*factor);
             para->scatRefRealArray[i] = para->scatRefReal;
             para->scatRefImagArray[i] = para->scatRefImag;
+            para->medRefArray[i] = para->medRef;
         }
         delete []funcArray;
     }

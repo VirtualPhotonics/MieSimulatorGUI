@@ -11,7 +11,7 @@ class MainWindowSupport
 {
 public:
     MainWindowSupport(void);
-    void SetWidgets(Ui_MainWindow *ui);
+    void SetWidgets(Ui_MainWindow *ui, parameters *para);
     void InitializeGUI(Ui_MainWindow *ui, parameters *para);
     void LoadInputData(Ui_MainWindow *ui, parameters *para);
     void InitializeArrays(Ui_MainWindow *ui, parameters *para, bool *arrayFlag);

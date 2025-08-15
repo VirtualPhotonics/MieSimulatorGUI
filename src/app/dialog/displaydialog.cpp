@@ -55,15 +55,15 @@ void DisplayDialog::DisplayData(QRadioButton *radioButton_MonoDisperse,
     if (radioButton_PolyDisperse->isChecked())
 	{
         int currentIndex = comboBox_Distribution->currentIndex();
-		if (currentIndex == 0) //Log normal distribution
+        if (currentIndex == para->LogNormal) //Log normal distribution
 			ui->textBrowser_Display->append("Distribution: Poly Disperse - Log Normal");
-		if (currentIndex == 1) //Gaussian distribution
+        if (currentIndex == para->Gaussian) //Gaussian distribution
 			ui->textBrowser_Display->append("Distribution: Poly Disperse - Gaussian");
-		if (currentIndex == 2) //Custom distribution
+        if (currentIndex == para->Custom) //Custom distribution
 			ui->textBrowser_Display->append("Distribution: Poly Disperse - Custom");
 		ui->textBrowser_Display->append("Number of discrete sphere sizes: "
-			+ QString::number(para->nRadius));
-		if (currentIndex != 2)
+            + QString::number(para->nRadius));
+        if (currentIndex != para->Custom)
 		{
 			ui->textBrowser_Display->append("Mean diameter of spheres: "
 				+ QString::number(2.0*para->meanRadius) + " um");
@@ -76,16 +76,18 @@ void DisplayDialog::DisplayData(QRadioButton *radioButton_MonoDisperse,
 					+ QString::number(para->volFraction * margin));
 		}
 	}
-	ui->textBrowser_Display->append("Wavelength Range: " + QString::number(para->startWavel) + "nm to " 
-		+ QString::number(para->endWavel) + "nm in "+ QString::number(para->stepWavel) + "nm steps\n");
-	ui->textBrowser_Display->append("Refractive index of the medium: " + QString::number(para->medRef) );
+    ui->textBrowser_Display->append("Wavelength Range: " + QString::number(para->startWavel) + "nm to "
+        + QString::number(para->endWavel) + "nm in "+ QString::number(para->stepWavel) + "nm steps\n");
 
 	ui->textBrowser_Display->append("\nSphere Data:");
-	ui->textBrowser_Display->append("Dia.(um)\tNum. Den.(in a vol. of 1mm^3)\tRef. Index (real | imag)");
+    ui->textBrowser_Display->append("Dia.(um)\tNum. Den.(in a vol. of 1mm^3)\tRef."
+                                    " index of sphere (real | imag)\t Ref. index of medium");
     for (unsigned int i = 0; i<para->nRadius; i++)
 		ui->textBrowser_Display->append(QString::number(2.0 * para->radArray[i]) + "\t"
 			+ QString::number(para->numDensityArray[i] * margin) + "\t"
-			+ QString::number(para->scatRefRealArray[i]) + "\t" + QString::number(para->scatRefImagArray[i]) );
+            + QString::number(para->scatRefRealArray[i]) + "\t"
+            + QString::number(para->scatRefImagArray[i]) + "\t"
+            + QString::number(para->medRefArray[i]));
 
      ui->textBrowser_Display->append("\n\nOutput:");
     if (radioButton_MonoDisperse->isChecked())

@@ -81,21 +81,18 @@
           </widget>
          </widget>
         </item>
-        <item row="1" column="0">
-         <spacer name="horizontalSpacer14">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+        <item row="1" column="4">
+         <widget class="QRadioButton" name="radioButton_LogXAxis">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+           </font>
           </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
+          <property name="text">
+           <string>Log</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
         <item row="1" column="3">
          <widget class="QRadioButton" name="radioButton_LinearXAxis">
@@ -110,19 +107,6 @@
           </property>
           <property name="checked">
            <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="4">
-         <widget class="QRadioButton" name="radioButton_LogXAxis">
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Log</string>
           </property>
          </widget>
         </item>
@@ -156,6 +140,22 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="0">
+         <spacer name="horizontalSpacer14">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item row="1" column="1">
          <spacer name="horizontalSpacer12">
           <property name="orientation">
@@ -171,6 +171,13 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="2" column="0" colspan="6">
+         <widget class="QPushButton" name="pushButton_SavePlot_Distribution">
+          <property name="text">
+           <string>Save Number Density Plot</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -188,6 +195,13 @@
             <italic>false</italic>
             <bold>false</bold>
            </font>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pushButton_SavePlot_SizePara">
+          <property name="text">
+           <string>Save Size Parameter Plot</string>
           </property>
          </widget>
         </item>
@@ -229,53 +243,17 @@
         <string>S1/S2</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_14">
-        <item row="5" column="4">
-         <layout class="QGridLayout" name="gridLayout_WL_3">
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_CurrentWL_S1S2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>10</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_nm_S1S2">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>nm</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
+        <item row="0" column="0" rowspan="5" colspan="4">
+         <widget class="QCustomPlot" name="customPlot_S1S2" native="true">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+            <italic>false</italic>
+           </font>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_2"/>
+         </widget>
         </item>
         <item row="2" column="4" rowspan="3">
          <widget class="QGroupBox" name="groupBox_Componant">
@@ -409,17 +387,69 @@
           </layout>
          </widget>
         </item>
-        <item row="0" column="0" rowspan="5" colspan="4">
-         <widget class="QCustomPlot" name="customPlot_S1S2" native="true">
+        <item row="5" column="1" colspan="3">
+         <widget class="QSlider" name="slider_WL_S1S2">
           <property name="font">
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <italic>false</italic>
            </font>
           </property>
-          <layout class="QGridLayout" name="gridLayout_2"/>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksAbove</enum>
+          </property>
          </widget>
+        </item>
+        <item row="5" column="4">
+         <layout class="QGridLayout" name="gridLayout_WL_3">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_CurrentWL_S1S2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>10</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_nm_S1S2">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>nm</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item row="5" column="0">
          <widget class="QLabel" name="label_name_S1S2_WL">
@@ -449,19 +479,10 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1" colspan="3">
-         <widget class="QSlider" name="slider_WL_S1S2">
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksAbove</enum>
+        <item row="6" column="0" colspan="5">
+         <widget class="QPushButton" name="pushButton_SavePlot_S1S2">
+          <property name="text">
+           <string>Save S1/S2 Plot</string>
           </property>
          </widget>
         </item>
@@ -472,82 +493,59 @@
         <string>Phase Function (Polar)</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_9">
-        <item row="1" column="2">
-         <widget class="QGroupBox" name="groupBox_PolarPlotScale">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>75</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="title">
-           <string>Plot Scale</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_GBPlotScale">
-           <property name="topMargin">
-            <number>6</number>
-           </property>
-           <property name="bottomMargin">
-            <number>6</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="radioButton_PhaseLinear">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Arial</family>
-               <pointsize>8</pointsize>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Linear</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QRadioButton" name="radioButton_PhaseLog">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Arial</family>
-               <pointsize>8</pointsize>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Log10</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+        <item row="3" column="2">
+         <layout class="QGridLayout" name="gridLayout_WL_2">
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_nm_PFPolar">
+            <property name="minimumSize">
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>nm</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_CurrentWL_PFPolar">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>10</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item row="2" column="2">
          <widget class="QGroupBox" name="groupBox_PolarThetaStep">
@@ -630,23 +628,6 @@
             </widget>
            </item>
           </layout>
-         </widget>
-        </item>
-        <item row="0" column="0" rowspan="3" colspan="2">
-         <widget class="QwtPolarPlot" name="qwtpolarplot_PhaseFunctionPolar" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-            <italic>false</italic>
-           </font>
-          </property>
          </widget>
         </item>
         <item row="0" column="2">
@@ -774,59 +755,82 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="2">
-         <layout class="QGridLayout" name="gridLayout_WL_2">
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_nm_PFPolar">
-            <property name="minimumSize">
-             <size>
-              <width>20</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>nm</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_CurrentWL_PFPolar">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>10</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
+        <item row="1" column="2">
+         <widget class="QGroupBox" name="groupBox_PolarPlotScale">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>75</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="title">
+           <string>Plot Scale</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_GBPlotScale">
+           <property name="topMargin">
+            <number>6</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="radioButton_PhaseLinear">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>8</pointsize>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Linear</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="radioButton_PhaseLog">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>8</pointsize>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Log10</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </item>
         <item row="3" column="1">
          <widget class="QSlider" name="slider_WL_PFPolar">
@@ -844,6 +848,30 @@
           </property>
          </widget>
         </item>
+        <item row="0" column="0" rowspan="3" colspan="2">
+         <widget class="QwtPolarPlot" name="qwtpolarplot_PhaseFunctionPolar" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+            <italic>false</italic>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="3">
+         <widget class="QPushButton" name="pushButton_SavePlot_PhaseFunctionPolar">
+          <property name="text">
+           <string>Save Phase Function (Polar) Plot</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_PhaseFunction_Linear">
@@ -851,15 +879,19 @@
         <string>Phase Function (Linear)</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_22">
-        <item row="0" column="0" colspan="3">
-         <widget class="QCustomPlot" name="customPlot_PhaseFunctionLinear" native="true">
+        <item row="1" column="1">
+         <widget class="QSlider" name="slider_WL_PFLinear">
           <property name="font">
            <font>
             <family>Arial</family>
             <pointsize>8</pointsize>
-            <italic>false</italic>
-            <bold>false</bold>
            </font>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksAbove</enum>
           </property>
          </widget>
         </item>
@@ -889,22 +921,6 @@
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QSlider" name="slider_WL_PFLinear">
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksAbove</enum>
           </property>
          </widget>
         </item>
@@ -963,6 +979,25 @@
            </widget>
           </item>
          </layout>
+        </item>
+        <item row="0" column="0" colspan="3">
+         <widget class="QCustomPlot" name="customPlot_PhaseFunctionLinear" native="true">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+            <italic>false</italic>
+            <bold>false</bold>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="3">
+         <widget class="QPushButton" name="pushButton_SavePlot_PhaseFunctionLinear">
+          <property name="text">
+           <string>Save Phase Function (Linear) Plot</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -2412,6 +2447,13 @@
         <string>Ave. Cosine of Phase Function (g)</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pushButton_SavePlot_G">
+          <property name="text">
+           <string>Save Cosine of Phase Function (g) Plot</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
          <widget class="QCustomPlot" name="customPlot_G" native="true">
           <property name="font">
@@ -2437,6 +2479,13 @@
             <pointsize>8</pointsize>
             <italic>false</italic>
            </font>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pushButton_SavePlot_FB">
+          <property name="text">
+           <string>Save Forward &amp; Backward Scattering Plot</string>
           </property>
          </widget>
         </item>
@@ -2492,6 +2541,13 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pushButton_SavePlot_Mus">
+          <property name="text">
+           <string>Save Scattering Coefficient Plot</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_Csca">
@@ -2499,6 +2555,13 @@
         <string>Csca</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pushButton_SavePlot_Csca">
+          <property name="text">
+           <string>Save Csca Plot</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
          <widget class="QCustomPlot" name="customPlot_Csca" native="true">
           <property name="font">
@@ -2530,6 +2593,13 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pushButton_SavePlot_Cext">
+          <property name="text">
+           <string>Save Cext Plot</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_Cback">
@@ -2546,6 +2616,13 @@
             <italic>false</italic>
             <bold>false</bold>
            </font>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pushButton_SavePlot_Cback">
+          <property name="text">
+           <string>Save Cback Plot</string>
           </property>
          </widget>
         </item>
@@ -2584,6 +2661,13 @@
           <layout class="QGridLayout" name="gridLayout_17"/>
          </widget>
         </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="pushButton_SavePlot_Musp">
+          <property name="text">
+           <string>Save Reduced Scattering Plot</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_PowerLaw">
@@ -2606,35 +2690,7 @@
         <property name="spacing">
          <number>5</number>
         </property>
-        <item row="0" column="2" rowspan="7">
-         <widget class="QwtSlider" name="qwtslider_B" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>7</pointsize>
-           </font>
-          </property>
-          <property name="lowerBound" stdset="0">
-           <double>0.000000000000000</double>
-          </property>
-          <property name="upperBound" stdset="0">
-           <double>4.000000000000000</double>
-          </property>
-          <property name="value" stdset="0">
-           <double>4.000000000000000</double>
-          </property>
-          <property name="totalSteps" stdset="0">
-           <UInt>400</UInt>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="2">
+        <item row="2" column="2">
          <widget class="QDoubleSpinBox" name="doubleSpinBox_B">
           <property name="minimumSize">
            <size>
@@ -2668,7 +2724,69 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="1" colspan="2">
+        <item row="0" column="0" rowspan="4">
+         <widget class="QCustomPlot" name="customPlot_MuspPowerLaw" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+            <italic>false</italic>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="label_FLabel">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>9</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#149231;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#149231; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_F">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>43</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="2">
          <widget class="QPushButton" name="pushButton_BestFit">
           <property name="enabled">
            <bool>false</bool>
@@ -2685,7 +2803,7 @@
           </property>
          </widget>
         </item>
-        <item row="10" column="0" colspan="3">
+        <item row="4" column="0" colspan="3">
          <layout class="QGridLayout" name="gridLayout_Fitting">
           <item row="1" column="0" rowspan="2" colspan="4">
            <widget class="QGroupBox" name="groupBox_FittingFunction">
@@ -3001,26 +3119,7 @@
           </item>
          </layout>
         </item>
-        <item row="0" column="1" rowspan="7">
-         <widget class="QwtSlider" name="qwtslider_F" native="true">
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>7</pointsize>
-           </font>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="upperBound" stdset="0">
-           <double>1.000000000000000</double>
-          </property>
-          <property name="totalSteps" stdset="0">
-           <UInt>100</UInt>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="2">
+        <item row="1" column="2">
          <widget class="QLabel" name="label_BLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -3049,67 +3148,203 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
-         <widget class="QLabel" name="label_FLabel">
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>9</pointsize>
-            <bold>true</bold>
-           </font>
-          </property>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QLabel" name="labelF_1_0">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>1.0</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelF_0_8">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0.8</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelF_0_6">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0.6</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelF_0_4">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0.4</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelF_0_2">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0.2</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelF_0_0">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0.0</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QSlider" name="slider_F">
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="tickPosition">
+             <enum>QSlider::TicksAbove</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="5" column="0" colspan="3">
+         <widget class="QPushButton" name="pushButton_SavePlot_MuspPowerLaw">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#149231;&quot;&gt;f&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#149231; vertical-align:sub;&quot;&gt;Ray&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
+           <string>Save Power Law Fitting Plot</string>
           </property>
          </widget>
         </item>
-        <item row="8" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_F">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>43</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="maximum">
-           <double>1.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.010000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" rowspan="10">
-         <widget class="QCustomPlot" name="customPlot_MuspPowerLaw" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-            <italic>false</italic>
-           </font>
-          </property>
-         </widget>
+        <item row="0" column="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QLabel" name="labelB_4">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>4</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelB_3">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>3</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelB_2">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>2</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelB_1">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>1</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelB_0">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QSlider" name="slider_B">
+            <property name="maximum">
+             <number>400</number>
+            </property>
+            <property name="value">
+             <number>400</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="tickPosition">
+             <enum>QSlider::TicksAbove</enum>
+            </property>
+            <property name="tickInterval">
+             <number>50</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -3131,11 +3366,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>QwtSlider</class>
-   <extends>QWidget</extends>
-   <header>lib/qwt/qwt_slider.h</header>
-  </customwidget>
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
@@ -3204,74 +3434,9 @@
  <resources>
   <include location="../MieResource.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>qwtslider_F</sender>
-   <signal>valueChanged(double)</signal>
-   <receiver>doubleSpinBox_F</receiver>
-   <slot>setValue(double)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>747</x>
-     <y>52</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>747</x>
-     <y>56</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>qwtslider_B</sender>
-   <signal>valueChanged(double)</signal>
-   <receiver>doubleSpinBox_B</receiver>
-   <slot>setValue(double)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>753</x>
-     <y>52</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>776</x>
-     <y>56</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>doubleSpinBox_F</sender>
-   <signal>valueChanged(double)</signal>
-   <receiver>qwtslider_F</receiver>
-   <slot>setValue(double)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>747</x>
-     <y>56</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>747</x>
-     <y>52</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>doubleSpinBox_B</sender>
-   <signal>valueChanged(double)</signal>
-   <receiver>qwtslider_B</receiver>
-   <slot>setValue(double)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>776</x>
-     <y>56</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>753</x>
-     <y>52</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_MonoPoly"/>
   <buttongroup name="buttonGroup_ConcVolFrac"/>
+  <buttongroup name="buttonGroup_MonoPoly"/>
  </buttongroups>
 </ui>
