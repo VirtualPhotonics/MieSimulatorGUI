@@ -89,3 +89,48 @@ void TestUtilities::test_SimpsonsWeight()
     // Even indexed points (2)
     QVERIFY(qFuzzyCompare(mUtilities->SimpsonsWeight(2, n), 2.0/3.0));
 }
+
+//Test case: NiceStep for a small range
+void TestUtilities::test_NiceStep_SmallRange()
+{
+    double range = 1.0;
+    int initialCircles = 10;
+    QCOMPARE(mUtilities->NiceStep(range, initialCircles), 0.1);
+}
+
+//Test case: NiceStep for a large range
+void TestUtilities::test_NiceStep_LargeRange()
+{
+    // Test for fraction < 3.0
+    double range1 = 25.0;
+    int initialCircles1 = 10;
+    QCOMPARE(mUtilities->NiceStep(range1, initialCircles1), 2.0);
+
+    // Test for fraction < 7.5
+    double range2 = 55.0;
+    int initialCircles2 = 10;
+    QCOMPARE(mUtilities->NiceStep(range2, initialCircles2), 5.0);
+
+    // Test for fraction >= 7.5
+    double range3 = 80.0;
+    int initialCircles3 = 10;
+    QCOMPARE(mUtilities->NiceStep(range3, initialCircles3), 10.0);
+}
+
+void TestUtilities::test_NiceStep_EdgeCases()
+{
+    // Range is a power of 10
+    double range1 = 100.0;
+    int initialCircles1 = 10;
+    QCOMPARE(mUtilities->NiceStep(range1, initialCircles1), 10.0);
+
+    // A zero range
+    double range2 = 0.0;
+    int initialCircles2 = 1;
+    QCOMPARE(mUtilities->NiceStep(range2, initialCircles2), 0.0);
+
+    // A zero initialCircle
+    double range3 = 1.0;
+    int initialCircles3 = 0;
+    QCOMPARE(mUtilities->NiceStep(range3, initialCircles3), 1.0);
+}

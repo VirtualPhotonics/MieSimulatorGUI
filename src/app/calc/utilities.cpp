@@ -39,3 +39,35 @@ double utilities::SimpsonsWeight (unsigned int i, unsigned int n)
     if (i % 2 != 0)   return 4.0 / 3.0;
     return 2.0 / 3.0;
 }
+
+double utilities::NiceStep(double range, int initialCircles)
+{
+    double niceStep = 0.0;
+    double roughStep = (initialCircles > 0) ? range / initialCircles : range;
+    double exponent = floor(log10(roughStep));
+    double fraction = roughStep / pow(10, exponent);
+
+    if (fraction < 1.5)
+    {
+        niceStep = 1.0 * pow(10, exponent);
+    }
+    else
+    {
+        if (fraction < 3.0)
+        {
+            niceStep = 2.0 * pow(10, exponent);
+        }
+        else
+        {
+            if (fraction < 7.5)
+            {
+                niceStep = 5.0 * pow(10, exponent);
+            }
+            else
+            {
+                niceStep = 10.0 * pow(10, exponent);
+            }
+        }
+    }
+    return niceStep;
+}

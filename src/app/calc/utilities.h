@@ -15,6 +15,7 @@ public:
     double ComplexAbs(std::complex<double> c);
     double ComplexAbsSquared(std::complex<double> c);
     double SimpsonsWeight (unsigned int i, unsigned int n);
+    double NiceStep(double range, int initialCircles);
 };
 
 #endif // UTILITIES_H
