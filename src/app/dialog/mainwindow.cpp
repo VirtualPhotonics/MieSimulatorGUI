@@ -1020,10 +1020,11 @@ void MainWindow::CalculateFittingAndDisplay()
 }
 
 // Save QCustomPlot Plots
-void MainWindow::SavePlot(QCustomPlot *curPlot, QString fileName)
+void MainWindow::SavePlot(QCustomPlot *customPlot, QString fileName)
 {
     //Save Data
     QString filesTypes = tr("PNG (*.png);;JPEG (*.jpg);;BMP (*.bmp);;PDF (*.pdf)");
+
     QString name = QFileDialog::
         getSaveFileName(this, tr("Save Plot"),fileName,
                         filesTypes);
@@ -1032,13 +1033,13 @@ void MainWindow::SavePlot(QCustomPlot *curPlot, QString fileName)
     else
     {
         if (name.endsWith(".png", Qt::CaseInsensitive))
-            curPlot->savePng(name,QPrinter::HighResolution);
+            customPlot->savePng(name,QPrinter::HighResolution);
         if (name.endsWith(".jpg", Qt::CaseInsensitive))
-            curPlot->saveJpg(name);
+            customPlot->saveJpg(name);
         if (name.endsWith(".bmp", Qt::CaseInsensitive))
-            curPlot->saveBmp(name);
+            customPlot->saveBmp(name);
         if (name.endsWith(".pdf", Qt::CaseInsensitive))
-            curPlot->savePdf(name);
+            customPlot->savePdf(name);
         RememberLastDirectory(name);
     }
 }
@@ -1051,13 +1052,13 @@ void MainWindow::RememberLastDirectory(QString fileName)
 }
 
 //Display x and y values
-void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *curPlot,
+void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
                                   QString strNameX, QString strNameY)
 {
-    QCPAbstractPlottable *plottable = curPlot->plottableAt(event->position());
+    QCPAbstractPlottable *plottable = customPlot->plottableAt(event->position());
     if(plottable)
     {
-        double x = curPlot->xAxis->pixelToCoord(event->position().x());
+        double x = customPlot->xAxis->pixelToCoord(event->position().x());
         double *dx;
 
         QCPGraph *graph =  qobject_cast<QCPGraph*>(plottable);
@@ -1102,7 +1103,7 @@ void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *curPlot,
                                           "<td>%L3:</td>" "<td>%L4</td>"
                                           "</tr>"
                                           "</table>").arg(strNameX).arg(key).arg(strNameY).arg(value),
-                                       curPlot, curPlot->rect());
+                                       customPlot, customPlot->rect());
                 }
             }
         }
@@ -1112,15 +1113,15 @@ void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *curPlot,
 }
 
 //Display x and y values
-void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *curPlot,
+void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPlot,
                                        QString strNameX, QString strNameY)
 {
     PlotData plot;
 
-    QCPAbstractPlottable *plottable = curPlot->plottableAt(event->position());
+    QCPAbstractPlottable *plottable = customPlot->plottableAt(event->position());
     if(plottable)
     {
-        double x = curPlot->xAxis->pixelToCoord(event->position().x());
+        double x = customPlot->xAxis->pixelToCoord(event->position().x());
         double *dx;
 
         QCPCurve *curve =  qobject_cast<QCPCurve*>(plottable);
@@ -1176,7 +1177,7 @@ void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *curPlot,
                                           "<td>%L3:</td>" "<td>%L4</td>"
                                           "</tr>"
                                           "</table>").arg(strNameX).arg(angle).arg(strNameY).arg(rho),
-                                       curPlot, curPlot->rect());
+                                       customPlot, customPlot->rect());
                 }
             }
         }

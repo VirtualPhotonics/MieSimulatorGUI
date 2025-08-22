@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>1024</width>
+    <width>1120</width>
     <height>768</height>
    </size>
   </property>
@@ -28,7 +28,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Mie Simulator v1.4: Virtual Photonics Technology Initiative - Beckman Laser Institute, University of California Irvine  </string>
+   <string>Mie Simulator v2_0: Virtual Photonics Technology Initiative - Beckman Laser Institute, University of California Irvine  </string>
   </property>
   <property name="windowIcon">
    <iconset theme="VPlogoMie">
@@ -49,7 +49,7 @@
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="movable">
        <bool>true</bool>
@@ -1699,6 +1699,9 @@
         <string>Reduced Scattering Coefficient (μs')</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_10">
+        <property name="topMargin">
+         <number>6</number>
+        </property>
         <property name="rightMargin">
          <number>4</number>
         </property>
@@ -1735,7 +1738,7 @@
          <number>7</number>
         </property>
         <property name="topMargin">
-         <number>7</number>
+         <number>6</number>
         </property>
         <property name="rightMargin">
          <number>4</number>
@@ -2076,7 +2079,7 @@
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>15</width>
-                 <height>10</height>
+                 <height>20</height>
                 </size>
                </property>
               </spacer>
@@ -2145,7 +2148,7 @@
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>15</width>
-                 <height>10</height>
+                 <height>20</height>
                 </size>
                </property>
               </spacer>
@@ -2588,6 +2591,9 @@
         <string>Scattering Coefficient (μs)</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_5">
+        <property name="topMargin">
+         <number>6</number>
+        </property>
         <property name="bottomMargin">
          <number>3</number>
         </property>
@@ -2617,6 +2623,9 @@
         <string>Csca</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
+        <property name="topMargin">
+         <number>6</number>
+        </property>
         <property name="bottomMargin">
          <number>3</number>
         </property>
@@ -2646,6 +2655,9 @@
         <string>Cext</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_19">
+        <property name="topMargin">
+         <number>6</number>
+        </property>
         <property name="bottomMargin">
          <number>3</number>
         </property>
@@ -2675,6 +2687,9 @@
         <string>Cback</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_16">
+        <property name="topMargin">
+         <number>6</number>
+        </property>
         <property name="bottomMargin">
          <number>3</number>
         </property>
@@ -3042,62 +3057,56 @@
         <property name="bottomMargin">
          <number>3</number>
         </property>
-        <item row="3" column="2">
-         <layout class="QGridLayout" name="gridLayout_WL_2">
-          <property name="rightMargin">
-           <number>0</number>
+        <item row="4" column="0" colspan="3">
+         <widget class="QPushButton" name="pushButton_SavePlot_PhaseFunctionPolar">
+          <property name="text">
+           <string>Save Phase Function (Polar) Plot</string>
           </property>
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_nm_PFPolar">
-            <property name="minimumSize">
-             <size>
-              <width>20</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>nm</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_CurrentWL_PFPolar">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>10</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_name_PFPolar_WL">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Wavelength</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSlider" name="slider_WL_PFPolar">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksAbove</enum>
+          </property>
+         </widget>
         </item>
         <item row="2" column="2">
          <widget class="QGroupBox" name="groupBox_PolarThetaStep">
@@ -3176,6 +3185,109 @@
              </property>
              <property name="checked">
               <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="3" colspan="2">
+         <widget class="QCustomPlot" name="customPlot_PhaseFunctionPolar" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>1</horstretch>
+            <verstretch>1</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="sizeIncrement">
+           <size>
+            <width>1</width>
+            <height>1</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+            <italic>false</italic>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QGroupBox" name="groupBox_PolarPlotScale">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>83</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="title">
+           <string>Radial Scale</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_GBPlotScale">
+           <property name="topMargin">
+            <number>6</number>
+           </property>
+           <property name="rightMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="radioButton_PhaseLinear">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>8</pointsize>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Linear</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="radioButton_PhaseLog">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>8</pointsize>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Log10</string>
              </property>
             </widget>
            </item>
@@ -3282,153 +3394,62 @@
           </layout>
          </widget>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_name_PFPolar_WL">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+        <item row="3" column="2">
+         <layout class="QGridLayout" name="gridLayout_WL_2">
+          <property name="rightMargin">
+           <number>0</number>
           </property>
-          <property name="minimumSize">
-           <size>
-            <width>60</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Wavelength</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QGroupBox" name="groupBox_PolarPlotScale">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>83</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="title">
-           <string>Radial Scale</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_GBPlotScale">
-           <property name="topMargin">
-            <number>6</number>
-           </property>
-           <property name="rightMargin">
-            <number>3</number>
-           </property>
-           <property name="bottomMargin">
-            <number>6</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="radioButton_PhaseLinear">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Arial</family>
-               <pointsize>8</pointsize>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Linear</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QRadioButton" name="radioButton_PhaseLog">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Arial</family>
-               <pointsize>8</pointsize>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Log10</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QSlider" name="slider_WL_PFPolar">
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksAbove</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" rowspan="3" colspan="2">
-         <widget class="QCustomPlot" name="customPlot_PhaseFunctionPolar" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-            <italic>false</italic>
-           </font>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0" colspan="3">
-         <widget class="QPushButton" name="pushButton_SavePlot_PhaseFunctionPolar">
-          <property name="text">
-           <string>Save Phase Function (Polar) Plot</string>
-          </property>
-         </widget>
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_nm_PFPolar">
+            <property name="minimumSize">
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>nm</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_CurrentWL_PFPolar">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>10</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>

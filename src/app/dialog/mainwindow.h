@@ -28,11 +28,11 @@ private:
     void UpdateMuspFitPlot();
     void UpdateMuspFitErrorDisplay();
     void CalculateFittingAndDisplay();
-    void SavePlot(QCustomPlot *curPlot, QString fileName);
+    void SavePlot(QCustomPlot *customPlot, QString fileName);
     void RememberLastDirectory(QString fileName);
-    void DisplayGraphData(QMouseEvent *event, QCustomPlot *curPlot,
+    void DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
                           QString strNameX, QString strNameY);
-    void DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *curPlot,
+    void DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPlot,
                                QString strNameX, QString strNameY);
 
 private slots:
