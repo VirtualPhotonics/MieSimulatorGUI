@@ -3,7 +3,6 @@
 
 #include <complex>
 #include <qmath.h>
-#include "lib/qwt/qwt_polar_curve.h"
 #include <QRadioButton>
 #include <QComboBox>
 
@@ -12,11 +11,11 @@ struct ParameterValidationResult {
     QString errorMessage;
 };
 
-class parameters
+class Parameters
 {
 public:
-    parameters(void);
-    ~parameters(void);
+    Parameters(void);
+    ~Parameters(void);
 
     bool CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
                                QRadioButton *radioButton_NumDen,
@@ -90,10 +89,6 @@ public:
     double muspFittingError = 0;               //muspfittingError: fitting error
     double refWavel = 1000;                    //refWavel: reference lambda: 500, 600, 700, 800, 900 and 1000nm
     bool fittingComplex = true;                //fittingComplex; False: Simple,  True: Ccomplex
-
-    QwtPolarCurve *polarCurve = nullptr;       //polarCurve: polarCurve data
-
-
 };
 
 #endif // PARAMETERS_H

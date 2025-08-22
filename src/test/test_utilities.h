@@ -20,13 +20,11 @@ private slots:
     void test_ComplexAbsSquared();
     void test_ComplexAbs();
     void test_SimpsonsWeight();
-    void test_NiceStep_SmallRange();
-    void test_NiceStep_LargeRange();
-    void test_NiceStep_EdgeCases();
-
+    void test_NiceStep();
+    void test_FindMinMax();
 
 private:
-    utilities *mUtilities;
+    Utilities *mUtil;
 };
 
 #endif // TEST_UTILITIES_H

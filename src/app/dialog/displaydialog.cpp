@@ -33,7 +33,7 @@ void DisplayDialog::DisplayData(QRadioButton *radioButton_MonoDisperse,
                                 QRadioButton *radioButton_PhaseAverage,
                                 QRadioButton *radioButton_PhasePara,
                                 QRadioButton *radioButton_PhasePerp,
-                                parameters *para)
+                                Parameters *para)
 {
     double margin = (1.0 + slider_ConcPercentChange->value() / 200.0);
 

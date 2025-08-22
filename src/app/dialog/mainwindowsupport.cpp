@@ -5,6 +5,7 @@
 
 #include "dialog/mainwindowsupport.h"
 #include "dialog/plotdata.h"
+#include "lib/qcustomplot.h"
 #include <QMessageBox>
 
 MainWindowSupport::MainWindowSupport(void)
@@ -12,7 +13,7 @@ MainWindowSupport::MainWindowSupport(void)
 }
 
 // Initialize GUI
-void MainWindowSupport::InitializeGUI(Ui_MainWindow *ui, parameters *para)
+void MainWindowSupport::InitializeGUI(Ui_MainWindow *ui, Parameters *para)
 {
     //Set variable limits
     ui->lineEdit_StartWL->setValidator( new QDoubleValidator(1e-15, 1e15, 12) );
@@ -30,10 +31,12 @@ void MainWindowSupport::InitializeGUI(Ui_MainWindow *ui, parameters *para)
 
     //Initial setting
     ui->label_ScatRefImag->setText("<font color=\"brown\">Sph.  Im.</font>");
+    ui->comboBox_Distribution->blockSignals(true);
     ui->comboBox_Distribution->addItem("Log Normal");
     ui->comboBox_Distribution->addItem("Gaussian");
     ui->comboBox_Distribution->addItem("Custom");
     ui->comboBox_Distribution->setDisabled(true);
+    ui->comboBox_Distribution->blockSignals(false);
 
     ui->lineEdit_StartWL->setText(QString::number(para->startWavel));
     ui->lineEdit_EndWL->setText(QString::number(para->endWavel));
@@ -52,7 +55,7 @@ void MainWindowSupport::InitializeGUI(Ui_MainWindow *ui, parameters *para)
 }
 
 //Reset widgets
-void MainWindowSupport::SetWidgets(Ui_MainWindow *ui, parameters *para)
+void MainWindowSupport::SetWidgets(Ui_MainWindow *ui, Parameters *para)
 {
     bool falseFlag, trueFlag;
 
@@ -66,17 +69,18 @@ void MainWindowSupport::SetWidgets(Ui_MainWindow *ui, parameters *para)
         falseFlag = true;
         trueFlag = false;
     }
-    //Mono Dispere parameters
+    //Mono Dispere Parameters
     ui->lineEdit_Diameter->setDisabled(falseFlag);
     ui->label_Diameter->setDisabled(falseFlag);
-    //Poly Dispere parameters
+    //Poly Dispere Parameters
     ui->comboBox_Distribution->setDisabled(trueFlag);
     ui->pushButton_ShowDistributionAndCustom->setDisabled(trueFlag);
     ui->radioButton_LinearXAxis->setDisabled(trueFlag);
     ui->radioButton_LogXAxis->setDisabled(trueFlag);
     ui->label_DistXAxis->setDisabled(trueFlag);
 
-    if (ui->comboBox_Distribution->currentIndex() != para->Custom)  // if not "Custom"
+    if (ui->comboBox_Distribution->currentIndex() != para->Custom)  // if not "Custom"""""""""
+
     {
         ui->lineEdit_MeanDiameter->setDisabled(trueFlag);
         ui->label_MeanDiameter->setDisabled(trueFlag);
@@ -111,7 +115,7 @@ void MainWindowSupport::SetWidgets(Ui_MainWindow *ui, parameters *para)
 }
 
 //Copy input data to 'para' variable
-void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
+void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, Parameters *para)
 {    
     para->startWavel = ui->lineEdit_StartWL->text().toDouble();
     para->endWavel = ui->lineEdit_EndWL->text().toDouble();
@@ -129,7 +133,8 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
         para->meanRadius = 0.5 * ui->lineEdit_Diameter->text().toDouble();
         para->nRadius = 1;
     }
-    if ((ui->radioButton_PolyDisperse->isChecked()) && (ui->comboBox_Distribution->currentIndex() != para->Custom))
+    if ((ui->radioButton_PolyDisperse->isChecked()) &&
+        (ui->comboBox_Distribution->currentIndex() != para->Custom))
     {
         para->meanRadius = 0.5 * ui->lineEdit_MeanDiameter->text().toDouble();
         para->stdDev = ui->lineEdit_StdDev->text().toDouble();
@@ -176,7 +181,7 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, parameters *para)
 }
 
 //Initialize dynamic arrays.
-void MainWindowSupport::InitializeArrays(Ui_MainWindow *ui, parameters *para, bool *arrayFlag)
+void MainWindowSupport::InitializeArrays(Ui_MainWindow *ui, Parameters *para, bool *arrayFlag)
 {
     if (ui->radioButton_Phase_DTheta0_1->isChecked())
         para->nTheta = 1801;    //180/(1801-1) = 0.1degree step
@@ -221,7 +226,7 @@ void MainWindowSupport::InitializeArrays(Ui_MainWindow *ui, parameters *para, bo
 }
 
 //Delete dynamic arrays
-void MainWindowSupport::DeleteArrays(parameters *para, bool *arrayFlag)
+void MainWindowSupport::DeleteArrays(Parameters *para, bool *arrayFlag)
 {
     delete[] para->wavelArray;
     delete[] para->cSca;
@@ -272,28 +277,9 @@ void MainWindowSupport::SetWavelengthSliders(Ui_MainWindow *ui)
 }
 
 // Run Mono disperse distribution
-void MainWindowSupport::ProcessMonoDisperse(Ui_MainWindow *ui, parameters *para)
+void MainWindowSupport::ProcessMonoDisperse(Ui_MainWindow *ui, Parameters *para)
 {
-    mCalc = new calculate();
-    PlotData plot;
-
-    //Run Mie simulation for radius para->radArray[i]
-    mCalc->DoSimulation(ui->label_Progress, para);
-
-    //Get musp at reference wavelengths
-    mCalc->ComputeMuspAtRefWavel(para);
-
-    //Assign values and plot    
-    plot.AssignValuesPhaseFunctionPolarPlot(ui,para);
-    plot.AssignValuesPhaseFunctionLinearPlot(ui,para);
-    plot.AssignValuesS1S2Plot(ui, para);
-    plot.AssignValuesAllOtherPlots(ui, para);
-}
-
-// Run Poly disperse distribution
-void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, parameters *para)
-{
-    mCalc = new calculate();
+    mCalc = new Calculate();
     PlotData plot;
 
     //Run Mie simulation for radius para->radArray[i]
@@ -303,14 +289,35 @@ void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, parameters *para)
     mCalc->ComputeMuspAtRefWavel(para);
 
     //Assign values and plot
+    plot.SetupPolarPlotForData(ui, para);
     plot.AssignValuesPhaseFunctionPolarPlot(ui,para);
     plot.AssignValuesPhaseFunctionLinearPlot(ui,para);
     plot.AssignValuesS1S2Plot(ui, para);
-    plot.AssignValuesAllOtherPlots(ui, para);
+    plot.AssignValuesOtherPlots(ui, para);
+}
+
+// Run Poly disperse distribution
+void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, Parameters *para)
+{
+    mCalc = new Calculate();
+    PlotData plot;
+
+    //Run Mie simulation for radius para->radArray[i]
+    mCalc->DoSimulation(ui->label_Progress, para);
+
+    //Get musp at reference wavelengths
+    mCalc->ComputeMuspAtRefWavel(para);
+
+    //Assign values and plot
+    plot.SetupPolarPlotForData(ui, para);
+    plot.AssignValuesPhaseFunctionPolarPlot(ui,para);
+    plot.AssignValuesPhaseFunctionLinearPlot(ui,para);
+    plot.AssignValuesS1S2Plot(ui, para);
+    plot.AssignValuesOtherPlots(ui, para);
 }
 
 //Sphere distribution in poly disperse
-void MainWindowSupport::ProcessDistribution(Ui_MainWindow *ui, parameters *para, unsigned int distIndex)
+void MainWindowSupport::ProcessDistribution(Ui_MainWindow *ui, Parameters *para, unsigned int distIndex)
 {
     PlotData plot;
     if (distIndex !=2)
@@ -350,7 +357,7 @@ void MainWindowSupport::DisableEnableRealImagButtons(Ui_MainWindow *ui)
 }
 
 // Disable widgets during simulation
-void MainWindowSupport::DisableWidgetsDuringSimulation(Ui_MainWindow *ui, parameters *para, bool flag)
+void MainWindowSupport::DisableWidgetsDuringSimulation(Ui_MainWindow *ui, Parameters *para, bool flag)
 {
     //disable widgets during simulation
     ui->pushButton_RunSimulation->setDisabled(flag);
@@ -405,7 +412,7 @@ void MainWindowSupport::DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow
 }
 
 //Read "Custom" (PolyDisperse) data from a file
-void MainWindowSupport::ReadCustomData(parameters *para, QString fileName, bool *dataValidFlag)
+void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool *dataValidFlag)
 {
     int count = -1;
     int badLines = -1;
@@ -425,7 +432,7 @@ void MainWindowSupport::ReadCustomData(parameters *para, QString fileName, bool 
     do
     {
         line = in.readLine();
-        QStringList list = line.split(QRegExp(",|;|\t"));
+        QStringList list = line.split(QRegularExpression(",|;|\t"));
         if (!(list.size()==4 || list.size()==5))
             badLines++;
         else
@@ -483,7 +490,7 @@ void MainWindowSupport::ReadCustomData(parameters *para, QString fileName, bool 
         do
         {
             line = in.readLine();
-            QStringList list = line.split(QRegExp(",|;|\t"));
+            QStringList list = line.split(QRegularExpression(",|;|\t"));
             if (list.size()==4)
             {
                  para->radArray[idx] = list.at(0).toDouble()/2.0;

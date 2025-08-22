@@ -60,7 +60,7 @@ void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
                              QRadioButton *radioButton_PhaseAverage,
                              QRadioButton *radioButton_PhasePara,
                              QRadioButton *radioButton_PhasePerp,
-                             parameters *para)
+                             Parameters *para)
 {
     setModal(true);
     exec();
@@ -137,7 +137,7 @@ void OptionsDialog::SaveScatPara(QRadioButton *radioButton_MonoDisperse,
                                  QRadioButton *radioButton_NumDen,
                                  QRadioButton *radioButton_VolFrac,
                                  QComboBox *comboBox_Distribution,
-                                 parameters *para,
+                                 Parameters *para,
                                  QString fileName,
                                  double margin)
 {    
@@ -229,7 +229,7 @@ void OptionsDialog::SaveScatPara(QRadioButton *radioButton_MonoDisperse,
 void OptionsDialog::SavePhaseFunction(QRadioButton *radioButton_PhaseAverage,
                                       QRadioButton *radioButton_PhasePara,
                                       QRadioButton *radioButton_PhasePerp,
-                                       parameters *para, QString fileName)
+                                       Parameters *para, QString fileName)
 {
 
     QFile file(fileName);
@@ -270,7 +270,7 @@ void OptionsDialog::SavePhaseFunction(QRadioButton *radioButton_PhaseAverage,
     }
 }
 
-void OptionsDialog::SaveS1(parameters *para, QString fileName)
+void OptionsDialog::SaveS1(Parameters *para, QString fileName)
 {
 
     QFile file(fileName);
@@ -298,7 +298,7 @@ void OptionsDialog::SaveS1(parameters *para, QString fileName)
     }
 }
 
-void OptionsDialog::SaveS2(parameters *para, QString fileName)
+void OptionsDialog::SaveS2(Parameters *para, QString fileName)
 {
 
     QFile file(fileName);

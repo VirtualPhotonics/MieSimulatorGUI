@@ -3,6 +3,8 @@
 **********************************************************************/
 
 #include <QtMath>
+#include <QTest>
+#include <complex>
 #include "test_miesimulation.h"
 #include "calc/miesimulation.h"
 

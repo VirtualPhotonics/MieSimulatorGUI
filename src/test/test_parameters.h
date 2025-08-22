@@ -1,7 +1,6 @@
 #ifndef TEST_PARAMETERS_H
 #define TEST_PARAMETERS_H
 
-#include <QtTest>
 #include "../app/parameters.h"
 
 // Define a test class
@@ -45,7 +44,7 @@ private slots:
     void test_CheckValidityDistributionParameters_invalidStdDevMeanRadiusRatio();
 
 private:
-    parameters *mPara;
+    Parameters *mPara;
 };
 
 #endif // TEST_PARAMETERS_H

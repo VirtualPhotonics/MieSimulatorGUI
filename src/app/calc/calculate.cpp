@@ -7,16 +7,16 @@
 #include "calc/utilities.h"
 #include "parameters.h"
 
-calculate::calculate()
+Calculate::Calculate()
 {
 }
 
-calculate::~calculate()
+Calculate::~Calculate()
 {
 }
 
 //Calculate parameters using mie solution
-void calculate::DoSimulation(QLabel *progress, parameters *para)
+void Calculate::DoSimulation(QLabel *progress, Parameters *para)
 {
     MieSimulation sim;
     double curMus;
@@ -28,7 +28,7 @@ void calculate::DoSimulation(QLabel *progress, parameters *para)
     double refRelRe = 1.0;
     double refRelIm = 0.0;
     double xPara = 0.0;
-    double stepTheta = (maxTheta - minTheta)/static_cast<double>(para->nTheta - 1);
+    double stepTheta = (mMaxTheta - mMinTheta)/static_cast<double>(para->nTheta - 1);
 
     std::complex<double> *curS1 = new std::complex<double> [para->nTheta];
     std::complex<double> *curS2 = new std::complex<double> [para->nTheta];
@@ -43,11 +43,11 @@ void calculate::DoSimulation(QLabel *progress, parameters *para)
         sumNumDen += para->numDensityArray[r];
 
     //Calculate all Mie parameters
-    utilities util;
+    Utilities util;
     for (unsigned int w = 0; w < para->nWavel; w++)
     {
-        wavel = para->wavelArray[w]/1000;   //in microns
-        progress->setText("<font color=\"red\">WL: <font>"+QString::number(1000*wavel)+"nm</font>");
+        mWavel = para->wavelArray[w]/1000;   //in microns
+        progress->setText("<font color=\"red\">WL: <font>"+QString::number(1000*mWavel)+"nm</font>");
         util.Delay();        
         sumMus = 0.0;
         sumMusG = 0.0;
@@ -66,8 +66,8 @@ void calculate::DoSimulation(QLabel *progress, parameters *para)
         }
         for (unsigned int r = 0; r < para->nRadius; r++)
         {
-            k = 2 * M_PI * para->medRefArray[r] /wavel;
-            xPara = k * para->radArray[r];            
+            mK = 2 * M_PI * para->medRefArray[r] /mWavel;
+            xPara = mK * para->radArray[r];
             piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
 
             refRelRe = para->scatRefRealArray[r] / para->medRefArray[r];
@@ -77,26 +77,26 @@ void calculate::DoSimulation(QLabel *progress, parameters *para)
             {
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
-                    mu = cos(minTheta + t * stepTheta);
-                    sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara, refRelRe, mu);
-                    curS1[t] = cS1;
-                    curS2[t] = cS2;
+                    mMu = cos(mMinTheta + t * stepTheta);
+                    sim.FarFieldSolutionForRealRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara, refRelRe, mMu);
+                    curS1[t] = mCS1;
+                    curS2[t] = mCS2;
                 }
             }
             else
             {
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
-                    mu = cos(minTheta + t * stepTheta);
-                    sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara,
-                                                           std::complex<double>(refRelRe,-refRelIm), mu);  //multiply by -1 to use "n-ik" convention
-                    curS1[t] = cS1;
-                    curS2[t] = cS2;
+                    mMu = cos(mMinTheta + t * stepTheta);
+                    sim.FarFieldSolutionForComplexRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara,
+                                                           std::complex<double>(refRelRe,-refRelIm), mMu);  //multiply by -1 to use "n-ik" convention
+                    curS1[t] = mCS1;
+                    curS2[t] = mCS2;
                 }
             }
             //Ref: Schmitt and Kumar, Applied Optics 37(13) 1998
             //Mus calculation
-            curMus = piRadiusSquared * qSca * para->numDensityArray[r];
+            curMus = piRadiusSquared * mQSca * para->numDensityArray[r];
             sumMus += curMus;          //Σμs
             //G calculation
             sumMusG += CalculateG(curS1, curS2, para) * curMus;
@@ -106,12 +106,12 @@ void calculate::DoSimulation(QLabel *progress, parameters *para)
             sumBackward += CalculateForwardBackward(curS1, curS2, para, ((para->nTheta-1)/2), para->nTheta)* curMus;
 
             //Coefficients
-            sumCsca += piRadiusSquared * qSca * para->numDensityArray[r];
-            sumCext += piRadiusSquared * qExt * para->numDensityArray[r];
-            sumCback += piRadiusSquared * qBack * para->numDensityArray[r];
+            sumCsca += piRadiusSquared * mQSca * para->numDensityArray[r];
+            sumCext += piRadiusSquared * mQExt * para->numDensityArray[r];
+            sumCback += piRadiusSquared * mQBack * para->numDensityArray[r];
 
             //S1 and S2
-            double factor = 1.0 / (M_PI * xPara * xPara * qSca);   // 1/(pi *X^2 * qSca);
+            double factor = 1.0 / (M_PI * xPara * xPara * mQSca);   // 1/(pi *X^2 * qSca);
             for (unsigned int t = 0; t < para->nTheta; t++)
             {
                 sumS1[t] += curS1[t] * curMus;
@@ -155,7 +155,8 @@ void calculate::DoSimulation(QLabel *progress, parameters *para)
 
 }
 
-void calculate::ComputeMuspAtRefWavel(parameters *para)
+//Compute Musp at reference wavelength
+void Calculate::ComputeMuspAtRefWavel(Parameters *para)
 {
     MieSimulation sim;
     double curMus;
@@ -164,7 +165,7 @@ void calculate::ComputeMuspAtRefWavel(parameters *para)
     double refRelRe = 1.0;
     double refRelIm = 0.0;
     double xPara = 0.0;
-    double stepTheta = (maxTheta - minTheta)/static_cast<double>(para->nTheta - 1);
+    double stepTheta = (mMaxTheta - mMinTheta)/static_cast<double>(para->nTheta - 1);
 
     std::complex<double> *curS1 = new std::complex<double> [para->nTheta];
     std::complex<double> *curS2 = new std::complex<double> [para->nTheta];
@@ -181,9 +182,9 @@ void calculate::ComputeMuspAtRefWavel(parameters *para)
         for (unsigned int r = 0; r < para->nRadius; r++)
         {
             //Calculate mus and g at reference wavelength for musp fitting plot
-            k = 2 * M_PI * para->medRefArray[r] /lambda;    //k at reference wavelength
+            mK = 2 * M_PI * para->medRefArray[r] /lambda;    //k at reference wavelength
 
-            xPara = k * para->radArray[r];
+            xPara = mK * para->radArray[r];
             piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
 
             refRelRe = para->scatRefRealArray[r] / para->medRefArray[r];
@@ -193,25 +194,25 @@ void calculate::ComputeMuspAtRefWavel(parameters *para)
             {
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
-                    mu = cos(minTheta + t * stepTheta);
-                    sim.FarFieldSolutionForRealRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara, refRelRe, mu);
-                    curS1[t] = cS1;
-                    curS2[t] = cS2;
+                    mMu = cos(mMinTheta + t * stepTheta);
+                    sim.FarFieldSolutionForRealRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara, refRelRe, mMu);
+                    curS1[t] = mCS1;
+                    curS2[t] = mCS2;
                 }
             }
             else
             {
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
-                    mu = cos(minTheta + t * stepTheta);
-                    sim.FarFieldSolutionForComplexRefIndex(&cS1, &cS2, &qSca, &qExt, &qBack, xPara,
-                                                           std::complex<double>(refRelRe,-refRelIm), mu);  //multiply by -1 to use "n-ik" convention
-                    curS1[t] = cS1;
-                    curS2[t] = cS2;
+                    mMu = cos(mMinTheta + t * stepTheta);
+                    sim.FarFieldSolutionForComplexRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara,
+                                                           std::complex<double>(refRelRe,-refRelIm), mMu);  //multiply by -1 to use "n-ik" convention
+                    curS1[t] = mCS1;
+                    curS2[t] = mCS2;
                 }
             }
             //Mus calculation
-            curMus = piRadiusSquared * qSca * para->numDensityArray[r] * 1e-6;  //1e-6--> 1micron2 to 1mm2
+            curMus = piRadiusSquared * mQSca * para->numDensityArray[r] * 1e-6;  //1e-6--> 1micron2 to 1mm2
             sumMus += curMus;          //Σμs
             //G calculation
             sumMusG += CalculateG(curS1, curS2, para)*curMus;
@@ -225,7 +226,7 @@ void calculate::ComputeMuspAtRefWavel(parameters *para)
 }
 
 //Calculate bestfit and plot for Simple Algorithm
-void calculate::CalculatePowerLawAutoFitSimple(parameters *para)
+void Calculate::CalculatePowerLawAutoFitSimple(Parameters *para)
 {
     double bMie, yFit;
     double error, sumError;
@@ -258,7 +259,7 @@ void calculate::CalculatePowerLawAutoFitSimple(parameters *para)
 }
 
 //Calculate bestfit and plot for Complex algorithm
-void calculate::CalculatePowerLawAutoFitComplex(parameters *para)
+void Calculate::CalculatePowerLawAutoFitComplex(Parameters *para)
 {
     double bMie, fRay, yFit;
     double error, sumError;
@@ -302,43 +303,43 @@ void calculate::CalculatePowerLawAutoFitComplex(parameters *para)
     para->bMie = curB;
 }
 
-//Calculate forward
-double calculate::CalculateForwardBackward(std::complex<double> *S1,
+//Calculate forward and backward scattering percentage
+double Calculate::CalculateForwardBackward(std::complex<double> *S1,
                                            std::complex<double> *S2,
-                                           parameters *para,
+                                           Parameters *para,
                                            unsigned int start,
                                            unsigned int end)
 {
     double S;
     double theta, twoPiSinTheta;
     double sum = 0.0;
-    double stepTheta = (maxTheta - minTheta)/static_cast<double>(para->nTheta - 1);
+    double stepTheta = (mMaxTheta - mMinTheta)/static_cast<double>(para->nTheta - 1);
 
-    utilities util;
+    Utilities util;
     for (unsigned int i = start; i <end; i++)
     {
         S = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i]))/2.0;
-        theta = minTheta + i * stepTheta;
+        theta = mMinTheta + i * stepTheta;
         twoPiSinTheta = 2.0 * M_PI * sin(theta);
         sum += S * twoPiSinTheta * util.SimpsonsWeight (i-start, end-start);
     }
     return sum;
 }
 
-//Calculate average
-double calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2, parameters *para)
+//Calculate average cosine of phase function
+double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para)
 {
     double S;
     double theta, twoPiSinTheta;
     double num = 0.0;
     double den = 0.0;
-    double stepTheta = (maxTheta - minTheta)/static_cast<double>(para->nTheta - 1);
+    double stepTheta = (mMaxTheta - mMinTheta)/static_cast<double>(para->nTheta - 1);
 
-    utilities util;
+    Utilities util;
     for (unsigned int i = 0; i < para->nTheta; i++)
     {
         S = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i]))/2.0;
-        theta = minTheta + i * stepTheta;
+        theta = mMinTheta + i * stepTheta;
         twoPiSinTheta = 2.0 * M_PI * sin(theta);
         num += S * cos(theta) * twoPiSinTheta * util.SimpsonsWeight (i, para->nTheta);
         den += S * twoPiSinTheta * util.SimpsonsWeight (i, para->nTheta);
@@ -347,7 +348,7 @@ double calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
 }
 
 //Set sphere parameters
-void calculate::SetSphereRadiusAndRefIndex(parameters *para, unsigned int index, bool flagVolOrConc)
+void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index, bool flagVolOrConc)
 {
     double temp, factor;
     double totalSphereVolume = 0.0;
@@ -421,7 +422,7 @@ void calculate::SetSphereRadiusAndRefIndex(parameters *para, unsigned int index,
 
 //Selction of discrete sphere sizes for poly disperse distribution
 //This process is used to obtain the best distribution for assigned mean diameter
-void calculate::DiameterRangeSetting(parameters *para, unsigned int index)
+void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index)
 {
     double curR, dR;
     double cutoffPercent = 0.0;

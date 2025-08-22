@@ -8,16 +8,16 @@
 #include <QRadioButton>
 #include <QMessageBox>
 
-parameters::parameters(void)
+Parameters::Parameters(void)
 {
 }
 
-parameters::~parameters(void)
+Parameters::~Parameters(void)
 {
 }
 
-//Check the validity of common parameters
-bool parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
+//Check the validity of common Parameters
+bool Parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
                                        QRadioButton *radioButton_NumDen,
                                        QRadioButton *radioButton_VolFrac)
 {    
@@ -47,7 +47,7 @@ bool parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
         return true;
 }
 
-ParameterValidationResult parameters::CheckValidityCommonParameters(
+ParameterValidationResult Parameters::CheckValidityCommonParameters(
                                                     bool monoDisperseSelection,
                                                     bool numDenSelection,
                                                     bool volFracSelection)
@@ -161,7 +161,7 @@ ParameterValidationResult parameters::CheckValidityCommonParameters(
 }
 
 //Check the validity of Distribution parameters
-bool parameters::CheckDistributionParameters(QComboBox *comboBox_Distribution)
+bool Parameters::CheckDistributionParameters(QComboBox *comboBox_Distribution)
 {
     int comboBoxIndex =0;
 
@@ -187,7 +187,7 @@ bool parameters::CheckDistributionParameters(QComboBox *comboBox_Distribution)
         return true;
 }
 
-ParameterValidationResult parameters::CheckValidityDistributionParameters(int comboBoxIndex)
+ParameterValidationResult Parameters::CheckValidityDistributionParameters(int comboBoxIndex)
 {
     ParameterValidationResult result;
     result.isValid = true;

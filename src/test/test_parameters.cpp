@@ -3,6 +3,7 @@
 **********************************************************************/
 
 #include "test_parameters.h"
+#include <QTest>
 
 TestParameters::TestParameters()
 {
@@ -15,7 +16,7 @@ TestParameters::~TestParameters()
 //Initialize values for tests
 void TestParameters::init()
 {
-    mPara = new parameters();
+    mPara = new Parameters();
     mPara->scatRefReal = 1.377;
     mPara->medRef = 1.333;
     mPara->scatRefImag = 0.0;

@@ -4,6 +4,7 @@
 
 #include <QDebug>
 #include <QtMath>
+#include <QTest>
 #include <complex>
 #include "test_calculate.h"
 
@@ -18,8 +19,8 @@ TestCalculate::~TestCalculate()
 //Initialize values for tests
 void TestCalculate::init()
 {
-    mPara = new parameters();
-    mCalc = new calculate();
+    mPara = new Parameters();
+    mCalc = new Calculate();
 
     mPara->radArray = new double[mPara->nRadius];
     mPara->numDensityArray = new double[mPara->nRadius];

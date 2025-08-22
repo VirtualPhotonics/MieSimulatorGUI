@@ -27,7 +27,7 @@ public:
                      QSlider *slider_WL_PFPolar,
                      QRadioButton *radioButton_PhaseAverage,
                      QRadioButton *radioButton_PhasePara,
-                     QRadioButton *radioButton_PhasePerp, parameters *);
+                     QRadioButton *radioButton_PhasePerp, Parameters *);
     Ui::DisplayDialog *ui;
 
 private slots:

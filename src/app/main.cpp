@@ -47,8 +47,21 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QTextCodec *utfCodec = QTextCodec::codecForName("UTF-8"); //creating new utf-8 codec
-    QTextCodec::setCodecForLocale(utfCodec);  // setting the utf-8 codec for the tr() tags
+
+    QFont defaultFont;
+    defaultFont.setPointSize(9);
+
+#if defined(Q_OS_WIN) || defined(Q_OS_LINUX)
+    defaultFont.setFamily("Arial");
+    a.setStyleSheet("QWidget { font-size: 11px; }");
+#elif defined(Q_OS_MACOS)
+    defaultFont.setFamily("Helvetica");
+    a.setStyleSheet("QWidget { font-size: 10px; }");
+#endif
+
+    //Set default font
+    a.setFont(defaultFont);
+
     MainWindow w;
     w.show();
     return a.exec();

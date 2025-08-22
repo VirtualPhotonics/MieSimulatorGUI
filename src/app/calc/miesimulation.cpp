@@ -6,8 +6,6 @@
 #include "calc/miesimulation.h"
 #include "calc/utilities.h"
 #include <cmath>
-#include <cstdlib>
-#include <ctime>
 
 #define max(a,b)    (((a) > (b)) ? (a) : (b))
 
@@ -33,7 +31,7 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
                                                     double *qSca, double *qExt, double *qBack,
                                                     double xPara, double relRef, double mu)
 {
-    utilities util;
+    Utilities util;
 
     //use conventional symbols
     double x = xPara;
@@ -147,7 +145,7 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
                                                        double *qSca, double *qExt, double *qBack,
                                                        double xPara, std::complex<double> cRelRef, double mu)
 {
-    utilities util;
+    Utilities util;
 
     //use conventional symbols
     double x = xPara;
