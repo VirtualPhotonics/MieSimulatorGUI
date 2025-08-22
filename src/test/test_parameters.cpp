@@ -3,6 +3,7 @@
 **********************************************************************/
 
 #include "test_parameters.h"
+#include <QTest>
 
 TestParameters::TestParameters()
 {
@@ -15,7 +16,7 @@ TestParameters::~TestParameters()
 //Initialize values for tests
 void TestParameters::init()
 {
-    mPara = new parameters();
+    mPara = new Parameters();
     mPara->scatRefReal = 1.377;
     mPara->medRef = 1.333;
     mPara->scatRefImag = 0.0;
@@ -171,7 +172,7 @@ void TestParameters::test_CheckValidityCommonParameters_invalidVolumeExceedsLimi
     mPara->sphNumDensity = 239.0;
     ParameterValidationResult result = mPara->CheckValidityCommonParameters(true, true, false);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Concentration x Sphere Volume exceeds 1mm\xc2\xb3! Reduce Concentration (Conc)."));
+    QCOMPARE(result.errorMessage, QString("Concentration x Sphere Volume exceeds 1mm³! Reduce Concentration (Conc)."));
 }
 
 // Test case: Ensures a valid set of parameters passes the distribution check (for Log Normal)

@@ -2,8 +2,6 @@
 #define TEST_MIESIMULATION_H
 
 #include <QObject>
-#include <QTest>
-#include <complex>
 
 class MieSimulation;
 

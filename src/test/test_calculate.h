@@ -2,7 +2,6 @@
 #define TEST_CALCULATE_H
 
 #include <QObject>
-#include <QTest>
 #include "../app/parameters.h"
 #include "../app/calc/calculate.h"
 
@@ -32,8 +31,8 @@ private slots:
     void test_ComputeMuspAtRefWavel_sanityCheck();
 
 private:
-    parameters *mPara;
-    calculate *mCalc;
+    Parameters *mPara;
+    Calculate *mCalc;
 };
 
 #endif // TEST_CALCULATE_H

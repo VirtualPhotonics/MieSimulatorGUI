@@ -29,7 +29,7 @@ public:
                   QRadioButton *radioButton_PhaseAverage,
                   QRadioButton *radioButton_PhasePara,
                   QRadioButton *radioButton_PhasePerp,
-                  parameters *para);
+                  Parameters *para);
 
 private slots:
     void on_pushButton_ScatPara_clicked();
@@ -50,14 +50,14 @@ private:
                       QRadioButton *radioButton_NumDen,
                       QRadioButton *radioButton_VolFrac,
                       QComboBox *comboBox_Distribution,
-                      parameters *para, QString fileName,
+                      Parameters *para, QString fileName,
                       double margin);
     void SavePhaseFunction(QRadioButton *radioButton_PhaseAverage,
                            QRadioButton *radioButton_PhasePara,
                            QRadioButton *radioButton_PhasePerp,
-                           parameters *para, QString fileName);
-    void SaveS1(parameters *para, QString fileName);
-    void SaveS2(parameters *para, QString fileName);
+                           Parameters *para, QString fileName);
+    void SaveS1(Parameters *para, QString fileName);
+    void SaveS2(Parameters *para, QString fileName);
     void RememberLastDirectory(QString fileName);
 };
 

@@ -3,12 +3,8 @@
 **********************************************************************/
 
 #include "plotdata.h"
+#include "calc/utilities.h"
 #include "lib/qcustomplot.h"
-#include "lib/qwt/qwt_polar_curve.h"
-#include "lib/qwt/qwt_scale_engine.h"
-
-const QwtInterval radialInterval( 0.0, 10.0 );
-const QwtInterval azimuthInterval( 0.0, 360.0 );
 
 PlotData::PlotData(void)
 {
@@ -18,153 +14,156 @@ PlotData::~PlotData(void)
 {
 }
 
+//Clear and Initialize Plots
+void PlotData::ClearPlots(Ui_MainWindow *ui)
+{
+    InitialSetupDistributionPlot(ui);
+    InitialSetupPhaseFunctionPolarPlot(ui);
+    InitialSetupPhaseFunctionLinearPlot(ui);
+    InitialSetupS1S2Plot(ui);
+    InitialSetupMuspPowerLawFit(ui);
+    InitialSetupOtherPlots(ui);
+}
+
 //Initialize distribution plot
-void PlotData::InitializeDistributionPlot(Ui_MainWindow *ui)
+void PlotData::InitialSetupDistributionPlot(Ui_MainWindow *ui)
 {
     double minX, maxX;
     minX = 0.95 * (ui->lineEdit_Diameter->text().toDouble());
     maxX = 1.05 * (ui->lineEdit_Diameter->text().toDouble());
 
-    ui->customPlot_Distribution->xAxis->setLabel("Diameter (μm)");
-    ui->customPlot_Distribution->xAxis->setRange(minX, maxX);
-    ui->customPlot_Distribution->yAxis->setLabel("Ns  (/vol. of 1mm³)");
-    ui->customPlot_Distribution->clearPlottables();
-    ui->customPlot_Distribution->replot();
+    auto customPlot = ui->customPlot_Distribution;
+
+    customPlot->xAxis->setLabel("Diameter (μm)");
+    customPlot->xAxis->setRange(minX, maxX);
+    customPlot->yAxis->setLabel("Ns  (/vol. of 1mm³)");
+    customPlot->yAxis->setRange(0, 5);
+    RemovePlotables(customPlot);
+    customPlot->replot();
 }
 
-//Initialize polar plot
-void PlotData::InitializePhaseFunctionPolarPlot(Ui_MainWindow *ui, parameters *para )
+//Initialize phase function linear plot
+void PlotData::InitialSetupPhaseFunctionLinearPlot(Ui_MainWindow *ui)
 {
-//    SetSliderWL(ui);
+    auto customPlot = ui->customPlot_PhaseFunctionLinear;
 
-    //Polar plot: phase function
-    ui->qwtpolarplot_PhaseFunctionPolar->setAutoReplot( false );
-    ui->qwtpolarplot_PhaseFunctionPolar->setPlotBackground( Qt::white );
-    ui->qwtpolarplot_PhaseFunctionPolar->setScale( QwtPolar::Azimuth,0, 360, 360 / 12 );
-    ui->qwtpolarplot_PhaseFunctionPolar->setScale( QwtPolar::Radius, 0, 1);
-    mGrid = new QwtPolarGrid();
-    mGrid->setPen( QPen( Qt::black ) );
-    for ( int scaleId = 0; scaleId < QwtPolar::ScaleCount; scaleId++ )
-    {
-        mGrid->showGrid( scaleId );
-        mGrid->showMinorGrid( scaleId );
-        QPen minorPen( Qt::gray );
-        #if 0
-            minorPen.setStyle( Qt::DotLine );
-        #endif
-        mGrid->setMinorGridPen( scaleId, minorPen );
-    }
-    mGrid->setAxisPen( QwtPolar::AxisAzimuth, QPen( Qt::black ) );
-    mGrid->showAxis( QwtPolar::AxisAzimuth, true );
-    mGrid->showAxis( QwtPolar::AxisLeft, false );
-    mGrid->showAxis( QwtPolar::AxisRight, false );
-    mGrid->showAxis( QwtPolar::AxisTop, true );
-    mGrid->showAxis( QwtPolar::AxisBottom, false );
-    mGrid->showGrid( QwtPolar::Azimuth, true );
-    mGrid->showGrid( QwtPolar::Radius, true );
-    mGrid->attach( ui->qwtpolarplot_PhaseFunctionPolar );
-    para->polarCurve->detach();
-    ui->qwtpolarplot_PhaseFunctionPolar->replot();
-}
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
 
-//Initialize distribution plot
-void PlotData::InitializePhaseFunctionLinearPlot(Ui_MainWindow *ui)
-{
-    ui->customPlot_PhaseFunctionLinear->xAxis->setLabel("Angle (deg.)");
-    ui->customPlot_PhaseFunctionLinear->xAxis->setRange(-180,180);
-    QVector<double> ticks;
+    // remove previous items (if any)
+    RemoveItems(customPlot);
+
+    // remove previous legends (if any)
+    RemoveLegends(customPlot);
+
+    customPlot->xAxis->setLabel("Angle (deg.)");
+    customPlot->xAxis->setRange(-180,180);
+    QVector<double> ticks{-180, -135, -90, -45, 0, 45, 90, 135, 180};
     QVector<QString> labels;
-    ticks << -180 << -135 << -90 << -45 << 0 << 45 << 90 << 135 << 180;
-    labels << "-180" << "135" << "-90" << "-45" << "0" << "45" << "90" << "135" << "180";
+    for (double tick : ticks)
+        labels << QString::number(tick);
+
     QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
     textTicker->addTicks(ticks, labels);
-    ui->customPlot_PhaseFunctionLinear->xAxis->setTicker(textTicker);
-    ui->customPlot_PhaseFunctionLinear->yAxis->setLabel("Magnitude");
-    ui->customPlot_PhaseFunctionLinear->clearGraphs();
-    ui->customPlot_PhaseFunctionLinear->replot();
-    ui->customPlot_PhaseFunctionLinear->addGraph(); //dummy
-    ui->customPlot_PhaseFunctionLinear->addGraph(); //dummy
-    ui->customPlot_PhaseFunctionLinear->addGraph(); //dummy
-    ui->customPlot_PhaseFunctionLinear->legend->setVisible(false);
+    customPlot->xAxis->setTicker(textTicker);
+    customPlot->yAxis->setLabel("Magnitude");
+    customPlot->yAxis->setRange(0, 5);
+    customPlot->replot();
+    customPlot->legend->setVisible(false);
 }
 
-//Initialize all other plots
-void PlotData::InitializeAllOtherPlots(Ui_MainWindow *ui)
+//Initialize phase function polar plot
+void PlotData::InitialSetupPhaseFunctionPolarPlot(Ui_MainWindow *ui)
 {
-    double minX = ui->lineEdit_StartWL->text().toDouble();
-    double maxX = ui->lineEdit_EndWL->text().toDouble();
+    auto customPlot = ui->customPlot_PhaseFunctionPolar;
+    mPolarMinRadius = 0.0;
+    mPolarMaxRadius = 1.0;
+    DrawPolarPlotGrid(customPlot, true); //true for linear
+}
 
-    //Plot S1S2
-    ui->customPlot_S1S2->xAxis->setLabel("Angle (deg.)");
-    ui->customPlot_S1S2->xAxis->setRange(0,180);
+//Initialize S1/S2
+void PlotData::InitialSetupS1S2Plot(Ui_MainWindow *ui)
+{
+    auto customPlot = ui->customPlot_S1S2;
+
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
+
+    customPlot->xAxis->setLabel("Angle (deg.)");
+    customPlot->xAxis->setRange(0,180);
     QVector<double> ticks;
     QVector<QString> labels;
     ticks << 0 << 45 << 90 << 135 << 180;
     labels << "0" << "45" << "90" << "135" << "180";
     QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
     textTicker->addTicks(ticks, labels);
-    ui->customPlot_S1S2->xAxis->setTicker(textTicker);
-    ui->customPlot_S1S2->yAxis->setLabel("S1");
-    ui->customPlot_S1S2->clearGraphs();
-    ui->customPlot_S1S2->replot();
-    ui->customPlot_S1S2->addGraph();   //dummy
+    customPlot->xAxis->setTicker(textTicker);
+    customPlot->yAxis->setLabel("S1");
+    customPlot->yAxis->setRange(0, 5);
+    customPlot->replot();
+}
+
+//Initialize all Other (Scattering cross section, g and Musp) plots
+void PlotData::InitialSetupOtherPlots(Ui_MainWindow *ui)
+{
+    double minX = ui->lineEdit_StartWL->text().toDouble();
+    double maxX = ui->lineEdit_EndWL->text().toDouble();
 
     //Plot Scattering Cross Section
     ui->customPlot_Csca->xAxis->setLabel("Wavelength (nm)");
     ui->customPlot_Csca->xAxis->setRange(minX, maxX);
     ui->customPlot_Csca->yAxis->setLabel("Scattering Cross Section (μm²)");
     ui->customPlot_Csca->clearGraphs();
+    ui->customPlot_Csca->yAxis->setRange(0, 5);
     ui->customPlot_Csca->replot();
-    ui->customPlot_Csca->addGraph();   //dummy
 
     //Plot Extinction Cross Section
     ui->customPlot_Cext->xAxis->setLabel("Wavelength (nm)");
     ui->customPlot_Cext->xAxis->setRange(minX, maxX);
     ui->customPlot_Cext->yAxis->setLabel("Extinction Cross Section (μm²)");
     ui->customPlot_Cext->clearGraphs();
+    ui->customPlot_Cext->yAxis->setRange(0, 5);
     ui->customPlot_Cext->replot();
-    ui->customPlot_Cext->addGraph();   //dummy
 
     //Plot Backscattering Cross Section
     ui->customPlot_Cback->xAxis->setLabel("Wavelength (nm)");
     ui->customPlot_Cback->xAxis->setRange(minX, maxX);
     ui->customPlot_Cback->yAxis->setLabel("Backscattering Cross Section (μm²)");
     ui->customPlot_Cback->clearGraphs();
+    ui->customPlot_Cback->yAxis->setRange(0, 5);
     ui->customPlot_Cback->replot();
-    ui->customPlot_Cback->addGraph();   //dummy
 
     //Plot Size Parameter
     ui->customPlot_SizePara->xAxis->setLabel("Wavelength (nm)");
     ui->customPlot_SizePara->xAxis->setRange(minX, maxX);
     ui->customPlot_SizePara->yAxis->setLabel("Size Parameter");
     ui->customPlot_SizePara->clearGraphs();
+    ui->customPlot_SizePara->yAxis->setRange(0, 5);
     ui->customPlot_SizePara->replot();
-    ui->customPlot_SizePara->addGraph();   //dummy
 
     //Plot Mus
     ui->customPlot_Mus->xAxis->setLabel("Wavelength (nm)");
     ui->customPlot_Mus->xAxis->setRange(minX, maxX);
     ui->customPlot_Mus->yAxis->setLabel("μs (mmˉˡ)");
     ui->customPlot_Mus->clearGraphs();
+    ui->customPlot_Mus->yAxis->setRange(0, 5);
     ui->customPlot_Mus->replot();
-    ui->customPlot_Mus->addGraph();   //dummy
 
     //Plot G
     ui->customPlot_G->xAxis->setLabel("Wavelength (nm)");
     ui->customPlot_G->xAxis->setRange(minX, maxX);
     ui->customPlot_G->yAxis->setLabel("g (Average Cosine of phase function)");
     ui->customPlot_G->clearGraphs();
+    ui->customPlot_G->yAxis->setRange(0, 5);
     ui->customPlot_G->replot();
-    ui->customPlot_G->addGraph();   //dummy
 
     //Plot FB
     ui->customPlot_FB->xAxis->setLabel("Wavelength (nm)");
     ui->customPlot_FB->xAxis->setRange(minX, maxX);
     ui->customPlot_FB->yAxis->setLabel("Forward & Backward Scattering %");
     ui->customPlot_FB->clearGraphs();
+    ui->customPlot_FB->yAxis->setRange(0, 5);
     ui->customPlot_FB->replot();
-    ui->customPlot_FB->addGraph(); //dummy
-    ui->customPlot_FB->addGraph(); //dummy
     ui->customPlot_FB->legend->setVisible(false);
 
     //Plot Musp
@@ -172,31 +171,78 @@ void PlotData::InitializeAllOtherPlots(Ui_MainWindow *ui)
     ui->customPlot_Musp->xAxis->setRange(minX, maxX);
     ui->customPlot_Musp->yAxis->setLabel("μs' (mmˉˡ)");
     ui->customPlot_Musp->clearGraphs();
+    ui->customPlot_Musp->yAxis->setRange(0, 5);
     ui->customPlot_Musp->replot();
-    ui->customPlot_Musp->addGraph();  //dummy
+}
 
     //Plot Musp for fitting
-    ui->customPlot_MuspPowerLaw->xAxis->setLabel("Wavelength (nm)");
-    ui->customPlot_MuspPowerLaw->xAxis->setRange(minX, maxX);
-    ui->customPlot_MuspPowerLaw->yAxis->setLabel("μs' (mmˉˡ)");
-    ui->customPlot_MuspPowerLaw->clearGraphs();
-    ui->customPlot_MuspPowerLaw->replot();
-    ui->customPlot_MuspPowerLaw->addGraph();  //dummy
-    ui->customPlot_MuspPowerLaw->addGraph();  //dummy
-    ui->customPlot_MuspPowerLaw->legend->setVisible(false);
+void PlotData::InitialSetupMuspPowerLawFit(Ui_MainWindow *ui)
+{
+    auto customPlot = ui->customPlot_MuspPowerLaw;
+
+    double minX = ui->lineEdit_StartWL->text().toDouble();
+    double maxX = ui->lineEdit_EndWL->text().toDouble();
+
+    customPlot->xAxis->setLabel("Wavelength (nm)");
+    customPlot->xAxis->setRange(minX, maxX);
+    customPlot->yAxis->setLabel("μs' (mmˉˡ)");
+    customPlot->clearGraphs();
+    ui->customPlot_MuspPowerLaw->yAxis->setRange(0, 5);
+    customPlot->replot();
+    customPlot->legend->setVisible(false);
+
+    ui->doubleSpinBox_B->setValue(4);
+    ui->doubleSpinBox_F->setValue(0);
 }
 
-//Clear plots
-void PlotData::ClearPlots(Ui_MainWindow *ui, parameters *para)
+
+// Prepare polar plot based on data
+void PlotData::SetupPolarPlotForData(Ui_MainWindow *ui, Parameters *para )
 {
-    InitializeDistributionPlot(ui);
-    InitializePhaseFunctionPolarPlot(ui, para);
-    InitializePhaseFunctionLinearPlot(ui);    
-    InitializeAllOtherPlots(ui);
+    auto customPlot = ui->customPlot_PhaseFunctionPolar;
+
+    // Set initial boundaries.
+    double maxPolarRadial = -1e100;
+    double minPolarRadial = 1e100;
+    int nTheta = static_cast<int>(para->nTheta);
+    int nWavel = static_cast<int>(para->nWavel);
+
+    for (int i = 0; i < nWavel; i++)
+    {
+        for (int j = 0; j < nTheta; j++)
+        {
+            double currentPara = para->phaseFunctionPara[i][j];
+            double currentPerp = para->phaseFunctionPerp[i][j];
+            double currentAve = para->phaseFunctionAve[i][j];
+
+            if (ui->radioButton_PhaseLog->isChecked())
+            {
+                currentPara = log10(currentPara);
+                currentPerp = log10(currentPerp);
+                currentAve = log10(currentAve);
+            }
+
+            maxPolarRadial = std::max({maxPolarRadial, currentPara, currentPerp, currentAve});
+            if (ui->radioButton_PhaseLog->isChecked())
+                minPolarRadial = std::min({minPolarRadial, currentPara, currentPerp, currentAve});
+        }
+    }
+
+    if (ui->radioButton_PhaseLog->isChecked())
+    {
+        mPolarMinRadius = pow(10, floor(minPolarRadial));
+        mPolarMaxRadius = pow(10, maxPolarRadial);
+    } else {
+        mPolarMinRadius = 0.0;
+        mPolarMaxRadius = maxPolarRadial;
+    }
+    DrawPolarPlotGrid(customPlot, !ui->radioButton_PhaseLog->isChecked());
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 }
+
 
 //Assign values for distribution plot
-void PlotData::AssignValuesDistributionPlot(Ui_MainWindow *ui, parameters* para)
+void PlotData::AssignValuesDistributionPlot(Ui_MainWindow *ui, Parameters* para)
 {
     QVector<double> xDist(static_cast<int>(para->nRadius));
     QVector<double> yDist(static_cast<int>(para->nRadius));
@@ -222,356 +268,179 @@ void PlotData::AssignValuesDistributionPlot(Ui_MainWindow *ui, parameters* para)
     PlotDistribution(ui, para, xDist,yDist);
 }
 
-//plot distribution plot
-void PlotData::PlotDistribution(Ui_MainWindow *ui, parameters *para, QVector<double> x, QVector<double> yDist)
-{
-    double minX, maxX, minY, maxY;
-
-    minY = 0;
-    maxY = yDist[0];
-    for(int i = 0; i<static_cast<int>(para->nRadius); i++)
-    {
-        if (maxY < yDist[i])
-               maxY = yDist[i];
-    }
-    maxY *= 1.1;
-
-    ui->customPlot_Distribution->removeGraph(0);
-    ui->customPlot_Distribution->clearPlottables();
-    ui->customPlot_Distribution->replot();
-    ui->customPlot_Distribution->addGraph();
-    ui->customPlot_Distribution->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-
-    ui->customPlot_Distribution->graph()->setData(x, yDist);
-    ui->customPlot_Distribution->graph()->setPen( QPen( Qt::red, 1 ) );
-    ui->customPlot_Distribution->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 3));
-
-    QCPBars *bar = new QCPBars(ui->customPlot_Distribution->xAxis, ui->customPlot_Distribution->yAxis);
-    bar->setData(x, yDist);
-    ui->customPlot_Distribution->yAxis->setRange(minY, maxY);
-    bar->setPen(Qt::NoPen);
-    bar->setBrush(QColor(0,0,0,255));
-
-    if (ui->radioButton_MonoDisperse->isChecked())
-    {
-        minX = 0.92 * 2.0 * para->minRadius;
-        maxX = 1.08 * 2.0 * para->maxRadius;
-        bar->setWidth(0.05*(maxX -minX));
-        ui->customPlot_Distribution->xAxis->setRange(minX, maxX);        
-        ui->customPlot_Distribution->xAxis->ticker()->setTickCount(3);
-    }
-    if (ui->radioButton_PolyDisperse->isChecked())
-    {
-        double shift = (para->maxRadius - para->minRadius)/(para->nRadius);
-        if (shift == 0.0)      //Array of spherical scatterers with similar radius
-        {
-            minX = para->minRadius;
-            maxX = 3.0 * para->maxRadius;
-            bar->setWidth(0.1*para->maxRadius);
-        }
-        else
-        {
-            minX = 2.0 * para->minRadius - shift;
-            maxX = 2.0 * para->maxRadius + shift;
-            bar->setWidth((para->maxRadius - para->minRadius)/para->nRadius);
-            ui->customPlot_Distribution->xAxis->ticker()->setTickCount(5);
-        }
-        ui->customPlot_Distribution->xAxis->setRange(minX, maxX);
-    }
-
-    if (ui->radioButton_LinearYAxis->isChecked())
-        ui->customPlot_Distribution->yAxis->setLabel("Concentration (Number Density: Ns)");
-    if (ui->radioButton_LogYAxis->isChecked())
-        ui->customPlot_Distribution->yAxis->setLabel("Log (Concentration (Number Density: Ns) )");
-    if (ui->radioButton_LogXAxis->isChecked())
-    {
-        ui->customPlot_Distribution->xAxis->setScaleType(QCPAxis::stLogarithmic);
-        ui->customPlot_Distribution->xAxis->setLabel("Diameter (μm) {Axis in Log Scale}");
-    }
-    if (ui->radioButton_LinearXAxis->isChecked())
-    {
-        ui->customPlot_Distribution->xAxis->setScaleType(QCPAxis::stLinear);
-        ui->customPlot_Distribution->xAxis->setLabel("Diameter (μm)");
-    }
-    ui->customPlot_Distribution->replot();   
-}
-
-//Assign values for phase function polar plot
-void PlotData::AssignValuesPhaseFunctionPolarPlot(Ui_MainWindow *ui, parameters *para)
-{
-    QVector<double> phaseFunction(static_cast<int>(2*para->nTheta-1));
-    QVector<double> theta(static_cast<int>(2*para->nTheta-1));
-    int indexWL = ui->slider_WL_PFPolar->value();
-    ui->label_CurrentWL_PFPolar->setText(QString::number(para->startWavel + indexWL*para->stepWavel));
-
-    //Set minimum and maximum values
-    double maxPolarPtheta = 0;
-    double minPolarPtheta = 1e100;
-    for (int i = 0; i < static_cast<int>(para->nWavel); i++)
-    {
-        for (int j = 0; j < static_cast<int>(para->nTheta); j++)
-        {
-            //Get Max value
-            if (para->phaseFunctionAve[i][j]>maxPolarPtheta)
-                maxPolarPtheta = para->phaseFunctionAve[i][j];
-            if (para->phaseFunctionPara[i][j]>maxPolarPtheta)
-                maxPolarPtheta = para->phaseFunctionPara[i][j];
-            if (para->phaseFunctionPerp[i][j]>maxPolarPtheta)
-                maxPolarPtheta = para->phaseFunctionPerp[i][j];
-            //Get Min value
-            if (para->phaseFunctionAve[i][j]<minPolarPtheta)
-                minPolarPtheta = para->phaseFunctionAve[i][j];
-            if (para->phaseFunctionPara[i][j]<minPolarPtheta)
-                minPolarPtheta = para->phaseFunctionPara[i][j];
-            if (para->phaseFunctionPerp[i][j]<minPolarPtheta)
-                minPolarPtheta = para->phaseFunctionPerp[i][j];
-        }
-    }
-
-    //Assign "rho(r)" and "theta" values in polar plot
-    for (int i=0; i<static_cast<int>(para->nTheta); i++)
-    {
-        theta[i] = 180.0 * i /(para->nTheta-1);
-        theta[static_cast<int>(2*para->nTheta)-2 -i] =  360.0 - (180.0 * i /(para->nTheta-1));
-        if (ui->radioButton_PhaseAverage->isChecked())
-        {
-            phaseFunction[i] = para->phaseFunctionAve[indexWL][i];
-            phaseFunction[static_cast<int>(2*para->nTheta)-2 -i] = para->phaseFunctionAve[indexWL][i];
-        }
-        if (ui->radioButton_PhasePara->isChecked())
-        {
-            phaseFunction[i] = para->phaseFunctionPara[indexWL][i];
-            phaseFunction[static_cast<int>(2*para->nTheta)-2 -i] = para->phaseFunctionPara[indexWL][i];
-        }
-        if (ui->radioButton_PhasePerp->isChecked())
-        {
-            phaseFunction[i] = para->phaseFunctionPerp[indexWL][i];
-            phaseFunction[static_cast<int>(2*para->nTheta)-2 -i] = para->phaseFunctionPerp[indexWL][i];
-        }
-    }
-    PlotPhaseFunctionPolar(ui, para, theta, phaseFunction,minPolarPtheta, maxPolarPtheta );
-}
-
-//Plot phase function polar plot
-void PlotData::PlotPhaseFunctionPolar(Ui_MainWindow *ui,
-                                      parameters *para,
-                                      QVector<double> theta,
-                                      QVector<double> phaseFunction,
-                                      double minPolarPtheta,
-                                      double maxPolarPtheta)
-{
-    //Polar plot: phase function
-    QwtInterval radial( 0, maxPolarPtheta );
-    QwtInterval azimuth( 0.0, 360.0 );
-    ui->qwtpolarplot_PhaseFunctionPolar->setScale(QwtPolar::Radius, 0, maxPolarPtheta);
-    ui->qwtpolarplot_PhaseFunctionPolar->setScale(QwtPolar::Azimuth, 0, 360, 360/12);
-
-    para->polarCurve->detach();
-    ui->qwtpolarplot_PhaseFunctionPolar->replot();
-    para->polarCurve->setStyle( QwtPolarCurve::Lines );
-    para->polarCurve->setPen( QPen( Qt::red, 2 ) );
-    para->polarCurve->setData(new Polar(radial,azimuth,2*para->nTheta-1,theta, phaseFunction));
-    para->polarCurve->attach(ui->qwtpolarplot_PhaseFunctionPolar);
-    if (ui->radioButton_PhaseLinear->isChecked())
-        ui->qwtpolarplot_PhaseFunctionPolar->setScaleEngine( QwtPolar::Radius, new QwtLinearScaleEngine() );
-    if (ui->radioButton_PhaseLog->isChecked())
-    {
-        ui->qwtpolarplot_PhaseFunctionPolar->setScale(QwtPolar::Radius, minPolarPtheta, maxPolarPtheta);
-        ui->qwtpolarplot_PhaseFunctionPolar->setScaleEngine( QwtPolar::Radius, new QwtLogScaleEngine() );
-    }
-    ui->qwtpolarplot_PhaseFunctionPolar->replot();
-    if (para->nWavel==1)
-        ui->slider_WL_PFPolar->setDisabled(true);
-    else
-        ui->slider_WL_PFPolar->setDisabled(false);
-}
-
-//Assign values for S1/S2 plot
-void PlotData::AssignValuesPhaseFunctionLinearPlot(Ui_MainWindow *ui, parameters *para)
+//Assign values for Phase Function Linear plot
+void PlotData::AssignValuesPhaseFunctionLinearPlot(Ui_MainWindow *ui, Parameters *para)
 {
     double tiny = 1e-100;  //add a small number before log calculation to avoid NaN
+    int nTheta = static_cast<int>(para->nTheta);
+    int totalSize = 2 * nTheta - 1;
 
-    QVector<double> phaseFunctionPara(static_cast<int>(2*para->nTheta-1));
-    QVector<double> phaseFunctionPerp(static_cast<int>(2*para->nTheta-1));
-    QVector<double> phaseFunctionAve(static_cast<int>(2*para->nTheta-1));
-    QVector<double> theta(static_cast<int>(2*para->nTheta-1));
+    QVector<double> phaseFuncPara(totalSize);
+    QVector<double> phaseFuncPerp(totalSize);
+    QVector<double> phaseFuncAve(totalSize);
+    QVector<double> theta(totalSize);
+
     int indexWL = ui->slider_WL_PFLinear->value();
     ui->label_CurrentWL_PFLinear->setText(QString::number(para->startWavel + indexWL*para->stepWavel));
 
     //Assign "rho(r)" and "theta" values in polar plot
-    for (int i=0; i<static_cast<int>(para->nTheta); i++)
+    for (int i=0; i<nTheta; i++)
     {
         theta[i] = -180 + (180.0 * i /(para->nTheta-1));
         theta[static_cast<int>(2*para->nTheta)-2 -i] =  180 - (180.0 * i /(para->nTheta-1));
 
-        phaseFunctionPara[static_cast<int>(para->nTheta)-1 -i] = para->phaseFunctionPara[indexWL][i];
-        phaseFunctionPara[static_cast<int>(para->nTheta)-1 +i] = para->phaseFunctionPara[indexWL][i];
+        double phaseFunctionPara = para->phaseFunctionPara[indexWL][i];
+        double phaseFunctionPerp = para->phaseFunctionPerp[indexWL][i];
+        double phaseFunctionAve = para->phaseFunctionAve[indexWL][i];
 
-        phaseFunctionPerp[static_cast<int>(para->nTheta)-1 -i] = para->phaseFunctionPerp[indexWL][i];
-        phaseFunctionPerp[static_cast<int>(para->nTheta)-1 +i] = para->phaseFunctionPerp[indexWL][i];
+        phaseFuncPara[nTheta-1 -i] = phaseFunctionPara;
+        phaseFuncPara[nTheta-1 +i] = phaseFunctionPara;
 
-        phaseFunctionAve[static_cast<int>(para->nTheta)-1 -i] = para->phaseFunctionAve[indexWL][i];
-        phaseFunctionAve[static_cast<int>(para->nTheta)-1 +i] = para->phaseFunctionAve[indexWL][i];
+        phaseFuncPerp[nTheta-1 -i] = phaseFunctionPerp;
+        phaseFuncPerp[nTheta-1 +i] = phaseFunctionPerp;
+
+        phaseFuncAve[nTheta-1 -i] = phaseFunctionAve;
+        phaseFuncAve[nTheta-1 +i] = phaseFunctionAve;
 
         if (ui->radioButton_LogYAxis->isChecked())
         {
-            phaseFunctionPara[static_cast<int>(para->nTheta)-1 -i] = log10(para->phaseFunctionPara[indexWL][i]+tiny);
-            phaseFunctionPara[static_cast<int>(para->nTheta)-1 +i] = log10(para->phaseFunctionPara[indexWL][i]+tiny);
+            phaseFuncPara[nTheta-1 -i] = log10(phaseFunctionPara+tiny);
+            phaseFuncPara[nTheta-1 +i] = log10(phaseFunctionPara+tiny);
 
-            phaseFunctionPerp[static_cast<int>(para->nTheta)-1 -i] = log10(para->phaseFunctionPerp[indexWL][i]+tiny);
-            phaseFunctionPerp[static_cast<int>(para->nTheta)-1 +i] = log10(para->phaseFunctionPerp[indexWL][i]+tiny);
+            phaseFuncPerp[nTheta-1 -i] = log10(phaseFunctionPerp+tiny);
+            phaseFuncPerp[nTheta-1 +i] = log10(phaseFunctionPerp+tiny);
 
-            phaseFunctionAve[static_cast<int>(para->nTheta)-1 -i] = log10(para->phaseFunctionAve[indexWL][i]+tiny);
-            phaseFunctionAve[static_cast<int>(para->nTheta)-1 +i] = log10(para->phaseFunctionAve[indexWL][i]+tiny);
+            phaseFuncAve[nTheta-1 -i] = log10(phaseFunctionAve+tiny);
+            phaseFuncAve[nTheta-1 +i] = log10(phaseFunctionAve+tiny);
         }
     }
-    PlotPhaseFunctionLinear(ui, theta, phaseFunctionPara, phaseFunctionPerp, phaseFunctionAve);
+    PlotPhaseFunctionLinear(ui, theta, phaseFuncPara, phaseFuncPerp, phaseFuncAve);
 }
 
-//Plot Forward /Backward scattering percentage plot
-void PlotData::PlotPhaseFunctionLinear(Ui_MainWindow *ui, QVector<double> x, QVector<double> yPara,
-                                       QVector<double> yPerp, QVector<double> yAve)
+//Assign values for phase function polar plot
+void PlotData::AssignValuesPhaseFunctionPolarPlot(Ui_MainWindow *ui, Parameters *para)
 {
-    //Set Min and Max values for the y-axis
-    double minY, maxY;
-    minY = 1e10;
-    maxY = 0;
-    for(int i = 0; i<x.size(); i++)
+    int nTheta = static_cast<int>(para->nTheta);
+
+    QVector<double> phaseFunction(nTheta);
+    QVector<double> thetaNorth(nTheta);
+    QVector<double> thetaSouth(nTheta);
+    int indexWL = ui->slider_WL_PFPolar->value();
+    ui->label_CurrentWL_PFPolar->setText(QString::number(para->startWavel + indexWL*para->stepWavel));
+
+    //Assign "rho(r)" and "theta" values in polar plot
+    for (int i=0; i<nTheta; i++)
     {
-        //Min search
-        if (minY > yAve[i])
-               minY = yAve[i];
-        if (minY > yPara[i])
-               minY = yPara[i];
-        if (minY > yPerp[i])
-               minY = yPerp[i];
-        //Max search
-        if (maxY < yAve[i])
-               maxY = yAve[i];
-        if (maxY < yPara[i])
-               maxY = yPara[i];
-        if (maxY < yPerp[i])
-               maxY = yPerp[i];
+        thetaNorth[i] = M_PI * i /(para->nTheta-1);
+        thetaSouth[i] =  2.0 * M_PI - (M_PI * i /(para->nTheta-1));
+
+        if (ui->radioButton_PhasePara->isChecked())
+        {
+            if (ui->radioButton_PhaseLog->isChecked())
+                phaseFunction[i] = log10(para->phaseFunctionPara[indexWL][i]);
+            else
+                phaseFunction[i] = para->phaseFunctionPara[indexWL][i];
+        }
+        if (ui->radioButton_PhasePerp->isChecked())
+        {
+            if (ui->radioButton_PhaseLog->isChecked())
+                phaseFunction[i] = log10(para->phaseFunctionPerp[indexWL][i]);
+            else
+                phaseFunction[i] = para->phaseFunctionPerp[indexWL][i];
+        }
+        if (ui->radioButton_PhaseAverage->isChecked())
+        {
+            if (ui->radioButton_PhaseLog->isChecked())
+                phaseFunction[i] = log10(para->phaseFunctionAve[indexWL][i]);
+            else
+                phaseFunction[i] = para->phaseFunctionAve[indexWL][i];
+        }
     }
-    maxY = maxY + 0.02*(maxY-minY);
-    minY = minY - 0.02*(maxY-minY);
-
-    //Clear previous graphs
-    ui->customPlot_PhaseFunctionLinear->removeGraph(2);
-    ui->customPlot_PhaseFunctionLinear->removeGraph(1);
-    ui->customPlot_PhaseFunctionLinear->removeGraph(0);
-    ui->customPlot_PhaseFunctionLinear->legend->clearItems();
-
-    //Average Plot
-    ui->customPlot_PhaseFunctionLinear->addGraph();
-    ui->customPlot_PhaseFunctionLinear->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_PhaseFunctionLinear->graph(0)->setData(x, yAve);
-    ui->customPlot_PhaseFunctionLinear->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
-    ui->customPlot_PhaseFunctionLinear->graph(0)->setPen( QPen( Qt::red, 1 ) );
-    ui->customPlot_PhaseFunctionLinear->graph(0)->setName("Ave.");
-
-    //Para plot
-    ui->customPlot_PhaseFunctionLinear->addGraph();
-    ui->customPlot_PhaseFunctionLinear->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_PhaseFunctionLinear->graph(1)->setData(x, yPara);
-    ui->customPlot_PhaseFunctionLinear->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
-    ui->customPlot_PhaseFunctionLinear->graph(1)->setPen( QPen( Qt::blue, 1 ) );
-    ui->customPlot_PhaseFunctionLinear->graph(1)->setName("Para.");
-
-    //Perp plot
-    ui->customPlot_PhaseFunctionLinear->addGraph();
-    ui->customPlot_PhaseFunctionLinear->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_PhaseFunctionLinear->graph(2)->setData(x, yPerp);
-    ui->customPlot_PhaseFunctionLinear->graph(2)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
-    ui->customPlot_PhaseFunctionLinear->graph(2)->setPen( QPen( Qt::green, 1 ) );
-    ui->customPlot_PhaseFunctionLinear->graph(2)->setName("Perp.");
-
-    if (ui->radioButton_LinearYAxis->isChecked())    
-        ui->customPlot_PhaseFunctionLinear->yAxis->setLabel("Magnitude");
-    if (ui->radioButton_LogYAxis->isChecked())    
-        ui->customPlot_PhaseFunctionLinear->yAxis->setLabel("Log (Magnitude)");
-
-    ui->customPlot_PhaseFunctionLinear->yAxis->setRange(minY, maxY);
-    ui->customPlot_PhaseFunctionLinear->replot();
-
-    //Legend    
-    ui->customPlot_PhaseFunctionLinear->legend->setVisible(true);
-    ui->customPlot_PhaseFunctionLinear->axisRect()->insetLayout()->setInsetAlignment(0,Qt::AlignTop|Qt::AlignRight);
-    ui->customPlot_PhaseFunctionLinear->replot();
+    PlotPhaseFunctionPolar(ui, para, thetaNorth, thetaSouth, phaseFunction);
 }
 
 //Assign values for S1/S2 plot
-void PlotData::AssignValuesS1S2Plot(Ui_MainWindow *ui, parameters *para)
+void PlotData::AssignValuesS1S2Plot(Ui_MainWindow *ui, Parameters *para)
 {
-    QVector<double> S(static_cast<int>(para->nTheta));
-    QVector<double> theta(static_cast<int>(para->nTheta));
-    std::complex<double> *tempS;
+    int nTheta = static_cast<int>(para->nTheta);
+    QVector<double> S(nTheta);
+    QVector<double> theta(nTheta);
+    std::complex<double> *tempS = nullptr;
 
     int indexWL = ui->slider_WL_S1S2->value();
     ui->label_CurrentWL_S1S2->setText(QString::number(para->startWavel + indexWL*para->stepWavel));
 
-    tempS = new std::complex<double> [para->nTheta];
     if (ui->radioButton_S1->isChecked())
         tempS = para->S1[indexWL];
-    if (ui->radioButton_S2->isChecked())
+    else if (ui->radioButton_S2->isChecked())
         tempS = para->S2[indexWL];
 
-     for (int i=0; i<static_cast<int>(para->nTheta); i++)
+    if (tempS != nullptr)
     {
-        theta[i] = 180.0 * i /(para->nTheta-1);
+        for (int i=0; i<nTheta; i++)
+        {
+            theta[i] = 180.0 * i /(para->nTheta-1);
+
+            if (ui->radioButton_LogYAxis->isChecked())
+            {
+                S[i] = log10(sqrt(tempS[i].real()*tempS[i].real() + tempS[i].imag()*tempS[i].imag()));
+            }
+            else
+            {
+                if (ui->radioButton_S1S2_Abs->isChecked())
+                    S[i] = sqrt(tempS[i].real()*tempS[i].real() + tempS[i].imag()*tempS[i].imag());
+                if (ui->radioButton_S1S2_Real->isChecked())
+                    S[i] = tempS[i].real();
+                if (ui->radioButton_S1S2_Imag->isChecked())
+                    S[i] = tempS[i].imag();
+            }
+        }
+        PlotS1S2(ui, para, theta, S);
+    }
+}
+
+//Assign values for Musp power law plots
+void PlotData::AssignValuesMuspPowerLawPlots(Ui_MainWindow *ui, Parameters* para)
+{
+    QVector<double> x(static_cast<int>(para->nWavel));
+    QVector<double> yMusp(static_cast<int>(para->nWavel));
+    QVector<double> yFit(static_cast<int>(para->nWavel));
+    double tiny = 1e-100;  //add a small number before log calculation to avoid NaN
+    double tempError = 0.0;
+    double error;
+    double mus, fitA;
+    double margin = (1.0 + ui->slider_ConcPercentChange->value() /200.0);
+
+    for (int i=0; i<static_cast<int>(para->nWavel); i++)
+    {
+        mus = para->mus[i]*margin;  // set mus according to conc slider value
+
+        x[i] = para->wavelArray[i];
+        yMusp[i] = mus * (1.0 - para->g[i]);          //reduced scattering coefficient
+
+        //Steve L Jacques,"Optical properties of biological tissues: a review" Phys. Med & Bio. 58(2013) R37-R61.
+        //wavelength λ is normalized by a reference wavelength, 500 nm or 1000nm
+        fitA = para->muspAtRefWavel[para->refWavelIdx] *margin;
+        if (para->fittingComplex)
+            yFit[i] = fitA *(para->fRay*pow(x[i]/para->refWavel, -4.0) + (1-para->fRay)*pow(x[i]/para->refWavel, -para->bMie));
+        else
+            yFit[i] = fitA *pow(x[i]/para->refWavel, -para->bMie);   // A(lambda/lambdaRef)^-b
+
+        error = yFit[i] - yMusp[i];
+        tempError += error*error;
 
         if (ui->radioButton_LogYAxis->isChecked())
         {
-             S[i] = log10(sqrt(tempS[i].real()*tempS[i].real() + tempS[i].imag()*tempS[i].imag()));
-        }
-        else
-        {
-            if (ui->radioButton_S1S2_Abs->isChecked())
-                S[i] = sqrt(tempS[i].real()*tempS[i].real() + tempS[i].imag()*tempS[i].imag());
-            if (ui->radioButton_S1S2_Real->isChecked())
-                S[i] = tempS[i].real();
-            if (ui->radioButton_S1S2_Imag->isChecked())
-                S[i] = tempS[i].imag();
+            yFit[i] = log10(yFit[i]+tiny);
+            yMusp[i] = log10((mus * (1.0 - para->g[i])) + tiny);    //reduced scattering coefficient
         }
     }
-    PlotS1S2(ui, para, theta, S);
+    para->muspFittingError = tempError/para->nWavel;
+    PlotMuspPowerLaw(ui, x,yMusp,yFit);
 }
 
-//Plot S1S2 plots
-void PlotData::PlotS1S2(Ui_MainWindow *ui, parameters *para, QVector<double> x, QVector<double> yS)
-{
-    //Clear previous graph
-    ui->customPlot_S1S2->removeGraph(0);
-    //Add new graph
-    ui->customPlot_S1S2->addGraph();
-    ui->customPlot_S1S2->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_S1S2->graph(0)->setData(x, yS);
-    ui->customPlot_S1S2->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 3));
-    ui->customPlot_S1S2->graph(0)->setPen( QPen( Qt::red, 1 ) );
-    ui->customPlot_S1S2->graph(0)->rescaleAxes();
-    if (ui->radioButton_LinearYAxis->isChecked())
-    {
-        if (ui->radioButton_S1->isChecked())
-            ui->customPlot_S1S2->yAxis->setLabel("S1");
-        if (ui->radioButton_S2->isChecked())
-            ui->customPlot_S1S2->yAxis->setLabel("S2");
-    }
-    if (ui->radioButton_LogYAxis->isChecked())
-    {
-        if (ui->radioButton_S1->isChecked())
-            ui->customPlot_S1S2->yAxis->setLabel("Log (S1)");
-        if (ui->radioButton_S2->isChecked())
-            ui->customPlot_S1S2->yAxis->setLabel("Log (S2)");
-    }
-    ui->customPlot_S1S2->replot();
-    if (para->nWavel==1)
-        ui->slider_WL_S1S2->setDisabled(true);
-    else
-        ui->slider_WL_S1S2->setDisabled(false);
-}
-
-//Assign values for Scattering cross section, g and Musp plots
-void PlotData::AssignValuesAllOtherPlots(Ui_MainWindow *ui, parameters* para)
+//Assign values for all Other (Scattering cross section, g and Musp) plots
+void PlotData::AssignValuesOtherPlots(Ui_MainWindow *ui, Parameters* para)
 {
     QVector<double> x(static_cast<int>(para->nWavel));
     QVector<double> yCsca(static_cast<int>(para->nWavel));
@@ -622,7 +491,7 @@ void PlotData::AssignValuesAllOtherPlots(Ui_MainWindow *ui, parameters* para)
                 ySizePara[i] = log10(para->SizePara[i] + tiny);
             fbLimit = 2;   //100%
         }
-    }    
+    }
     PlotG(ui, x, yG);
     if (yF[fbLegendCheckLocation]>fbLimit)
         fbLegnedFlag = true;
@@ -632,304 +501,767 @@ void PlotData::AssignValuesAllOtherPlots(Ui_MainWindow *ui, parameters* para)
 
     PlotScatteringCrossSection(ui, x, yCsca);
     PlotExtinctionCrossSection(ui, x, yCext);
-    PlotBackscatteringCrossSection(ui, x, yCback);    
+    PlotBackscatteringCrossSection(ui, x, yCback);
     PlotMus(ui, x, yMus);
     PlotMusp(ui, x, yMusp);
-    PlotMuspCurveForPowerLawFit(ui, para, x, yMusp);
+    PlotMuspCurveForPowerLaw(ui, x, yMusp);
     if (ui->radioButton_MonoDisperse->isChecked())
         PlotSizeParameter(ui, x, ySizePara);
+}
+
+//Find MinLog value for MouseOver Polar Plot
+double PlotData::FindMinLogPolarPlot(Parameters *para)
+{
+    Utilities util;
+
+    double minPolarRadial = 1e100;
+    int nTheta = static_cast<int>(para->nTheta);
+    int nWavel = static_cast<int>(para->nWavel);
+
+    for (int i = 0; i < nWavel; i++)
+    {
+        QVector<double> yPara, yPerp, yAve;
+
+        for (int j = 0; j < nTheta; j++)
+        {
+            yPara.append(log10(para->phaseFunctionPara[i][j]));
+            yPerp.append(log10(para->phaseFunctionPerp[i][j]));
+            yAve.append(log10(para->phaseFunctionAve[i][j]));
+        }
+
+        double currentMin = util.FindMinMax(yPara, yPerp, yAve, true);  //true for Min
+        if (currentMin < minPolarRadial)
+            minPolarRadial = currentMin;
+    }
+    return floor(minPolarRadial);
+}
+
+//plot distribution plot
+void PlotData::PlotDistribution(Ui_MainWindow *ui, Parameters *para, QVector<double> x, QVector<double> yDist)
+{
+    double minX, maxX, minY, maxY;
+    minY = 0;
+    maxY = yDist[0];
+    for(int i = 0; i<static_cast<int>(para->nRadius); i++)
+    {
+        if (maxY < yDist[i])
+            maxY = yDist[i];
+    }
+    maxY *= 1.1;
+
+    auto customPlot = ui->customPlot_Distribution;
+
+    //Remove graphs
+    customPlot->removeGraph(0);
+    customPlot->clearPlottables();
+
+    //Add new graph
+    PlotSingleGraph(customPlot, x, yDist, Qt::red, "Distirbution", 0, 3);
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    QCPBars *bar = new QCPBars(customPlot->xAxis, customPlot->yAxis);
+    bar->setData(x, yDist);
+    customPlot->yAxis->setRange(minY, maxY);
+    bar->setPen(Qt::NoPen);
+    bar->setBrush(QColor(0,0,0,255));
+
+    if (ui->radioButton_MonoDisperse->isChecked())
+    {
+        minX = 0.92 * 2.0 * para->minRadius;
+        maxX = 1.08 * 2.0 * para->maxRadius;
+        bar->setWidth(0.05*(maxX -minX));
+        customPlot->xAxis->setRange(minX, maxX);
+        customPlot->xAxis->ticker()->setTickCount(3);
+    }
+    if (ui->radioButton_PolyDisperse->isChecked())
+    {
+        double shift = (para->maxRadius - para->minRadius)/(para->nRadius);
+        if (shift == 0.0)      //Array of spherical scatterers with similar radius
+        {
+            minX = para->minRadius;
+            maxX = 3.0 * para->maxRadius;
+            bar->setWidth(0.1*para->maxRadius);
+        }
+        else
+        {
+            minX = 2.0 * para->minRadius - shift;
+            maxX = 2.0 * para->maxRadius + shift;
+            bar->setWidth((para->maxRadius - para->minRadius)/para->nRadius);
+            customPlot->xAxis->ticker()->setTickCount(5);
+        }
+        customPlot->xAxis->setRange(minX, maxX);
+    }
+
+    if (ui->radioButton_LinearYAxis->isChecked())
+        customPlot->yAxis->setLabel("Concentration (Number Density: Ns)");
+    if (ui->radioButton_LogYAxis->isChecked())
+        customPlot->yAxis->setLabel("Log (Concentration (Number Density: Ns) )");
+    if (ui->radioButton_LogXAxis->isChecked())
+    {
+        customPlot->xAxis->setScaleType(QCPAxis::stLogarithmic);
+        customPlot->xAxis->setLabel("Diameter (μm) {Axis in Log Scale}");
+    }
+    if (ui->radioButton_LinearXAxis->isChecked())
+    {
+        customPlot->xAxis->setScaleType(QCPAxis::stLinear);
+        customPlot->xAxis->setLabel("Diameter (μm)");
+    }
+    customPlot->replot();
+}
+
+//Plot Phase function linear plot
+void PlotData::PlotPhaseFunctionLinear(Ui_MainWindow *ui, QVector<double> x, QVector<double> yPara,
+                                       QVector<double> yPerp, QVector<double> yAve)
+{
+    Utilities util;
+    auto customPlot = ui->customPlot_PhaseFunctionLinear;
+
+    //Set Min and Max values for the y-axis
+    double minY = util.FindMinMax(yPara, yPerp, yAve, true);   //true:Min
+    double maxY = util.FindMinMax(yPara, yPerp, yAve, false);  //false: Max
+    maxY = maxY + 0.02*(maxY-minY);
+    minY = minY - 0.02*(maxY-minY);
+    customPlot->yAxis->setRange(minY, maxY);
+
+    //Clear previous graphs
+    customPlot->clearGraphs();
+    customPlot->legend->clearItems();
+
+    //Add new graph
+    PlotSingleGraph(customPlot, x, yAve, Qt::red, "Ave.", 0, 2);
+    PlotSingleGraph(customPlot, x, yPara, Qt::blue, "Para.", 1, 2);
+    PlotSingleGraph(customPlot, x, yPerp, Qt::green, "Perp.", 2, 2);
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    if (ui->radioButton_LinearYAxis->isChecked())
+        customPlot->yAxis->setLabel("Magnitude");
+    if (ui->radioButton_LogYAxis->isChecked())
+        customPlot->yAxis->setLabel("Log (Magnitude)");
+
+    //Legend
+    customPlot->legend->setVisible(true);
+    customPlot->axisRect()->insetLayout()->setInsetAlignment(0,Qt::AlignTop|Qt::AlignRight);
+    customPlot->replot();
+}
+
+//Plot phase function polar plot
+void PlotData::PlotPhaseFunctionPolar(Ui_MainWindow *ui, Parameters *para,
+                                      QVector<double> thetaNorth, QVector<double> thetaSouth,
+                                      QVector<double> phaseFunction)
+{   
+    QVector<double> xNorth, yNorth;
+    QVector<double> xSouth, ySouth;
+    int nTheta = static_cast<int>(para->nTheta);
+
+    if (ui->radioButton_PhaseLog->isChecked())
+    {
+        double logMin = log10(mPolarMinRadius);
+        for (int i = 0; i < nTheta; i++)
+        {
+            double logPhase = phaseFunction[i] - logMin;
+            //North Hemi
+            double xN = logPhase * cos(thetaNorth[i]);
+            double yN = logPhase * sin(thetaNorth[i]);
+            xNorth.append(xN);
+            yNorth.append(yN);
+            //South Hemi
+            double xS = logPhase * cos(thetaSouth[i]);
+            double yS = logPhase * sin(thetaSouth[i]);
+            xSouth.append(xS);
+            ySouth.append(yS);
+        }
+    }
+    else
+    {
+        double radialMax = 1.0;
+        for (int i = 0; i < nTheta; i++)
+        {
+            //North Hemi
+            double xN = radialMax * phaseFunction[i] * cos(thetaNorth[i]);
+            double yN = radialMax * phaseFunction[i] * sin(thetaNorth[i]);
+            xNorth.append(xN);
+            yNorth.append(yN);
+            //South Hemi
+            double xS = radialMax * phaseFunction[i] * cos(thetaSouth[i]);
+            double yS = radialMax * phaseFunction[i] * sin(thetaSouth[i]);
+            xSouth.append(xS);
+            ySouth.append(yS);
+        }
+    }
+    auto customPlot = ui->customPlot_PhaseFunctionPolar;
+
+    // Create and set up the north curve
+    QCPCurve *curveNorth = new QCPCurve(customPlot->xAxis, customPlot->yAxis);
+    curveNorth->setData(xNorth, yNorth);
+    curveNorth->setPen(QPen(Qt::red, 2));
+
+    // Create and set up the south curve
+    QCPCurve *curveSouth = new QCPCurve(customPlot->xAxis, customPlot->yAxis);
+    curveSouth->setData(xSouth, ySouth);
+    curveSouth->setPen(QPen(Qt::red, 2));
+
+    customPlot->replot();
+    if (para->nWavel==1)
+        ui->slider_WL_PFPolar->setDisabled(true);
+    else
+        ui->slider_WL_PFPolar->setDisabled(false);
+}
+
+//Plot S1S2 plots
+void PlotData::PlotS1S2(Ui_MainWindow *ui, Parameters *para, QVector<double> x, QVector<double> yS)
+{
+    auto customPlot = ui->customPlot_S1S2;
+
+    //remove previous graphs (if any)
+    if (customPlot->graphCount() > 0)
+    {
+        for (int i = customPlot->graphCount() - 1; i >= 0; --i)
+            customPlot->removeGraph(i);
+    }
+
+    //Add new graph
+    PlotSingleGraph(customPlot, x, yS, Qt::red, "S1S2", 0, 2);
+    customPlot->graph(0)->rescaleAxes();
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    if (ui->radioButton_LinearYAxis->isChecked())
+    {
+        if (ui->radioButton_S1->isChecked())
+            customPlot->yAxis->setLabel("S1");
+        if (ui->radioButton_S2->isChecked())
+            customPlot->yAxis->setLabel("S2");
+    }
+    if (ui->radioButton_LogYAxis->isChecked())
+    {
+        if (ui->radioButton_S1->isChecked())
+            customPlot->yAxis->setLabel("Log (S1)");
+        if (ui->radioButton_S2->isChecked())
+            customPlot->yAxis->setLabel("Log (S2)");
+    }
+    customPlot->replot();
+    if (para->nWavel==1)
+        ui->slider_WL_S1S2->setDisabled(true);
+    else
+        ui->slider_WL_S1S2->setDisabled(false);
+}
+
+//Plot Musp curve for power law
+void PlotData::PlotMuspCurveForPowerLaw(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp)
+{
+    auto customPlot = ui->customPlot_MuspPowerLaw;
+
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
+
+    //Add new graph
+    PlotSingleGraph(customPlot, x, yMusp, Qt::red, "Musp", 0, 4);
+    customPlot->graph(0)->rescaleAxes();
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    if (ui->radioButton_LinearYAxis->isChecked())
+        customPlot->yAxis->setLabel("μs' (mmˉˡ)");
+    if (ui->radioButton_LogYAxis->isChecked())
+        customPlot->yAxis->setLabel("Log (μs' (mmˉˡ) )");
+
+    customPlot->replot();
+}
+
+//Plot power law fit curve
+void PlotData::PlotMuspPowerLaw(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp, QVector<double> yFit)
+{
+    auto customPlot = ui->customPlot_MuspPowerLaw;
+
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
+
+    //Main plot
+    PlotSingleGraph(customPlot, x, yMusp, Qt::red, "μs' Data", 0, 4);
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    if (ui->radioButton_LinearYAxis->isChecked())
+        customPlot->yAxis->setLabel("μs' (mmˉˡ)");
+    if (ui->radioButton_LogYAxis->isChecked())
+        customPlot->yAxis->setLabel("Log (μs' (mmˉˡ))");
+
+    //Power law fit plot
+    PlotSingleGraph(customPlot, x, yFit, Qt::blue, "Best Fit", 1, 4);
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+    customPlot->legend->setVisible(true);
+
+    customPlot->axisRect()->insetLayout()->setInsetAlignment(0,Qt::AlignTop|Qt::AlignRight);
+    customPlot->graph()->rescaleAxes();
+    customPlot->replot();
+    customPlot->legend->setVisible(false);
 }
 
 //Plot Scattering Cross Section plot
 void PlotData::PlotScatteringCrossSection(Ui_MainWindow *ui, QVector<double> x, QVector<double> yCsca)
 {
-   //Clear previous graph
-   ui->customPlot_Csca->removeGraph(0);
-   //Add new graph
-   ui->customPlot_Csca->addGraph();
-   ui->customPlot_Csca->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-   ui->customPlot_Csca->graph(0)->setData(x, yCsca);
-   ui->customPlot_Csca->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-   ui->customPlot_Csca->graph(0)->setPen( QPen( Qt::red, 1 ) );
-   if (ui->radioButton_LinearYAxis->isChecked())
-       ui->customPlot_Csca->yAxis->setLabel("Scattering Cross Section (μm²)");
-   if (ui->radioButton_LogYAxis->isChecked())
-       ui->customPlot_Csca->yAxis->setLabel("Log (Scattering Cross Section (μm²) )");
-   ui->customPlot_Csca->graph(0)->rescaleAxes();
-   ui->customPlot_Csca->replot();
+    auto customPlot = ui->customPlot_Csca;
+
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
+
+    //Add new graph
+    PlotSingleGraph(customPlot, x, yCsca, Qt::red, "Csca", 0, 4);
+    customPlot->graph(0)->rescaleAxes();
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    if (ui->radioButton_LinearYAxis->isChecked())
+       customPlot->yAxis->setLabel("Scattering Cross Section (μm²)");
+    if (ui->radioButton_LogYAxis->isChecked())
+       customPlot->yAxis->setLabel("Log (Scattering Cross Section (μm²) )");
+
+    customPlot->replot();
 }
 
 //Plot Extinction Cross Section plot
 void PlotData::PlotExtinctionCrossSection(Ui_MainWindow *ui, QVector<double> x, QVector<double> yCext)
 {
-   //Clear previous graph
-   ui->customPlot_Cext->removeGraph(0);
-   //Add new graph
-   ui->customPlot_Cext->addGraph();
-   ui->customPlot_Cext->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-   ui->customPlot_Cext->graph(0)->setData(x, yCext);
-   ui->customPlot_Cext->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-   ui->customPlot_Cext->graph(0)->setPen( QPen( Qt::red, 1 ) );
-   if (ui->radioButton_LinearYAxis->isChecked())
-       ui->customPlot_Cext->yAxis->setLabel("Extinction Cross Section (μm²)");
-   if (ui->radioButton_LogYAxis->isChecked())
-       ui->customPlot_Cext->yAxis->setLabel("Log (Extinction Cross Section (μm²) )");
-   ui->customPlot_Cext->graph(0)->rescaleAxes();
-   ui->customPlot_Cext->replot();
+    auto customPlot = ui->customPlot_Cext;
+
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
+
+    //Add new graph
+    PlotSingleGraph(customPlot, x, yCext, Qt::red, "Cext", 0, 4);
+    customPlot->graph(0)->rescaleAxes();
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    if (ui->radioButton_LinearYAxis->isChecked())
+       customPlot->yAxis->setLabel("Extinction Cross Section (μm²)");
+    if (ui->radioButton_LogYAxis->isChecked())
+       customPlot->yAxis->setLabel("Log (Extinction Cross Section (μm²) )");
+
+    customPlot->replot();
 }
 
 //Plot Backscattering Cross Section plot
 void PlotData::PlotBackscatteringCrossSection(Ui_MainWindow *ui, QVector<double> x, QVector<double> yCback)
 {
-   //Clear previous graph
-   ui->customPlot_Cback->removeGraph(0);
-   //Add new graph
-   ui->customPlot_Cback->addGraph();
-   ui->customPlot_Cback->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-   ui->customPlot_Cback->graph(0)->setData(x, yCback);
-   ui->customPlot_Cback->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-   ui->customPlot_Cback->graph(0)->setPen( QPen( Qt::red, 1 ) );
-   if (ui->radioButton_LinearYAxis->isChecked())
-       ui->customPlot_Cback->yAxis->setLabel("Backscattering Cross Section (μm²)");
-   if (ui->radioButton_LogYAxis->isChecked())
-       ui->customPlot_Cback->yAxis->setLabel("Log (Backscattering Cross Section (μm²) )");
-   ui->customPlot_Cback->graph(0)->rescaleAxes();
-   ui->customPlot_Cback->replot();
+    auto customPlot = ui->customPlot_Cback;
+
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
+
+    //Add new graph
+    PlotSingleGraph(customPlot, x, yCback, Qt::red, "Cback", 0, 4);
+    customPlot->graph(0)->rescaleAxes();
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    if (ui->radioButton_LinearYAxis->isChecked())
+       customPlot->yAxis->setLabel("Backscattering Cross Section (μm²)");
+    if (ui->radioButton_LogYAxis->isChecked())
+       customPlot->yAxis->setLabel("Log (Backscattering Cross Section (μm²) )");
+
+    customPlot->replot();
 }
 
 //Plot Size Parameter
 void PlotData::PlotSizeParameter(Ui_MainWindow *ui, QVector<double> x, QVector<double> ySizePara)
 {
-   //Clear previous graph
-   ui->customPlot_SizePara->removeGraph(0);
-   //Add new graph
-   ui->customPlot_SizePara->addGraph();
-   ui->customPlot_SizePara->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-   ui->customPlot_SizePara->graph(0)->setData(x, ySizePara);
-   ui->customPlot_SizePara->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-   ui->customPlot_SizePara->graph(0)->setPen( QPen( Qt::red, 1 ) );
-   if (ui->radioButton_LinearYAxis->isChecked())
-       ui->customPlot_SizePara->yAxis->setLabel("Size Parameter");
-   if (ui->radioButton_LogYAxis->isChecked())
-       ui->customPlot_SizePara->yAxis->setLabel("Log (Size Parameter)");
-   ui->customPlot_SizePara->graph(0)->rescaleAxes();
-   ui->customPlot_SizePara->replot();
+    auto customPlot = ui->customPlot_SizePara;
+
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
+
+    //Add new graph
+    PlotSingleGraph(customPlot, x, ySizePara, Qt::red, "Size Para", 0, 4);
+    customPlot->graph(0)->rescaleAxes();
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    if (ui->radioButton_LinearYAxis->isChecked())
+       customPlot->yAxis->setLabel("Size Parameter");
+    if (ui->radioButton_LogYAxis->isChecked())
+       customPlot->yAxis->setLabel("Log (Size Parameter)");
+
+    customPlot->replot();
 }
 
 //Plot Mus plot
 void PlotData::PlotMus(Ui_MainWindow *ui,QVector<double> x, QVector<double> yMus)
 {
-   //Clear previous graph
-   ui->customPlot_Mus->removeGraph(0);
-   //Add new graph
-   ui->customPlot_Mus->addGraph();
-   ui->customPlot_Mus->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-   ui->customPlot_Mus->graph(0)->setData(x, yMus);
-   ui->customPlot_Mus->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-   ui->customPlot_Mus->graph(0)->setPen( QPen( Qt::red, 1 ) );
-   if (ui->radioButton_LinearYAxis->isChecked())
-       ui->customPlot_Mus->yAxis->setLabel("μs (mmˉˡ)");
-   if (ui->radioButton_LogYAxis->isChecked())
-       ui->customPlot_Mus->yAxis->setLabel("Log (μs (mmˉˡ) )");
-   ui->customPlot_Mus->graph(0)->rescaleAxes();
-   ui->customPlot_Mus->replot();
-}
+    auto customPlot = ui->customPlot_Mus;
 
-//Plot Musp plot
-void PlotData::PlotMusp(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp)
-{
-    ui->customPlot_Musp->removeGraph(0);
-    ui->customPlot_Musp->addGraph();
-    ui->customPlot_Musp->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_Musp->graph(0)->setData(x, yMusp);
-    ui->customPlot_Musp->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    ui->customPlot_Musp->graph(0)->setPen( QPen( Qt::red, 1 ) );
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
+
+    //Add new graph
+    PlotSingleGraph(customPlot, x, yMus, Qt::red, "Mus", 0, 4);
+    customPlot->graph(0)->rescaleAxes();
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
     if (ui->radioButton_LinearYAxis->isChecked())
-        ui->customPlot_Musp->yAxis->setLabel("μs' (mmˉˡ)");
+       customPlot->yAxis->setLabel("μs (mmˉˡ)");
     if (ui->radioButton_LogYAxis->isChecked())
-        ui->customPlot_Musp->yAxis->setLabel("Log (μs' (mmˉˡ) )");
-    ui->customPlot_Musp->graph(0)->rescaleAxes();
-    ui->customPlot_Musp->replot();
-}
+       customPlot->yAxis->setLabel("Log (μs (mmˉˡ) )");
 
-//Plot Musp for PowerLaw Fit
-void PlotData::PlotMuspCurveForPowerLawFit(Ui_MainWindow *ui, parameters *para, QVector<double> x,
-                                           QVector<double> yMusp)
-{
-    bool flag;
-
-    //Clear previous graphs
-    ui->customPlot_MuspPowerLaw->removeGraph(1);
-    ui->customPlot_MuspPowerLaw->removeGraph(0);
-    //Make another copy for muspfit
-    ui->customPlot_MuspPowerLaw->addGraph();
-    ui->customPlot_MuspPowerLaw->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_MuspPowerLaw->graph(0)->setData(x, yMusp);
-    ui->customPlot_MuspPowerLaw->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    ui->customPlot_MuspPowerLaw->graph(0)->setPen( QPen( Qt::red, 1 ) );
-    if (ui->radioButton_LinearYAxis->isChecked())
-        ui->customPlot_MuspPowerLaw->yAxis->setLabel("μs' (mmˉˡ)");
-    if (ui->radioButton_LogYAxis->isChecked())
-        ui->customPlot_MuspPowerLaw->yAxis->setLabel("Log (μs' (mmˉˡ) )");
-    ui->customPlot_MuspPowerLaw->graph(0)->rescaleAxes();
-    ui->customPlot_MuspPowerLaw->replot();
-    ui->customPlot_MuspPowerLaw->addGraph();   //dummy
-
-    if (para->nWavel==1)
-        flag = true;
-    else
-        flag = false;
-
-    ui->qwtslider_B->setDisabled(flag);    
-    ui->doubleSpinBox_B->setDisabled(flag);    
-    ui->pushButton_BestFit->setDisabled(flag);    
-
-    if ((!para->fittingComplex) || (para->nWavel==1))
-    {
-        ui->qwtslider_F->setDisabled(true);
-        ui->doubleSpinBox_F->setDisabled(true);
-    }
-    else
-    {
-        ui->qwtslider_F->setDisabled(false);
-        ui->doubleSpinBox_F->setDisabled(false);
-    }
+    customPlot->replot();
 }
 
 //Plot g (average phase function) plot
 void PlotData::PlotG(Ui_MainWindow *ui, QVector<double> x, QVector<double> yG)
 {
-    //Clear previous graph
-    ui->customPlot_G->removeGraph(0);
+    auto customPlot = ui->customPlot_G;
+
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
+
     //Add new graph
-    ui->customPlot_G->addGraph();
-    ui->customPlot_G->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_G->graph(0)->setData(x, yG);
-    ui->customPlot_G->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    ui->customPlot_G->graph(0)->setPen( QPen( Qt::red, 1 ) );
-    ui->customPlot_G->graph(0)->rescaleAxes();
+    PlotSingleGraph(customPlot, x, yG, Qt::red, "g", 0, 4);
+    customPlot->graph(0)->rescaleAxes();
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
     if (ui->radioButton_LinearYAxis->isChecked())
-        ui->customPlot_G->yAxis->setLabel("g (Average Cosine of phase function)");
+        customPlot->yAxis->setLabel("g (Average Cosine of phase function)");
     if (ui->radioButton_LogYAxis->isChecked())
-        ui->customPlot_G->yAxis->setLabel("Log (g (Average Cosine of phase function))");
-    ui->customPlot_G->graph(0)->rescaleAxes();
-    ui->customPlot_G->replot();
+        customPlot->yAxis->setLabel("Log (g (Average Cosine of phase function))");
+
+    customPlot->replot();
+}
+
+//Plot Musp plot
+void PlotData::PlotMusp(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp)
+{
+    auto customPlot = ui->customPlot_Musp;
+
+    // remove previous graphs (if any)
+    RemoveGraphs(customPlot);
+
+    //Add new graph
+    PlotSingleGraph(customPlot, x, yMusp, Qt::red, "Musp", 0, 4);
+    customPlot->graph(0)->rescaleAxes();
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    if (ui->radioButton_LinearYAxis->isChecked())
+        customPlot->yAxis->setLabel("μs' (mmˉˡ)");
+    if (ui->radioButton_LogYAxis->isChecked())
+        customPlot->yAxis->setLabel("Log (μs' (mmˉˡ) )");
+
+    customPlot->replot();
 }
 
 //Plot Forward /Backward scattering percentage plot
 void PlotData::PlotForwardBackward(Ui_MainWindow *ui, QVector<double> x, QVector<double> yF, QVector<double> yB, bool legendFlag)
 {
-    //Clear previous graphs
-    ui->customPlot_FB->removeGraph(1);
-    ui->customPlot_FB->removeGraph(0);
-    ui->customPlot_FB->legend->clearItems();
+    auto customPlot = ui->customPlot_FB;
+
+    // remove previous graphs and items (if any)
+    RemoveGraphs(customPlot);
+    RemoveItems(customPlot);
 
     //Forward Plot
-    ui->customPlot_FB->addGraph();
-    ui->customPlot_FB->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_FB->graph(0)->setData(x, yF);
-    ui->customPlot_FB->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    ui->customPlot_FB->graph(0)->setPen( QPen( Qt::red, 1 ) );
-    ui->customPlot_FB->graph(0)->setName("Forward Scat. %");
-    ui->customPlot_FB->legend->setVisible(true);
+    PlotSingleGraph(customPlot, x, yF, Qt::red, "Forward Scat. %", 0, 4);
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+    customPlot->legend->setVisible(true);
+
     if (ui->radioButton_LinearYAxis->isChecked())
     {
-        ui->customPlot_FB->yAxis->setLabel("Forward & Backward Scattering %");
-        ui->customPlot_FB->graph()->rescaleAxes();
-        ui->customPlot_FB->yAxis->setRange(0,115);
+        customPlot->yAxis->setLabel("Forward & Backward Scattering %");
+        customPlot->graph()->rescaleAxes();
+        customPlot->yAxis->setRange(0,115);
     }
     if (ui->radioButton_LogYAxis->isChecked())
     {
-        ui->customPlot_FB->yAxis->setLabel("Log (Forward & Backward Scattering %)");
-        ui->customPlot_FB->graph()->rescaleAxes();
-        ui->customPlot_FB->yAxis->setRange(-3, 4);
+        customPlot->yAxis->setLabel("Log (Forward & Backward Scattering %)");
+        customPlot->graph()->rescaleAxes();
+        customPlot->yAxis->setRange(-3, 4);
     }
     //Backward plot
-    ui->customPlot_FB->addGraph();
-    ui->customPlot_FB->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_FB->graph(1)->setData(x, yB);
-    ui->customPlot_FB->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    ui->customPlot_FB->graph(1)->setPen( QPen( Qt::blue, 1 ) );
-    ui->customPlot_FB->graph(1)->setName("Backward Scat. %");
-    ui->customPlot_FB->legend->setVisible(true);
+    PlotSingleGraph(customPlot, x, yB, Qt::blue, "Backward Scat. %", 1, 4);
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+    customPlot->legend->setVisible(true);
+
+    customPlot->legend->setVisible(true);
     if (legendFlag)
-        ui->customPlot_FB->axisRect()->insetLayout()->setInsetAlignment(0,Qt::AlignCenter|Qt::AlignRight);
+        customPlot->axisRect()->insetLayout()->setInsetAlignment(0,Qt::AlignCenter|Qt::AlignRight);
     else
-        ui->customPlot_FB->axisRect()->insetLayout()->setInsetAlignment(0,Qt::AlignTop|Qt::AlignRight);
-    ui->customPlot_FB->replot();
+        customPlot->axisRect()->insetLayout()->setInsetAlignment(0,Qt::AlignTop|Qt::AlignRight);
+    customPlot->replot();
 }
 
-//Assign values for Musp power law plots
-void PlotData::AssignValuesMuspPowerLawPlots(Ui_MainWindow *ui, parameters* para)
+//Plot single graph
+void PlotData::PlotSingleGraph(QCustomPlot* customPlot, const QVector<double>& x, const QVector<double>& y,
+                     QColor color, const QString& name, int graphIndex, int sizeCircle)
 {
-    QVector<double> x(static_cast<int>(para->nWavel));
-    QVector<double> yMusp(static_cast<int>(para->nWavel));
-    QVector<double> yFit(static_cast<int>(para->nWavel));
-    double tiny = 1e-100;  //add a small number before log calculation to avoid NaN
-    double tempError = 0.0;
-    double error;
-    double mus, fitA;
-    double margin = (1.0 + ui->slider_ConcPercentChange->value() /200.0);
+    customPlot->addGraph();
+    customPlot->graph(graphIndex)->setData(x, y);
+    customPlot->graph(graphIndex)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, sizeCircle));
+    customPlot->graph(graphIndex)->setPen(QPen(color, 1));
+    customPlot->graph(graphIndex)->setName(name);
+}
 
-    for (int i=0; i<static_cast<int>(para->nWavel); i++)
+//Draw axes of polar plot
+void PlotData::DrawPolarPlotGrid(QCustomPlot *customPlot, bool flagLinearLog)
+{
+    // remove previous items (if any)
+    if (customPlot->itemCount() >0)
     {
-        mus = para->mus[i]*margin;  // set mus according to conc slider value
-
-        x[i] = para->wavelArray[i];
-        yMusp[i] = mus * (1.0 - para->g[i]);          //reduced scattering coefficient
-
-        //Steve L Jacques,"Optical properties of biological tissues: a review" Phys. Med & Bio. 58(2013) R37-R61.
-        //wavelength λ is normalized by a reference wavelength, 500 nm or 1000nm
-        fitA = para->muspAtRefWavel[para->refWavelIdx] *margin;
-        if (para->fittingComplex)
-            yFit[i] = fitA *(para->fRay*pow(x[i]/para->refWavel, -4.0) + (1-para->fRay)*pow(x[i]/para->refWavel, -para->bMie));
-        else
-            yFit[i] = fitA *pow(x[i]/para->refWavel, -para->bMie);   // A(lambda/lambdaRef)^-b
-
-        error = yFit[i] - yMusp[i];
-        tempError += error*error;
-
-        if (ui->radioButton_LogYAxis->isChecked())
+        for (int i = customPlot->itemCount() - 1; i >= 0; --i)
         {
-            yFit[i] = log10(yFit[i]+tiny);
-            yMusp[i] = log10((mus * (1.0 - para->g[i])) + tiny);    //reduced scattering coefficient
+            QCPAbstractItem *item = customPlot->item(i);
+            if (qobject_cast<QCPItemEllipse*>(item) || qobject_cast<QCPItemLine*>(item) ||
+                qobject_cast<QCPItemText*>(item))
+                customPlot->removeItem(item);
         }
     }
-    para->muspFittingError = tempError/para->nWavel;
-    PlotMuspPowerLaw(ui, x,yMusp,yFit);
+    // Remove curves (if any)
+    RemovePlotables(customPlot);
+
+    //Add Radial and circular grids
+    CreateRadialGrid(customPlot, flagLinearLog);
+    CreateCircularGrid(customPlot, flagLinearLog);
+    customPlot->replot();
 }
 
-//Plot power law fit
-void PlotData::PlotMuspPowerLaw(Ui_MainWindow *ui, QVector<double> x, QVector<double> yMusp, QVector<double> yFit)
+//Create Circular Grid
+void PlotData::CreateCircularGrid(QCustomPlot *customPlot, bool flagLinearLog)
 {
-    //Clear previous graphs
-    ui->customPlot_MuspPowerLaw->removeGraph(1);
-    ui->customPlot_MuspPowerLaw->removeGraph(0);
-    ui->customPlot_MuspPowerLaw->legend->clearItems();
+    QPen majorGridPen(Qt::black, 1.0, Qt::SolidLine);
+    QPen minorGridPen(Qt::gray, 0.5, Qt::SolidLine);
+    QPen boundaryGridPen(Qt::black, 0.5, Qt::SolidLine);
 
-    //Main plot
-    ui->customPlot_MuspPowerLaw->addGraph();
-    ui->customPlot_MuspPowerLaw->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_MuspPowerLaw->graph(0)->setData(x, yMusp);
-    ui->customPlot_MuspPowerLaw->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    ui->customPlot_MuspPowerLaw->graph(0)->setPen( QPen( Qt::red, 1 ) );
-    ui->customPlot_MuspPowerLaw->graph(0)->setName("μs' Data");
-    ui->customPlot_MuspPowerLaw->legend->setVisible(true);
-    if (ui->radioButton_LinearYAxis->isChecked())
-        ui->customPlot_MuspPowerLaw->yAxis->setLabel("μs' (mmˉˡ)");
-    if (ui->radioButton_LogYAxis->isChecked())
-        ui->customPlot_MuspPowerLaw->yAxis->setLabel("Log (μs' (mmˉˡ))");
+    Utilities util;
 
-    //Power law fit plot
-    ui->customPlot_MuspPowerLaw->addGraph();
-    ui->customPlot_MuspPowerLaw->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    ui->customPlot_MuspPowerLaw->graph(1)->setData(x,yFit);
-    ui->customPlot_MuspPowerLaw->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    ui->customPlot_MuspPowerLaw->graph(1)->setPen( QPen( Qt::blue, 1 ) );
-    ui->customPlot_MuspPowerLaw->graph(1)->setName("Best Fit");
-    ui->customPlot_MuspPowerLaw->legend->setVisible(true);
-    ui->customPlot_MuspPowerLaw->axisRect()->insetLayout()->setInsetAlignment(0,Qt::AlignTop|Qt::AlignRight);
-    ui->customPlot_MuspPowerLaw->graph()->rescaleAxes();
-    ui->customPlot_MuspPowerLaw->replot();
-    ui->customPlot_MuspPowerLaw->legend->setVisible(false);
+    if (flagLinearLog)  // Linear spacing
+    {
+        // Start with a large number of circles and reduce until it's a "nice" number
+        int numCircles = 10;
+        double majorTickStep = util.NiceStep(mPolarMaxRadius, numCircles);
+        numCircles = mPolarMaxRadius / majorTickStep;
+        while (numCircles > 5)
+        {
+            numCircles--;
+            majorTickStep = util.NiceStep(mPolarMaxRadius, numCircles);
+        }
+
+        double currentRadius = 0;
+        while (currentRadius <= mPolarMaxRadius)
+        {
+            // Draw the major circle
+            QCPItemEllipse *majorCircle = new QCPItemEllipse(customPlot);
+            majorCircle->topLeft->setCoords(-currentRadius, currentRadius);
+            majorCircle->bottomRight->setCoords(currentRadius, -currentRadius);
+            majorCircle->setPen(majorGridPen);
+
+            // Add label for the major circle
+            QCPItemText *label = new QCPItemText(customPlot);
+            label->setText(QString::number(currentRadius, 'g', 3));
+            label->position->setCoords(0, currentRadius);
+            label->setFont(QFont(customPlot->font().family(), 9));
+            label->setPen(QPen(Qt::NoPen));
+            label->setBrush(QBrush(Qt::white));
+
+            // Draw minor circles between the current major and the next one
+            double minorTickStep = majorTickStep / 5.0; // 5 minor circles between each major
+            for (int i = 1; i < 5; ++i) {
+                double minorRadius = currentRadius + minorTickStep * i;
+                if (minorRadius > mPolarMaxRadius)
+                    break; // Don't draw minor circles beyond the max radius
+
+                QCPItemEllipse *minorCircle = new QCPItemEllipse(customPlot);
+                minorCircle->topLeft->setCoords(-minorRadius, minorRadius);
+                minorCircle->bottomRight->setCoords(minorRadius, -minorRadius);
+                minorCircle->setPen(minorGridPen);
+            }
+
+            currentRadius += majorTickStep;
+        }
+        //Add boundary circle
+        if (mPolarMaxRadius - floor(mPolarMaxRadius)>0)
+        {
+            QCPItemEllipse *boundaryCircle = new QCPItemEllipse(customPlot);
+            boundaryCircle->topLeft->setCoords(-mPolarMaxRadius, mPolarMaxRadius);
+            boundaryCircle->bottomRight->setCoords(mPolarMaxRadius, -mPolarMaxRadius);
+            boundaryCircle->setPen(boundaryGridPen);
+        }
+    }
+    else //Log spacing    
+    {
+        double logMin = log10(mPolarMinRadius);
+        double logMax = log10(mPolarMaxRadius);
+        double radialRange = logMax - logMin;
+
+        // Determine the step for major circles and the minor radius multipliers
+        int logStep = 1;
+        QVector<int> minorMultipliers;
+
+        if (radialRange > 10)
+        {
+            logStep = 3;
+            minorMultipliers << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9;
+            minorMultipliers << 10 << 20 << 30 << 40 << 50 << 60 << 70 << 80 << 90;
+            minorMultipliers << 100 << 200 << 300 << 400 << 500 << 600 << 700 << 800 << 900;
+        }
+        else if (radialRange > 5)
+        {
+            logStep = 2;
+            minorMultipliers << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9;
+            minorMultipliers << 10 << 20 << 30 << 40 << 50 << 60 << 70 << 80 << 90;
+        }
+        else
+        {
+            logStep = 1;
+            minorMultipliers << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9;
+        }
+
+        int startLog = floor(logMin);
+
+        for (int i = startLog; i < logMax; i += logStep)
+        {
+            double majorRadius = pow(10, i);
+            // Only draw if the radius is within the plot's range
+            if (majorRadius >= mPolarMinRadius - 1e-9 && majorRadius <= mPolarMaxRadius + 1e-9)
+            {
+                QCPItemEllipse *circle = new QCPItemEllipse(customPlot);
+                circle->topLeft->setCoords(-i + logMin, i - logMin);
+                circle->bottomRight->setCoords(i - logMin, -i + logMin);
+                circle->setPen(majorGridPen);
+
+                QCPItemText *label = new QCPItemText(customPlot);
+                label->setText(QString::number(majorRadius, 'g', 3));
+                label->position->setCoords(0, i - logMin);
+                label->setFont(QFont(customPlot->font().family(), 9));
+                label->setPen(QPen(Qt::NoPen));
+                label->setBrush(QBrush(Qt::white));
+            }
+
+            // Draw minor circles between the current and the next major circle
+            double nextMajorRadius = pow(10, i + logStep);
+            if (nextMajorRadius > mPolarMaxRadius)
+                nextMajorRadius = mPolarMaxRadius;
+
+            // Use a const reference to avoid C++11 range-loop might detach Qt container warning
+            const QVector<int>& multipliers = minorMultipliers;
+            for (int factor : multipliers)
+            {
+                double minorRadius = pow(10, i) * factor;
+
+                if (minorRadius > mPolarMaxRadius)
+                    break;
+
+                if (minorRadius >= mPolarMinRadius - 1e-9 && minorRadius <= nextMajorRadius + 1e-9)
+                {
+                    QCPItemEllipse *minorCircle = new QCPItemEllipse(customPlot);
+                    minorCircle->topLeft->setCoords(-log10(minorRadius) + logMin, log10(minorRadius) - logMin);
+                    minorCircle->bottomRight->setCoords(log10(minorRadius) - logMin, -log10(minorRadius) + logMin);
+                    minorCircle->setPen(minorGridPen);
+                }
+            }
+        }
+        // Add boundary circle
+        if (radialRange - floor(radialRange) > 0)
+        {
+            QCPItemEllipse *boundaryCircle = new QCPItemEllipse(customPlot);
+            boundaryCircle->topLeft->setCoords(-radialRange, radialRange);
+            boundaryCircle->bottomRight->setCoords(radialRange, -radialRange);
+            boundaryCircle->setPen(boundaryGridPen);
+        }
+    }
+    customPlot->replot();
+}
+
+//Create Radial Grid
+void PlotData::CreateRadialGrid(QCustomPlot *customPlot, bool flagLinearLog)
+{
+    double radialMax;
+    if (flagLinearLog)  // Linear spacing
+        radialMax = mPolarMaxRadius;
+    else //Log spacing
+    {
+        double logMin = log10(mPolarMinRadius);
+        double logMax = log10(mPolarMaxRadius);
+        radialMax = logMax - logMin;
+    }
+
+    QPen majorGridPen(Qt::black, 1.0, Qt::SolidLine);
+    QPen minorGridPen(Qt::gray, 0.5, Qt::SolidLine);
+    double labelRadius = radialMax * 1.15;
+    int numLines = 36;
+    double angleStep = 10;
+
+    for (int i = 0; i < numLines; ++i)
+    {
+        QCPItemLine *radialLine = new QCPItemLine(customPlot);
+        double angleRad = angleStep * i * M_PI / 180.0;
+
+        radialLine->start->setCoords(0, 0);
+        radialLine->end->setCoords(radialMax * cos(angleRad), radialMax * sin(angleRad));
+
+        if (i % 3 == 0)  // Major line and label
+        {
+            radialLine->setPen(majorGridPen);
+            QCPItemText *angleText = new QCPItemText(customPlot);
+            angleText->position->setCoords(labelRadius * cos(angleRad), labelRadius * sin(angleRad));
+            angleText->setText(QString::number(angleStep * i) + "°");
+            angleText->setPen(QPen(Qt::NoPen));
+            angleText->setBrush(QBrush(Qt::NoBrush));
+        } else  // Minor line
+            radialLine->setPen(minorGridPen);
+    }
+    customPlot->xAxis->setRange(-1.3*radialMax, 1.3*radialMax);
+    customPlot->yAxis->setRange(-1.3*radialMax, 1.3*radialMax);
+    HideCartesianAxes(customPlot);
+}
+
+//Hide Cartesian axes for polar plot
+void PlotData::HideCartesianAxes(QCustomPlot *customPlot)
+{
+    customPlot->xAxis->grid()->setVisible(false);
+    customPlot->yAxis->grid()->setVisible(false);
+    customPlot->xAxis->setVisible(false);
+    customPlot->yAxis->setVisible(false);
+    customPlot->xAxis->setTickLabels(false);
+    customPlot->yAxis->setTickLabels(false);
+    customPlot->xAxis->setTicks(false);
+    customPlot->yAxis->setTicks(false);
+}
+
+
+
+
+
+
+
+//Remove QCustomPlot graphs
+void PlotData::RemoveGraphs(QCustomPlot *customPlot)
+{
+    if (customPlot->graphCount() > 0)
+    {
+        for (int i = customPlot->graphCount() - 1; i >= 0; --i)
+            customPlot->removeGraph(i);
+    }
+}
+
+void PlotData::RemoveLegends(QCustomPlot *customPlot)
+{
+    if (customPlot->legend->itemCount() >0)
+    {
+        for (int i = customPlot->itemCount() - 1; i >= 0; --i)
+            customPlot->legend->removeItem(i);
+    }
+}
+
+//Remove QCustomPlot items
+void PlotData::RemoveItems(QCustomPlot *customPlot)
+{
+    if (customPlot->itemCount() >0)
+    {
+        for (int i = customPlot->itemCount() - 1; i >= 0; --i)
+        {
+            QCPAbstractItem *item = customPlot->item(i);
+            customPlot->removeItem(item);
+        }
+    }
+}
+
+//Remove QCustomPlot plottables
+void PlotData::RemovePlotables(QCustomPlot *customPlot)
+{
+    if (customPlot->plottableCount() >0)
+    {
+        for (int i = customPlot->plottableCount() - 1; i >= 0; --i)
+            customPlot->removePlottable(i);
+    }
+
 }

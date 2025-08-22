@@ -20,9 +20,11 @@ private slots:
     void test_ComplexAbsSquared();
     void test_ComplexAbs();
     void test_SimpsonsWeight();
+    void test_NiceStep();
+    void test_FindMinMax();
 
 private:
-    utilities *mUtilities;
+    Utilities *mUtil;
 };
 
 #endif // TEST_UTILITIES_H
