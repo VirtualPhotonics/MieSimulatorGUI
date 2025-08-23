@@ -6,7 +6,7 @@ QT += core gui widgets printsupport
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
-TARGET = MieSimulatorGUI_v1_4
+TARGET = MieSimulatorGUI_v2_0
 CONFIG -= -qt-freetype
 TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
