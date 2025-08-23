@@ -56,9 +56,11 @@ int main(int argc, char *argv[])
     a.setStyleSheet("QWidget { font-size: 11px; }");
     a.setFont(defaultFont);
 
+    //
     MainWindow w;
     QList<QScreen *> screens = QGuiApplication::screens();
-    if (!screens.isEmpty()) {
+    if (!screens.isEmpty())
+    {
         QScreen *screen = screens.first();
         QSize screenSize = screen->size();
         w.resize(screenSize.width() / 2, screenSize.height() / 2);
