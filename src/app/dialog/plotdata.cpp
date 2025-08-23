@@ -1176,7 +1176,7 @@ void PlotData::CreateRadialGrid(QCustomPlot *customPlot, bool flagLinearLog)
 
     QPen majorGridPen(Qt::black, 1.0, Qt::SolidLine);
     QPen minorGridPen(Qt::gray, 0.5, Qt::SolidLine);
-    double labelRadius = radialMax * 1.15;
+    double labelRadius = radialMax * 1.17;
     int numLines = 36;
     double angleStep = 10;
 
@@ -1216,12 +1216,6 @@ void PlotData::HideCartesianAxes(QCustomPlot *customPlot)
     customPlot->xAxis->setTicks(false);
     customPlot->yAxis->setTicks(false);
 }
-
-
-
-
-
-
 
 //Remove QCustomPlot graphs
 void PlotData::RemoveGraphs(QCustomPlot *customPlot)
