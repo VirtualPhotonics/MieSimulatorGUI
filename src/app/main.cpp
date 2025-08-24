@@ -43,26 +43,29 @@
 #include "dialog/mainwindow.h"
 #include <QApplication>
 #include <QtPlugin>
+#include <QScreen>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    // Use this for cross-platform font consistency
     QFont defaultFont;
     defaultFont.setPointSize(9);
-
-#if defined(Q_OS_WIN) || defined(Q_OS_LINUX)
     defaultFont.setFamily("Arial");
     a.setStyleSheet("QWidget { font-size: 11px; }");
-#elif defined(Q_OS_MACOS)
-    defaultFont.setFamily("Helvetica");
-    a.setStyleSheet("QWidget { font-size: 10px; }");
-#endif
-
-    //Set default font
     a.setFont(defaultFont);
 
+    //
     MainWindow w;
+    QList<QScreen *> screens = QGuiApplication::screens();
+    if (!screens.isEmpty())
+    {
+        QScreen *screen = screens.first();
+        QSize screenSize = screen->size();
+        w.resize(screenSize.width() / 2, screenSize.height() / 2);
+    }
+
     w.show();
     return a.exec();
     a.quit();
