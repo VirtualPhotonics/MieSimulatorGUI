@@ -54,7 +54,7 @@ The `MieSimulatorGUI` employs the `BHMIE` code [@Bohren1983] and procedures desc
 
 # Design and Functionality
 
-The `MieSimulatorGUI` is a cross-platform GUI application developed using the C/C++ programming language within the [Qt](https://www.qt.io/) framework. The GUI contains six interactive panels as shown in Figure \ref{fig:Figure1}. 
+The `MieSimulatorGUI` is a cross-platform GUI application developed using the C/C++ programming language within the [Qt](https://www.qt.io/) framework. The GUI contains six interactive panels (Fig. 1). 
 
 ![Figure 1: Six interactive panels of `MieSimulatorGUI`: (a) Input selection, (b) Particle size distribution, (c) Scattering coefficient, (d) Phase function, (e) Reduced Scattering,  and (f) Scattering Asymmetry\label{fig:Figure1}](Figure1.png){ width=100% }
 Figure 1: Six interactive panels of `MieSimulatorGUI`: (a) Input selection, (b) Particle size distribution, (c) Scattering coefficient, (d) Phase function, (e) Reduced Scattering, and (f) Scattering Asymmetry
