@@ -40,10 +40,11 @@
 **
 ************************************************************************/
 
-#include "dialog/mainwindow.h"
 #include <QApplication>
 #include <QtPlugin>
 #include <QScreen>
+#include <QFont>
+#include "dialog/mainwindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -56,7 +57,7 @@ int main(int argc, char *argv[])
     a.setStyleSheet("QWidget { font-size: 11px; }");
     a.setFont(defaultFont);
 
-    //
+    // Use the first window setting
     MainWindow w;
     QList<QScreen *> screens = QGuiApplication::screens();
     if (!screens.isEmpty())
@@ -68,5 +69,4 @@ int main(int argc, char *argv[])
 
     w.show();
     return a.exec();
-    a.quit();
 }

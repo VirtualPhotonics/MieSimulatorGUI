@@ -65,6 +65,7 @@ private slots:
     void on_radioButton_VolFrac_clicked();
     void on_radioButton_S1_clicked();
     void on_radioButton_S2_clicked();
+    void on_radioButton_S1S2_clicked();
     void on_radioButton_S1S2_Abs_clicked();
     void on_radioButton_S1S2_Real_clicked();
     void on_radioButton_S1S2_Imag_clicked();
@@ -73,6 +74,7 @@ private slots:
     void on_radioButton_PhaseAverage_clicked();
     void on_radioButton_PhasePara_clicked();
     void on_radioButton_PhasePerp_clicked();
+    void on_radioButton_PhaseAll_clicked();
     void on_radioButton_Phase_DTheta0_1_clicked();    
     void on_radioButton_FittingSimple_clicked();
     void on_radioButton_FittingComplex_clicked();
