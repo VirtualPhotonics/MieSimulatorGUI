@@ -119,7 +119,7 @@ void MainWindow::UpdateMuspFitErrorDisplay()
 {
     ui->label_CurrentMSE->setText("<font color=\"red\">M.S. Error = "
                                   "</font>"+QString::number(mPara->muspFittingError,'g',6));
-    ui->label_CurrentA->setText("<font color=\"blue\">A = </font>"+
+    ui->label_CurrentA->setText("A = "+
                                 QString::number(mPara->muspAtRefWavel[mPara->refWavelIdx],'g',6)+
                                 " mm<sup>-1</sup>");
 }
@@ -554,6 +554,12 @@ void MainWindow::on_radioButton_S2_clicked()
     UpdateS1S2Plot();
 }
 
+//radioButtonS2_clicked: Select S1/S2 plot
+void MainWindow::on_radioButton_S1S2_clicked()
+{
+    UpdateS1S2Plot();
+}
+
 //radioButton_S1S2_Abs_clicked: Select absolute value
 void MainWindow::on_radioButton_S1S2_Abs_clicked()
 {
@@ -602,6 +608,12 @@ void MainWindow::on_radioButton_PhasePerp_clicked()
     UpdatePhaseFunctionPolarPlot();
 }
 
+//radioButton_PhasePerp_clicked: Select both Parallel and Perpendicular components
+void MainWindow::on_radioButton_PhaseAll_clicked()
+{
+    UpdatePhaseFunctionPolarPlot();
+}
+
 //radioButton_dTheta0_1 is clicked: Simulation time warning
 void MainWindow::on_radioButton_Phase_DTheta0_1_clicked()
 {
@@ -640,7 +652,7 @@ void MainWindow::on_radioButton_FittingSimple_clicked()
     ui->labelF_0_8->setDisabled(true);
     ui->labelF_1_0->setDisabled(true);
     ui->doubleSpinBox_F->setDisabled(true);
-    QString labelB = "<P><b><FONT COLOR='#aa0000'>";
+    QString labelB = "<P><b><FONT COLOR='#ff5500'>";
     labelB .append("b");
     labelB .append("</b></P></br>");
     ui->label_BLabel->setText(labelB);
@@ -659,11 +671,11 @@ void MainWindow::on_radioButton_FittingComplex_clicked()
     ui->labelF_0_6->setDisabled(false);
     ui->labelF_0_8->setDisabled(false);
     ui->labelF_1_0->setDisabled(false);
-    QString labelB = "<P><b><FONT COLOR='#aa0000'>";
+    QString labelB = "<P><b><FONT COLOR='#ff5500'>";
     labelB .append("b<sub>Mie</sub>");
     labelB .append("</b></P></br>");
     ui->label_BLabel->setText(labelB);
-    QString labelF = "<P><b><FONT COLOR='#005500'>";
+    QString labelF = "<P><b><FONT COLOR='#00c800'>";
     labelF .append("f<sub>Ray</sub>");
     labelF .append("</b></P></br>");
     ui->label_FLabel->setText(labelF);
@@ -796,13 +808,13 @@ void MainWindow::on_comboBox_Distribution_currentIndexChanged(int value)
 void MainWindow::MouseOverPlotScatteringCrossSection(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_Csca;
+    QCustomPlot *customPlot = ui->customPlot_Csca;
     QString strNameX = "WL";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Csca)";
     else
         strNameY = "Csca";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 
@@ -810,91 +822,93 @@ void MainWindow::MouseOverPlotScatteringCrossSection(QMouseEvent *event)
 void MainWindow::MouseOverPlotExtinctionCrossSection(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_Cext;
+    QCustomPlot *customPlot = ui->customPlot_Cext;
     QString strNameX = "WL";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Cext)";
     else
         strNameY = "Cext";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 //MouseOver PlotBackscatteringCrossSection
 void MainWindow::MouseOverPlotBackscatteringCrossSection(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_Cback;
+    QCustomPlot *customPlot = ui->customPlot_Cback;
     QString strNameX = "WL";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Cback)";
     else
         strNameY = "Cback";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 //MouseOver PlotSizeParameter
 void MainWindow::MouseOverPlotSizeParameter(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_SizePara;
+    QCustomPlot *customPlot = ui->customPlot_SizePara;
     QString strNameX = "WL";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Size Parameter)";
     else
         strNameY = "Size Parameter";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 //MouseOver PlotMus
 void MainWindow::MouseOverPlotMus(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_Mus;
+    QCustomPlot *customPlot = ui->customPlot_Mus;
     QString strNameX = "WL";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(μs)";
     else
         strNameY = "μs";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 //MouseOver PlotMusp
 void MainWindow::MouseOverPlotMusp(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_Musp;
+    QCustomPlot *customPlot = ui->customPlot_Musp;
     QString strNameX = "WL";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(μs')";
     else
         strNameY = "μs'";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 //MouseOver PlotG
 void MainWindow::MouseOverPlotG(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_G;
+    QCustomPlot *customPlot = ui->customPlot_G;
     QString strNameX = "WL";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(g)";
     else
         strNameY = "g";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 //MouseOver PlotForwardBackward
 void MainWindow::MouseOverPlotForwardBackward(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_FB;
+    QCustomPlot *customPlot = ui->customPlot_FB;
+    customPlot->legend->setVisible(false);
+    customPlot->replot();
     QString strNameX = "WL";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(%)";
     else
         strNameY = "%";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 //MouseOver PlotS1S2
@@ -902,13 +916,17 @@ void MainWindow::MouseOverPlotS1S2(QMouseEvent *event)
 {    
     QString strNameX = "Ang.";
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_S1S2;
+    QCustomPlot *customPlot = ui->customPlot_S1S2;
+    customPlot->legend->setVisible(false);
+    customPlot->replot();
     if (ui->radioButton_LogYAxis->isChecked())
     {
         if (ui->radioButton_S1->isChecked())
             strNameY = "Log(S1)";
         if (ui->radioButton_S2->isChecked())
             strNameY = "Log(S2)";
+        if (ui->radioButton_S1S2->isChecked())
+            strNameY = "Log(S)";
     }
     else
     {
@@ -916,8 +934,10 @@ void MainWindow::MouseOverPlotS1S2(QMouseEvent *event)
             strNameY = "S1";
         if (ui->radioButton_S2->isChecked())
             strNameY = "S2";
+        if (ui->radioButton_S1S2->isChecked())
+            strNameY = "S";
     }
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 //MouseOver PlotPhaseFunctionLinear
@@ -925,51 +945,57 @@ void MainWindow::MouseOverPlotPhaseFunctionLinear(QMouseEvent *event)
 {
     QString strNameX = "Ang.";
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_PhaseFunctionLinear;
+    QCustomPlot *customPlot = ui->customPlot_PhaseFunctionLinear;
+    customPlot->legend->setVisible(false);
+    customPlot->replot();
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Magnitude)";
     else
         strNameY = "Magnitude";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 void MainWindow::MouseOverPlotPhaseFunctionPolar(QMouseEvent *event)
 {
     QString strNameX = "Ang.";
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_PhaseFunctionPolar;
+    QCustomPlot *customPlot = ui->customPlot_PhaseFunctionPolar;
+    customPlot->legend->setVisible(false);
+    customPlot->replot();
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Magnitude)";
     else
         strNameY = "Magnitude";
     PlotData plot;
-    DisplayPolarCurveData(event, curPlot, strNameX, strNameY);
+    DisplayPolarCurveData(event, customPlot, strNameX, strNameY);
 }
 
 //MouseOver PlotDistribution
 void MainWindow::MouseOverPlotDistribution(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_Distribution;
+    QCustomPlot *customPlot = ui->customPlot_Distribution;
     QString strNameX = "Dia.";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Ns)";
     else
         strNameY = "Ns";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 //MouseOver Musp power Law
 void MainWindow::MouseOverPlotMuspPowerLaw(QMouseEvent *event)
 {
     QString strNameY;
-    QCustomPlot *curPlot = ui->customPlot_MuspPowerLaw;
+    QCustomPlot *customPlot = ui->customPlot_MuspPowerLaw;
+    customPlot->legend->setVisible(false);
+    customPlot->replot();
     QString strNameX = "WL";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(μs')";
     else
         strNameY = "μs'";
-    DisplayGraphData(event, curPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strNameY);
 }
 
 //Slot: SpinBoxF_valueChanged

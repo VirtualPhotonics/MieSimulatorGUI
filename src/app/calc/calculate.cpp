@@ -101,9 +101,9 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
             //G calculation
             sumMusG += CalculateG(curS1, curS2, para) * curMus;
             //Forward Scattering
-            sumForward += CalculateForwardBackward(curS1, curS2, para, 0, ((para->nTheta-1)/2)+1)* curMus;
+            sumForward += CalculateForwardBackward(curS1, curS2, para, 0, ((para->nTheta-1)/2)+1)* curMus;  //0-90 deg
             //Backward Scattering
-            sumBackward += CalculateForwardBackward(curS1, curS2, para, ((para->nTheta-1)/2), para->nTheta)* curMus;
+            sumBackward += CalculateForwardBackward(curS1, curS2, para, ((para->nTheta-1)/2), para->nTheta)* curMus; //90-180 deg
 
             //Coefficients
             sumCsca += piRadiusSquared * mQSca * para->numDensityArray[r];
