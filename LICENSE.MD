@@ -1,4 +1,4 @@
-## The MIT License
+## MIT License
 
 #### Copyright (c) 2025 Virtual Photonics Technology Initiative
 
