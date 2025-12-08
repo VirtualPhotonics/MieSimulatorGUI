@@ -15,14 +15,16 @@ To access all releases and source codes, click [here](https://github.com/Virtual
 
  * Getting started with the application and source code	
 	
-	- For Windows, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-on-Windows)
-	- For Linux, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-on-Linux)
-	- For MacOS, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-on-Mac)
+	- For Windows, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-on-Windows).
+	- For Linux, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-on-Linux).
+	- For MacOS, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-on-Mac).
  * Description of GUI panels and running application, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Mie-Simulator-GUI-Running-Application)
  
   * Guidelines for third parties
-    - Contributing to the Software, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Coding-Conventions)
-	- Reporting Issues, and Seeking Support, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/discussions)
+    - Contributing to the Software, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Coding-Conventions).
+	- Reporting Issues, and Seeking Support, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/discussions).
+  * Comparison
+    - For an example demonstrating the comparison between MieSimulatorGUI and Scott Prahl's [Mie Scattering Calculator](https://omlc.org/calc/mie_calc.html), click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Examples).
  
 ## Acknowledgement
 Use the following acknowledgement in publications or applications that make use of this open source software or underlying technology and research:
