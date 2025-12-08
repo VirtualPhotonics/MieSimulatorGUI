@@ -20,6 +20,10 @@ To access all releases and source codes, click [here](https://github.com/Virtual
 	- For MacOS, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Getting-Started-on-Mac)
  * Description of GUI panels and running application, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Mie-Simulator-GUI-Running-Application)
  
+  * Guidelines for third parties
+    - Contributing to the Software, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Coding-Conventions)
+	- Reporting Issues, and Seeking Support, click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/discussions)
+ 
 ## Acknowledgement
 Use the following acknowledgement in publications or applications that make use of this open source software or underlying technology and research:
 
@@ -36,4 +40,3 @@ _THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPL
 Virtual Tissue Simulator (VTS) Project.
 
 Copyright ©2025 [Virtual Photonics Technology Initiative](https://virtualphotonics.org/).
-
