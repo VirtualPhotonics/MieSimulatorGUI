@@ -1,7 +1,6 @@
 ---
 title: >-
-  MieSimulatorGUI: A user-friendly tool to compute and visualize light
-  scattering by spherical dielectric particles
+  MieSimulatorGUI: A user-friendly tool to compute and visualize light scattering by spherical dielectric particles
 tags:
   - Mie scattering
   - Lorenz-Mie theory
@@ -33,7 +32,7 @@ affiliations:
       Beckman Laser Institute and Medical Clinic, University of California,
       Irvine, California 92697, United States
     index: 2
-date: 8 July 2025
+date: 11 December 2025
 bibliography: paper.bib
 
 ---
@@ -42,15 +41,18 @@ bibliography: paper.bib
 
 # Summary
 
-Mie theory is a mathematical framework derived from Maxwell's equations that models electromagnetic scattering by spherical dielectric particles [@Mie1908].  Mie theory predictions are used in a wide variety of scientific and engineering fields spanning fields such as atmospheric optics, particle characterization, computer graphics, nanofluids, remote sensing, and biomedical optics. We developed the `MieSimulatorGUI` to provide a user-friendly interface for users to perform and visualize computations of optical scattering by particles using Mie theory. By utilizing a C/C++ computational engine with the Qt framework, our cross-platform tool calculates key optical properties for instance scattering coefficients, angular scattering distributions, and scattering asymmetry for both monodisperse and polydisperse particle distributions. With six interactive panels, the GUI enables users to specify input parameters, visualize particle distributions, and analyze scattering phenomena, including the fitting of spectrally-varying reduced scattering coefficient parameters, which is particularly valuable in fields such as tissue optics. The `MieSimulatorGUI` is open source, hosted on [GitHub](https://github.com/VirtualPhotonics/MieSimulatorGUI), available from a [download page](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Downloads) and distributed under [the MIT license](https://opensource.org/license/mit).
+Mie theory is a mathematical framework derived from Maxwell's equations that models electromagnetic scattering by spherical dielectric particles.  Mie theory predictions are used in a wide variety of scientific and engineering fields spanning fields such as atmospheric optics, particle characterization, computer graphics, nanofluids, remote sensing, and biomedical optics. We developed the `MieSimulatorGUI` to provide a user-friendly interface for users to perform and visualize computations of optical scattering by particles using Mie theory. By utilizing a C/C++ computational engine with the Qt framework, our cross-platform tool calculates key optical properties for instance scattering coefficients, angular scattering distributions, and scattering asymmetry for both monodisperse and polydisperse particle distributions. With six interactive panels, the GUI enables users to specify input parameters, visualize particle distributions, and analyze scattering phenomena, including the fitting of spectrally-varying reduced scattering coefficient parameters, which is particularly valuable in fields such as tissue optics. The `MieSimulatorGUI` is open source, hosted on [GitHub](https://github.com/VirtualPhotonics/MieSimulatorGUI), available from a [download page](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Downloads) and distributed under [the MIT license](https://opensource.org/license/mit).
 
 # Statement of need
 
-Mie theory, derived from Maxwell's equations, provides a comprehensive framework for modeling electromagnetic scattering by spherical particles, proving invaluable in fields ranging from nanomaterials and biomedical optics to atmospheric science and astronomy [@Goody1989; @Saidi1995; @Wang2005; @Horvath2009]. Despite its broad applicability, the theory's reliance on complex mathematical constructs, such as infinite series and special functions [@VandeHulst1957; @Bohren1983; @Majic2020], demands advanced computational implementations, as exemplified by [SCATTPORT.org](https://scattport.org) and [Wikipedia](https://en.wikipedia.org/wiki/Codes_for_electromagnetic_scattering_by_spheres). Given its mathematical complexity, a user-friendly Graphical User Interface (GUI) is essential to simplify its application, enabling researchers and engineers to rapidly compute critical metrics associated with scattering phenomena. By combining a powerful C/C++ computational engine with [Qt](https://www.qt.io/) intuitive graphical interface, the `MieSimulatorGUI` provides user-friendly access to complex Mie theory computations for streamlined analysis. 
+Mie theory, derived from Maxwell's equations, provides a comprehensive framework for modeling electromagnetic scattering by spherical particles [@Mie1908]. This theory is invaluable in fields ranging from nanomaterials and biomedical optics to atmospheric science and astronomy [@Goody1989; @Saidi1995; @Wang2005; @Chalut2008; @Horvath2009, @Bhandari11]. Despite its broad applicability, the theory's reliance on complex mathematical constructs, such as infinite series and special functions [@VandeHulst1957; @Bohren1983; @Wiscombe1980; @Majic2020], demands advanced computational implementations.
+
+While numerous Mie simulation packages exist, many of which are listed in resources like [SCATTPORT.org](https://scattport.org) and [Wikipedia](https://en.wikipedia.org/wiki/Codes_for_electromagnetic_scattering_by_spheres), they generally fall into two categories: older, established codes focusing on computational efficiency [@Wiscombe1980; @Bohren1983], and newer, object-oriented libraries often found on Git repositories [@Sumlin2018; @PoinsinetdeSivry-Houle2023; @Prahl_mie; @MieScattering]. 
+`MieSimulatorGUI` distinguishes itself from other actively developed, open-source Mie software packages by offering an intuitive, cross-platform, full desktop application-style GUI. It allows researchers, engineers and teachers to rapidly compute, visualize, and download critical metrics associated with scattering phenomena without needing to write any command, script, or code. By combining a powerful C/C++ computational engine with intuitive [Qt](https://www.qt.io/) graphical interface, the `MieSimulatorGUI` provides user-friendly access to complex Mie theory computations for streamlined analysis and educational purposes. 
 
 # Main Features
 
-The `MieSimulatorGUI` employs the `BHMIE` code [@Bohren1983] and procedures described by [@Wiscombe1979] to simulate light scattering by spherical dielectric particles. This user-friendly tool calculates spectral dependencies of key optical properties including scattering, extinction and back scattering cross sections, scattering coefficient, reduced scattering coefficient, scattering amplitude matrix entries ($\text{S}_1$, $\text{S}_2$), phase function, average cosine of the phase function, and forward / backward scattering percentage [@VandeHulst1957; @Bohren1983]. These calculations can be performed for both monodisperse and polydisperse particle distributions [@Gelebart1996]. Moreover, the tool facilitates parameter estimation by fitting reduced scattering coefficient curves, a technique of significant value in tissue optics [@Jacques2013]. All relevant documentation, including complete installation guides for Windows, Linux and macOS is available on the [Mie Simulator GUI Wiki](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki) page. 
+The `MieSimulatorGUI` employs the `BHMIE` code [@Bohren1983] and procedures described by [@Wiscombe1979] to simulate light scattering by spherical dielectric particles. This user-friendly tool calculates spectral dependencies of key optical properties including scattering, extinction and back scattering cross sections, scattering coefficient, reduced scattering coefficient, scattering amplitude matrix entries ($\text{S}_1$, $\text{S}_2$), phase function, average cosine of the phase function, and forward / backward scattering percentage [@VandeHulst1957; @Bohren1983]. These calculations can be performed for both monodisperse and polydisperse particle distributions [@Gelebart1996]. Moreover, the tool facilitates parameter estimation by fitting reduced scattering coefficient curves, a technique of significant value in tissue optics [@Jacques2013]. All relevant documentation, including a list of dependencies and complete installation guides for Windows, Linux, and macOS, is available on the [Mie Simulator GUI Wiki](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki) page. 
 
 # Design and Functionality
 
@@ -90,6 +92,6 @@ This panel shows the reduced scattering coefficient ( $\text{µ}_s'$ ), calculat
 
 # Acknowledgments
 
-We acknowledge support from the Laser Microbeam and Medical Program (LAMMP), a NIH Biomedical Technology Resource (P41-EB015890). JCR and VV acknowledge the support from the NIH (R21-GM128135) and the NSF (CBET-1805082).
+We acknowledge support from the Laser Microbeam and Medical Program (LAMMP), a NIH Biomedical Technology Resource (P41-EB015890). JCR and VV acknowledge the support from the NIH (R21-GM128135) and the NSF (CBET-1805082). JCR was the primary contributor, handling the core software development, UI design, validation, GitHub upload, and drafting the original manuscript. VV provided overall supervision and critically reviewed and edited the final manuscript. CH developed the initial Mie scattering code, and LG assisted with the GitHub upload.
 
 # References
