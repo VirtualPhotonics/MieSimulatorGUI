@@ -20,7 +20,7 @@ jobs:
           version: '6.2.4' 
 
       - name: Change permission
-        run: chmod +x MieSimulatorGUI.pro
+        run: chmod +x src/MieSimulatorGUI.pro
         
       - name: Create Build Directory
         run: mkdir -p build
