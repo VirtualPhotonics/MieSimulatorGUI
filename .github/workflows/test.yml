@@ -21,7 +21,7 @@ jobs:
           version: '6.2.4' 
 
       - name: Create Build Directory and Run qmake
-        run: mkdir build 
+        run: mkdir -p build 
              cd build
              qmake ../MieSimulatorGUI.pro
 
