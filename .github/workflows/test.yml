@@ -20,12 +20,10 @@ jobs:
         with:
           version: '6.2.4' 
 
-      - name: Create Build Directory
-        run: mkdir build
-
-      - name: Run QMake
-        working-directory: ./build
-        run: qmake ../MieSimulatorGUI.pro
+      - name: Create Build Directory and Run qmake
+        run: mkdir build 
+             cd build
+             qmake ../MieSimulatorGUI.pro
 
       - name: Build Project
         working-directory: ./build
