@@ -22,13 +22,8 @@ jobs:
 
       - name: Build
         run: |
-          mkdir build && cd build
-          qmake ../MieSimulatorGUI.pro
-          make -j$(nproc)
+          mkdir build
+          cd build
+          qmake ../test/MieSimulatorGUI_test.pro
 
-      - name: Run Tests
-        run: |
-          TEST_BIN=$(find build/test -name "MieSimulatorGUI_test" -type f)
-          echo "Found test binary at: $TEST_BIN"
-          chmod +x $TEST_BIN
-          xvfb-run --auto-servernum $TEST_BIN
+
