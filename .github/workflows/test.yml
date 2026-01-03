@@ -24,7 +24,7 @@ jobs:
         run:
           mkdir build
           cd build
-          qmake ${{ github.workspace }}/MieSimulatorGUI.pro
+          qmake ../MieSimulatorGUI.pro
           make -j$(nproc)
 
       - name: Run Tests
