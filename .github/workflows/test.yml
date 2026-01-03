@@ -12,8 +12,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install mesa-common-dev
-          sudo apt-get install build-essential
-          sudo apt-get install -y libxcb-cursor0 xvfb 
+          sudo apt-get install build-essential 
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
@@ -21,10 +20,10 @@ jobs:
           version: '6.2.4' 
 
       - name: Create Build Directory, Run qmake and Build
-        run: chmod +x MieSimulatorGUI.pro
-             mkdir -p build 
+        run: mkdir -p build
+             chmod +x MieSimulatorGUI.pro
              cd build
-             qmake ../MieSimulatorGUI.pro
+             qmake ../MieSimulatorGUI.pro             
              make -j$(nproc)
 
       - name: Run Tests
