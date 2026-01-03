@@ -23,11 +23,11 @@ jobs:
         run: chmod +x src/MieSimulatorGUI.pro
         
       - name: Create Build Directory
-        run: mkdir -p build
+        run: mkdir -p src/build
 
       - name: Run qmake
         working-directory: ./src/build
-        run: qmake src/MieSimulatorGUI.pro  
+        run: qmake ../MieSimulatorGUI.pro  
              
       - name: Build   
         working-directory: ./src/build
@@ -35,6 +35,5 @@ jobs:
 
       - name: Run Tests
         working-directory: ./src/build/test
-        run: cd test
-             chmod +x MieSimulatorGUI_test
+        run: chmod +x MieSimulatorGUI_test
              ./MieSimulatorGUI_test
