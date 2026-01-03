@@ -17,5 +17,5 @@ jobs:
         run: |
           mkdir build && cd build
           qmake ../MieSimulatorGUI.pro
-          make
-          ./test/test
+          make -j$(nproc)
+          ./test/MieSimulatorGUI_test
