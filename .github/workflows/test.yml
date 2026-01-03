@@ -21,9 +21,14 @@ jobs:
           version: '6.2.4' 
 
       - name: Build
-        run: |
+        run:
           mkdir build
           cd build
-          qmake ../test/MieSimulatorGUI_test.pro
+          qmake ${{ github.workspace }}/MieSimulatorGUI.pro
+          make -j$(nproc)
 
-
+      - name: Run Tests
+        run: 
+          cd build/test
+          chmod +x MieSimulatorGUI_test
+          xvfb-run ./MieSimulatorGUI_test
