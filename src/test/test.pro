@@ -10,8 +10,8 @@ TARGET = MieSimulatorGUI_test
 CONFIG += warn_on console
 DEFINES += QT_DEPRECATED_WARNINGS
 
-INCLUDEPATH += ../app \
-               ../app/calc
+INCLUDEPATH += $$PWD/../app \
+               $$PWD/../app/calc
 
 SOURCES += \
     test_main.cpp \
