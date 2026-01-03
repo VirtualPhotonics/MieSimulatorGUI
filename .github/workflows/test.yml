@@ -1,0 +1,21 @@
+name: Qt Test CI
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '5.15.2' # Or your specific version
+
+      - name: Build and Run Tests
+        run: |
+          mkdir build && cd build
+          qmake ../MieSimulatorGUI.pro
+          make
+          ./test/MieSimulatorGUI_test
