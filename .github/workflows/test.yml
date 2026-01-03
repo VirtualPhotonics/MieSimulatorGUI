@@ -20,10 +20,15 @@ jobs:
         with:
           version: '6.2.4' 
 
-      - name: Build and Run Tests
-        run: 
+      - name: Build
+        run: |
           mkdir build && cd build
           qmake ../MieSimulatorGUI.pro
           make -j$(nproc)
-          cd test
-          ./MieSimulatorGUI_test
+
+      - name: Run Tests
+        run: |
+          # Use xvfb-run to provide a virtual screen for the widgets-based tests
+          cd build/test
+          chmod +x MieSimulatorGUI_test
+          xvfb-run ./MieSimulatorGUI_test
