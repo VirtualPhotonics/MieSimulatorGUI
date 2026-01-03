@@ -24,15 +24,17 @@ jobs:
         
       - name: Create Build Directory
         run: mkdir -p build
-             cd build
 
       - name: Run qmake
+        working-directory: ./src/build
         run: qmake ../src/MieSimulatorGUI.pro  
              
-      - name: Build     
+      - name: Build   
+        working-directory: ./src/build
         run: make -j$(nproc)
 
       - name: Run Tests
+        working-directory: ./src/build/test
         run: cd test
              chmod +x MieSimulatorGUI_test
              ./MieSimulatorGUI_test
