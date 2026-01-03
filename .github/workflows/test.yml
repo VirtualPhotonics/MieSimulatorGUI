@@ -28,7 +28,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          # Use xvfb-run to provide a virtual screen for the widgets-based tests
-          cd build/test
-          chmod +x MieSimulatorGUI_test
-          xvfb-run ./MieSimulatorGUI_test
+          TEST_BIN=$(find build/test -name "MieSimulatorGUI_test" -type f)
+          echo "Found test binary at: $TEST_BIN"
+          chmod +x $TEST_BIN
+          xvfb-run --auto-servernum $TEST_BIN
