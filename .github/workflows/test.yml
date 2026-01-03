@@ -8,6 +8,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install mesa-common-dev
+          sudo apt-get install build-essential
+          sudo apt-get install -y libxcb-cursor0 xvfb 
+
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
