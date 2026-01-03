@@ -11,7 +11,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: '5.15.2' # Or your specific version
+          version: '6.2.4' 
 
       - name: Build and Run Tests
         run: |
