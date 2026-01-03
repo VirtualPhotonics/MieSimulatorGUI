@@ -21,7 +21,8 @@ jobs:
           version: '6.2.4' 
 
       - name: Create Build Directory, Run qmake and Build
-        run: mkdir -p build 
+        run: chmod +x MieSimulatorGUI.pro
+             mkdir -p build 
              cd build
              qmake ../MieSimulatorGUI.pro
              make -j$(nproc)
@@ -30,4 +31,4 @@ jobs:
         working-directory: ./build/test
         run: |
           chmod +x MieSimulatorGUI_test
-          xvfb-run ./MieSimulatorGUI_test
+          ./MieSimulatorGUI_test
