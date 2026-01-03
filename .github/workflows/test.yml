@@ -8,14 +8,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install mesa-common-dev
+          sudo apt-get install build-essential 
+
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: '5.15.2' # Or your specific version
+          version: '6.2.4' 
 
-      - name: Build and Run Tests
-        run: |
-          mkdir build && cd build
-          qmake ../MieSimulatorGUI.pro
-          make
-          ./test/MieSimulatorGUI_test
+      - name: Change permission
+        run: chmod +x src/MieSimulatorGUI.pro
+        
+      - name: Create Build Directory
+        run: mkdir -p src/build
+
+      - name: Run qmake
+        working-directory: ./src/build
+        run: qmake ../MieSimulatorGUI.pro  
+             
+      - name: Build   
+        working-directory: ./src/build
+        run: make -j$(nproc)
+
+      - name: Run Tests
+        working-directory: ./src/build/test
+        run: chmod +x MieSimulatorGUI_test
+             ./MieSimulatorGUI_test
