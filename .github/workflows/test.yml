@@ -27,13 +27,12 @@ jobs:
              cd build
 
       - name: Run qmake
-        run: qmake ../MieSimulatorGUI.pro  
+        run: qmake ../src/MieSimulatorGUI.pro  
              
       - name: Build     
         run: make -j$(nproc)
 
       - name: Run Tests
-        working-directory: ./build/test
-        run: |
-          chmod +x MieSimulatorGUI_test
-          ./MieSimulatorGUI_test
+        run: cd test
+             chmod +x MieSimulatorGUI_test
+             ./MieSimulatorGUI_test
