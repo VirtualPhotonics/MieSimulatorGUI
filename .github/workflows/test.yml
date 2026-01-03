@@ -18,4 +18,4 @@ jobs:
           mkdir build && cd build
           qmake ../MieSimulatorGUI.pro
           make
-          ./test/test.pro
+          ./test/test
