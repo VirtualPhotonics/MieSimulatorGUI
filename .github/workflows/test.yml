@@ -27,7 +27,7 @@ jobs:
 
       - name: Run qmake
         working-directory: ./src/build
-        run: qmake ../src/MieSimulatorGUI.pro  
+        run: qmake ./src/MieSimulatorGUI.pro  
              
       - name: Build   
         working-directory: ./src/build
