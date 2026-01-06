@@ -46,7 +46,7 @@ Mie theory is a mathematical framework derived from Maxwell's equations that mod
 
 # Statement of need
 
-Mie theory, derived from Maxwell's equations, provides a comprehensive framework for modeling electromagnetic scattering by spherical particles [@Mie1908]. This theory is invaluable across diverse fields, ranging from nanomaterials and biomedical optics to atmospheric science and astronomy [@Goody1989; @Saidi1995; @Wang2005; @Chalut2008; @Horvath2009, @Bhandari11]. Despite its broad applicability, the theory's reliance on complex mathematical constructs, such as infinite series and special functions [@VandeHulst1957; @Bohren1983; @Wiscombe1980; @Majic2020], demands advanced computational implementation. 
+Mie theory, derived from Maxwell's equations, provides a comprehensive framework for modeling electromagnetic scattering by spherical particles [@Mie1908]. This theory is invaluable across diverse fields, ranging from nanomaterials and biomedical optics to atmospheric science and astronomy [@Goody1989; @Saidi1995; @Wang2005; @Chalut2008; @Horvath2009; @Bhandari11]. Despite its broad applicability, the theory's reliance on complex mathematical constructs, such as infinite series and special functions [@VandeHulst1957; @Bohren1983; @Wiscombe1980; @Majic2020], demands advanced computational implementation. 
 
 While numerous Mie simulation packages are avialble (many of which are listed on [SCATTPORT.org](https://scattport.org) and [Wikipedia](https://en.wikipedia.org/wiki/Codes_for_electromagnetic_scattering_by_spheres)), they generally fall into two categories: older, established codes focusing on computational efficiency [@Wiscombe1980; @Bohren1983], and newer, object-oriented libraries typically hosted on version-control platforms [@Sumlin2018; @PoinsinetdeSivry-Houle2023; @Prahl_mie; @MieScattering]. Although both categories provide robust computational engines, they usually demand significant programming proficiency. This requirement creates a barrier for experimentalists, clinical scientists, and educators who need these analytical capabilities but may lack the specialized coding expertise to integrate such libraries into their workflows.
 
@@ -56,12 +56,14 @@ While numerous Mie simulation packages are avialble (many of which are listed on
 
 Built on the BHMIE [@Bohren1983] and Wiscombe [@Wiscombe1979] frameworks, `MieSimulatorGUI` calculates spectral optical properties, including scattering coefficients, cross-sections, scattering amplitude matrix entries ($\text{S}_1$, $\text{S}_2$), phase functions, and scattering asymmetry. The tool supports both monodisperse and polydisperse particle distributions [@Gelebart1996] and facilitates parameter estimation by fitting reduced scattering coefficient curves, a technique of significant value in tissue optics [@Jacques2013]. To ensure computational accuracy and GUI stability, the software includes an automated test suite integrated via GitHub Actions. Its high-performance C++ engine enables near-instantaneous computation and plotting, providing real-time visual updates across the spectral range. Comprehensive documentation, including cross-platform installation guides (Windows, Linux, and macOS), dependency specifications, command-line test execution and several examples, is available on the [Mie Simulator GUI Wiki](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki) page. 
 
+![Figure 1: Six interactive panels of `MieSimulatorGUI`: (a) Input selection, (b) Particle size distribution, (c) Scattering coefficient, (d) Phase function, (e) Reduced Scattering,  and (f) Scattering Asymmetry\label{fig:Figure1}](Figure1.png){ width=100% }
+Figure 1: Six interactive panels of `MieSimulatorGUI`: (a) Input selection, (b) Particle size distribution, (c) Scattering coefficient, (d) Phase function, (e) Reduced Scattering, and (f) Scattering Asymmetry
+
+
 # Design and Functionality
 
 The tool is distributed as portable binaries for Windows, macOS, and Linux. For local compilation, the project utilizes `qmake`, with dependencies (`Qt6` and `QCustomPlot`) managed via an automated build script. The Qt GUI contains six interactive panels (Figure 1). 
 
-![Figure 1: Six interactive panels of `MieSimulatorGUI`: (a) Input selection, (b) Particle size distribution, (c) Scattering coefficient, (d) Phase function, (e) Reduced Scattering,  and (f) Scattering Asymmetry\label{fig:Figure1}](Figure1.png){ width=100% }
-Figure 1: Six interactive panels of `MieSimulatorGUI`: (a) Input selection, (b) Particle size distribution, (c) Scattering coefficient, (d) Phase function, (e) Reduced Scattering, and (f) Scattering Asymmetry
 
 ## Input Selection Panel
 
@@ -77,8 +79,8 @@ This panel graphically presents the number density of spheres $N_s$ [\#/ $\text{
 
 ## Scattering Coefficient Panel
 
-The Mie calculations provide three important efficiency factors: the scattering efficiency ($Q_{sca}$), the extinction efficiency ($Q_{ext}$), and the back-scattering efficiency ($Q_{back}$) ([Mie Scattering Efficiencies](https://miepython.readthedocs.io/en/latest/02_efficiencies.html)). These dimensionless quantities combined with the particle's cross section area ($\text{π}R^2$) yield the corresponding scattering cross section $C_{sca}$ [ $\text{/mm}^2$ ], extinction cross section $C_{ext}$ [ $\text{/mm}^2$ ] and back-scattering cross section $C_{back}$ [ $\text{/mm}^2$ ] [@VandeHulst1957; @Bohren1983]. The calculated cross sections are displayed across three separate tabs. 
-For mono-disperse distribution, the [scattering coefficient](https://omlc.org/classroom/ece532/class3/musdefinition.html) ($\text{µ}_s$) is simply the product of the scattering cross-section $C_{sca}$ and the number density $N_s$. For polydisperse distributions, the scattering coefficient is computed via a discrete summation of the cross-sections across individual particle size bins, as detailed by Schmitt and Kumar (1998) [@Schmitt1998]. 
+The Mie calculations provide three important efficiency factors: the scattering efficiency ($Q_{sca}$), the extinction efficiency ($Q_{ext}$), and the back-scattering efficiency ($Q_{back}$) (see [Mie Scattering Efficiencies](https://miepython.readthedocs.io/en/latest/02_efficiencies.html)). These dimensionless quantities combined with the particle's cross section area ($\text{π}R^2$) yield the corresponding scattering cross section $C_{sca}$ [ $\text{/mm}^2$ ], extinction cross section $C_{ext}$ [ $\text{/mm}^2$ ] and back-scattering cross section $C_{back}$ [ $\text{/mm}^2$ ] [@VandeHulst1957; @Bohren1983]. The calculated cross sections are displayed across three separate tabs. 
+For mono-disperse distribution, the [scattering coefficient](https://omlc.org/classroom/ece532/class3/musdefinition.html) ($\text{µ}_s$) is simply the product of the scattering cross-section $C_{sca}$ and the number density $N_s$. For polydisperse distributions, the scattering coefficient is computed via a discrete summation of the cross-sections across individual particle size bins, as detailed by [@Schmitt1998]. 
 
 ## Phase Function Panel
 
@@ -90,7 +92,7 @@ The scattering asymmetry ([anisotropy](https://omlc.org/classroom/ece532/class3/
 
 ## Reduced Scattering Panel
 
-This panel shows the reduced scattering coefficient ( $\text{µ}_s'$ ), calculated as the product of the scattering coefficient ($\text{µ}_s$) and $(1-g)$ [@Jacques2013]. This parameter is crucial in various fields, particularly in biomedical optics, because it allows for the non-invasive quantification of tissue properties. Users can use `µs' Power Law Fitting`  tab to compute the fitting parameters that provide a simplified functional form for the wavelength dependence of $\text{µ}_s'$ as described in [@Jacques2013].
+This panel shows the [reduced scattering coefficient](https://omlc.org/classroom/ece532/class3/musp.html) ( $\text{µ}_s'$ ), calculated as the product of the scattering coefficient ($\text{µ}_s$) and $(1-g)$ [@Jacques2013]. This parameter is crucial in various fields, particularly in biomedical optics, because it allows for the non-invasive quantification of tissue properties. Users can use `µs' Power Law Fitting`  tab to compute the fitting parameters that provide a simplified functional form for the wavelength dependence of $\text{µ}_s'$ as described in [@Jacques2013].
 
 ## Example Application: Scattering of Intralipid Phantoms
 
