@@ -38,6 +38,11 @@ jobs:
         run: chmod +x MieSimulatorGUI_test
              ./MieSimulatorGUI_test
 
-      - name: Delete Output on Success
-        if: success()
-        run: rm output.log
+      - name: Delete successful runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+            token: ${{ github.token }}
+            repository: ${{ github.repository }}
+            retain_days: 0
+            keep_minimum_runs: 0
+            status: success  # Only deletes successful runs
