@@ -153,7 +153,7 @@ void TestParameters::test_CheckValidityCommonParameters_invalidVolFractionExceed
     mPara->volFraction = 1.1;
     ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Volume Fraction cannot exceed 1.0."));
+    QCOMPARE(result.errorMessage, QString("Volume Fraction must be less than 1.0."));
 }
 
 // Test case: Mean radius is too large
