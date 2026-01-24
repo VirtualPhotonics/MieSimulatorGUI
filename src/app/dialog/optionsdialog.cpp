@@ -57,9 +57,9 @@ void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
                              QRadioButton *radioButton_VolFrac,
                              QComboBox *comboBox_Distribution,
                              QSlider *slider_ConcPercentChange,
-                             QRadioButton *radioButton_PhaseAverage,
-                             QRadioButton *radioButton_PhasePara,
-                             QRadioButton *radioButton_PhasePerp,
+                             QCheckBox *checkBox_PhasePolarAve,
+                             QCheckBox *checkBox_PhasePolarPara,
+                             QCheckBox *checkBox_PhasePolarPerp,
                              Parameters *para)
 {
     setModal(true);
@@ -95,9 +95,10 @@ void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
             return;
         else
         {
-            SavePhaseFunction(radioButton_PhaseAverage,
-                              radioButton_PhasePara,
-                              radioButton_PhasePerp, para,fileName);
+            SavePhaseFunction(checkBox_PhasePolarAve,
+                              checkBox_PhasePolarPara,
+                              checkBox_PhasePolarPerp,
+                              para,fileName);
             RememberLastDirectory(fileName);
         }
     }
@@ -204,7 +205,7 @@ void OptionsDialog::SaveScatPara(QRadioButton *radioButton_MonoDisperse,
         out << "Size Parameter (2*pi*R/lambda):\n";
         out << "WL(nm)\t2*pi*R/lambda\n";
         for (unsigned int i=0; i<para->nWavel; i++)
-            out << para->wavelArray[i] <<"\t" << para->SizePara[i] <<"\n";
+            out << para->wavelArray[i] <<"\t" << para->sizePara[i] <<"\n";
     }
 
     out << "\nScattering Coefficient (us), g and Reduced Scattering Coefficient (us'):\n";
@@ -226,10 +227,10 @@ void OptionsDialog::SaveScatPara(QRadioButton *radioButton_MonoDisperse,
     out << "\n";
 }
 
-void OptionsDialog::SavePhaseFunction(QRadioButton *radioButton_PhaseAverage,
-                                      QRadioButton *radioButton_PhasePara,
-                                      QRadioButton *radioButton_PhasePerp,
-                                       Parameters *para, QString fileName)
+void OptionsDialog::SavePhaseFunction(QCheckBox *checkBox_PhasePolarAve,
+                                      QCheckBox *checkBox_PhasePolarPara,
+                                      QCheckBox *checkBox_PhasePolarPerp,
+                                      Parameters *para, QString fileName)
 {
 
     QFile file(fileName);
@@ -243,11 +244,11 @@ void OptionsDialog::SavePhaseFunction(QRadioButton *radioButton_PhaseAverage,
     QTextStream out(&file);
 
     out << "Phase Function ";
-    if (radioButton_PhaseAverage->isChecked())
+    if (checkBox_PhasePolarAve->isChecked())
         out << "(Ave): ";
-    if (radioButton_PhasePara->isChecked())
+    if (checkBox_PhasePolarPara->isChecked())
          out << "(Para): ";
-    if (radioButton_PhasePerp->isChecked())
+    if (checkBox_PhasePolarPerp->isChecked())
          out << "(Perp): ";
      out << "\n\tWL(nm)-->\nAngle(deg)\t";
      for (unsigned int i=0; i<para->nWavel; i++)
@@ -259,11 +260,11 @@ void OptionsDialog::SavePhaseFunction(QRadioButton *radioButton_PhaseAverage,
         out << 180.0 * j /(para->nTheta-1) <<"\t";
         for (unsigned int i=0; i<para->nWavel; i++)
         {
-            if (radioButton_PhaseAverage->isChecked())
+            if (checkBox_PhasePolarAve->isChecked())
                 out << para->phaseFunctionAve[i][j] <<"\t";
-            if (radioButton_PhasePara->isChecked())
+            if (checkBox_PhasePolarPara->isChecked())
                 out << para->phaseFunctionPara[i][j]<<"\t";
-            if (radioButton_PhasePerp->isChecked())
+            if (checkBox_PhasePolarPerp->isChecked())
                 out << para->phaseFunctionPerp[i][j]<<"\t";
         }
         out << "\n";

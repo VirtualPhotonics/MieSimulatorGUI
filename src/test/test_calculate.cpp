@@ -33,7 +33,7 @@ void TestCalculate::init()
     mPara->cSca = new double[mPara->nWavel];
     mPara->cExt = new double[mPara->nWavel];
     mPara->cBack = new double[mPara->nWavel];
-    mPara->SizePara = new double[mPara->nWavel];
+    mPara->sizePara = new double[mPara->nWavel];
     mPara->forward = new double[mPara->nWavel];
     mPara->backward = new double[mPara->nWavel];
 
@@ -98,7 +98,7 @@ void TestCalculate::cleanup()
     if (mPara->cSca) delete[] mPara->cSca;
     if (mPara->cExt) delete[] mPara->cExt;
     if (mPara->cBack) delete[] mPara->cBack;
-    if (mPara->SizePara) delete[] mPara->SizePara;
+    if (mPara->sizePara) delete[] mPara->sizePara;
     if (mPara->forward) delete[] mPara->forward;
     if (mPara->backward) delete[] mPara->backward;
 
@@ -112,7 +112,7 @@ void TestCalculate::cleanup()
     mPara->cSca = nullptr;
     mPara->cExt = nullptr;
     mPara->cBack = nullptr;
-    mPara->SizePara = nullptr;
+    mPara->sizePara = nullptr;
     mPara->forward = nullptr;
     mPara->backward = nullptr;
 

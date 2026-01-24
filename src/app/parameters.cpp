@@ -33,7 +33,8 @@ bool Parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
         volFracSelection = true;
 
     ParameterValidationResult check = CheckValidityCommonParameters(monoDisperseSelection,
-                                                         numDenSelection,volFracSelection);
+                                                                    numDenSelection,
+                                                                    volFracSelection);
     if (!check.isValid)
     {
         QMessageBox msgBoxError;

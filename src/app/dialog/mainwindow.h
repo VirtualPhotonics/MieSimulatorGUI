@@ -31,9 +31,12 @@ private:
     void SavePlot(QCustomPlot *customPlot, QString fileName);
     void RememberLastDirectory(QString fileName);
     void DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
-                          QString strNameX, QString strNameY);
+                          QString strNameX, QString strUnitX,
+                          QString strNameY, QString strUnitY);
     void DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPlot,
-                               QString strNameX, QString strNameY);
+                               QString strNameX, QString strUnitX,
+                               QString strNameY, QString strUnitY);
+    void DisplayWarning(QString warningMessage);
 
 private slots:
     void on_pushButton_RunSimulation_clicked();
@@ -71,11 +74,7 @@ private slots:
     void on_radioButton_S1S2_Imag_clicked();
     void on_radioButton_PhaseLinear_clicked();
     void on_radioButton_PhaseLog_clicked();
-    void on_radioButton_PhaseAverage_clicked();
-    void on_radioButton_PhasePara_clicked();
-    void on_radioButton_PhasePerp_clicked();
-    void on_radioButton_PhaseAll_clicked();
-    void on_radioButton_Phase_DTheta0_1_clicked();    
+    void on_radioButton_Phase_DTheta0_1_clicked();
     void on_radioButton_FittingSimple_clicked();
     void on_radioButton_FittingComplex_clicked();
     void on_radioButton_RefWavel500_clicked();
@@ -84,11 +83,17 @@ private slots:
     void on_radioButton_RefWavel800_clicked();
     void on_radioButton_RefWavel900_clicked();
     void on_radioButton_RefWavel1000_clicked();
+    void on_checkBox_PhaseLinearAve_toggled();
+    void on_checkBox_PhaseLinearPara_toggled();
+    void on_checkBox_PhaseLinearPerp_toggled();
+    void on_checkBox_PhasePolarAve_toggled();
+    void on_checkBox_PhasePolarPara_toggled();
+    void on_checkBox_PhasePolarPerp_toggled();
     void on_slider_ConcPercentChange_valueChanged(int value);
     void on_slider_WL_PFPolar_valueChanged(int value);
     void on_slider_WL_PFLinear_valueChanged(int value);
     void on_slider_WL_S1S2_valueChanged(int value);
-    void on_comboBox_Distribution_currentIndexChanged(int value);
+    void on_comboBox_Distribution_currentIndexChanged(int value);    
     void MouseOverPlotScatteringCrossSection(QMouseEvent *event);
     void MouseOverPlotExtinctionCrossSection(QMouseEvent *event);
     void MouseOverPlotBackscatteringCrossSection(QMouseEvent *event);

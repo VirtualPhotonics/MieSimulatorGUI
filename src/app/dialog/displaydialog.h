@@ -6,6 +6,7 @@
 #include <QComboBox>
 #include <QSlider>
 #include "parameters.h"
+#include "qcheckbox.h"
 
 namespace Ui {
 class DisplayDialog;
@@ -25,9 +26,9 @@ public:
                      QComboBox *comboBox_Distribution,
                      QSlider *slider_ConcPercentChange,
                      QSlider *slider_WL_PFPolar,
-                     QRadioButton *radioButton_PhaseAverage,
-                     QRadioButton *radioButton_PhasePara,
-                     QRadioButton *radioButton_PhasePerp, Parameters *);
+                     QCheckBox *checkBox_PhasePolarAve,
+                     QCheckBox *checkBox_PhasePolarPara,
+                     QCheckBox *checkBox_PhasePolarPerp, Parameters *);
     Ui::DisplayDialog *ui;
 
 private slots:

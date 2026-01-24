@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Initialize UI
     ui->setupUi(this);
 
-   //Intialize Window
+    //Intialize Window
     Initialize();
 
     //Connect signals and slots
@@ -126,7 +126,7 @@ void MainWindow::UpdateMuspFitErrorDisplay()
 
 /********************************** Run Simulation ********************************************/
 void MainWindow::on_pushButton_RunSimulation_clicked()
-{    
+{
     PlotData plot;
     MainWindowSupport support;
 
@@ -147,8 +147,8 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
     else
     {
         if (mPara->CheckCommonParameters(ui->radioButton_MonoDisperse,
-                                          ui->radioButton_NumDen,
-                                          ui->radioButton_VolFrac))
+                                         ui->radioButton_NumDen,
+                                         ui->radioButton_VolFrac))
         {
             //Disable widgets
             support.DisableWidgetsDuringSimulation(ui, mPara, true);
@@ -162,11 +162,14 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
             if (ui->radioButton_MonoDisperse->isChecked())
             {
                 support.ProcessDistribution(ui, mPara, mPara->MonoDisperse);  // index = 3: mono disperse
+
                 support.ProcessMonoDisperse(ui,mPara);
                 ui->label_Progress->setText("<font color=\"green\"> Completed!</font>");
                 ui->slider_ConcPercentChange->setValue(0);
                 mOtherPlotsFlag = true;
                 mDistPlotFlag = true;
+                if(!mPara->independentScat)
+                    DisplayWarning("Note: High Concentration or Volume Fraction indicates dependent scattering. Interpret results with caution.");
             }
 
             //Poly disperse
@@ -174,12 +177,14 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
             {
                 if (mPara->CheckDistributionParameters(ui->comboBox_Distribution))   //sanity check
                 {
-                    support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
+                    support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));                    
                     support.ProcessPolyDisperse(ui,mPara);
                     ui->label_Progress->setText("<font color=\"green\"> Completed!</font>");
                     ui->slider_ConcPercentChange->setValue(0);
                     mOtherPlotsFlag = true;
                     mDistPlotFlag = true;
+                    if(!mPara->independentScat)
+                        DisplayWarning("Note: High Concentration or Volume Fraction indicates dependent scattering. Interpret results with caution.");
                 }
                 if (ui->comboBox_Distribution->currentIndex() == mPara->Custom)
                     support.DisableWidgetsDuringCustomPolyDisperseData(ui, true);
@@ -188,7 +193,7 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
             }
             //Enable widgets
             support.DisableWidgetsDuringSimulation(ui, mPara, false);
-        }        
+        }
     }
 }
 
@@ -202,7 +207,7 @@ void MainWindow::on_pushButton_ShowDistributionAndCustom_clicked()
     {
         MainWindowSupport support;
         QString fileName = QFileDialog::getOpenFileName
-          (this,tr("Read Data"),"",tr("Text File (*.txt);;All Files (*)"));
+            (this,tr("Read Data"),"",tr("Text File (*.txt);;All Files (*)"));
 
         if (fileName.isEmpty())
             return;
@@ -222,8 +227,8 @@ void MainWindow::on_pushButton_ShowDistributionAndCustom_clicked()
     {
         support.LoadInputData(ui, mPara);
         if (mPara->CheckCommonParameters(ui->radioButton_MonoDisperse,
-                                          ui->radioButton_NumDen,
-                                          ui->radioButton_VolFrac))    //sanity check
+                                         ui->radioButton_NumDen,
+                                         ui->radioButton_VolFrac))    //sanity check
         {
             if (mPara->CheckDistributionParameters(ui->comboBox_Distribution))   //sanity check
             {
@@ -248,9 +253,10 @@ void MainWindow::on_pushButton_SaveData_clicked()
                              ui->radioButton_VolFrac,
                              ui->comboBox_Distribution,
                              ui->slider_ConcPercentChange,
-                             ui->radioButton_PhaseAverage,
-                             ui->radioButton_PhasePara,
-                             ui->radioButton_PhasePerp,mPara);
+                             ui->checkBox_PhasePolarAve,
+                             ui->checkBox_PhasePolarPara,
+                             ui->checkBox_PhasePolarPerp,
+                             mPara);
     }
     else
     {
@@ -275,9 +281,10 @@ void MainWindow::on_pushButton_DisplayData_clicked()
                              ui->comboBox_Distribution,
                              ui->slider_ConcPercentChange,
                              ui->slider_WL_PFPolar,
-                             ui->radioButton_PhaseAverage,
-                             ui->radioButton_PhasePara,
-                             ui->radioButton_PhasePerp,  mPara);
+                             ui->checkBox_PhasePolarAve,
+                             ui->checkBox_PhasePolarPara,
+                             ui->checkBox_PhasePolarPerp,
+                             mPara);
         display->show();
     }
     else
@@ -291,7 +298,7 @@ void MainWindow::on_pushButton_DisplayData_clicked()
 
 /********************************** Calculate Best Fit musp ********************************************/
 void MainWindow::on_pushButton_BestFit_clicked()
-{    
+{
     if(mOtherPlotsFlag)
     {
         if (mPara->nWavel >1)
@@ -336,7 +343,7 @@ void MainWindow::on_pushButton_BestFit_clicked()
 /********************************** Close GUI ********************************************/
 void MainWindow::on_pushButton_Close_clicked()
 {
-   this->close();
+    this->close();
 }
 
 /********************************** Save Plots ********************************************/
@@ -444,7 +451,7 @@ void MainWindow::on_radioButton_LogYAxis_clicked()
     if (mOtherPlotsFlag)
     {
         MainWindowSupport support;
-        support.DisableEnableRealImagButtons(ui);        
+        support.DisableEnableRealImagButtons(ui);
         plot.AssignValuesS1S2Plot(ui, mPara);
         plot.AssignValuesPhaseFunctionLinearPlot(ui, mPara);
         plot.AssignValuesOtherPlots(ui, mPara);
@@ -455,7 +462,7 @@ void MainWindow::on_radioButton_LogYAxis_clicked()
 
 //radioButton_LinearXAxis_clicked: Select Linear X-Axis
 void MainWindow::on_radioButton_LinearXAxis_clicked()
-{    
+{
     if (mDistPlotFlag)
     {
         PlotData plot;
@@ -475,7 +482,7 @@ void MainWindow::on_radioButton_LogXAxis_clicked()
 
 //radioButtonMonoDisperse_clicked: Select Mono disperse distribution
 void MainWindow::on_radioButton_MonoDisperse_clicked()
-{    
+{
     MainWindowSupport support;
     ui->comboBox_Distribution->setCurrentIndex(mPara->LogNormal);
     support.SetWidgets(ui, mPara);
@@ -486,7 +493,7 @@ void MainWindow::on_radioButton_MonoDisperse_clicked()
     ui->tabWidget_PhaseFunction->setTabText(2,"Phase Function (Linear)");
     ui->tabWidget_Scat->setTabText(1,"Csca");
     ui->tabWidget_Scat->setTabText(2,"Cext");
-    ui->tabWidget_Scat->setTabText(3,"Cback");           
+    ui->tabWidget_Scat->setTabText(3,"Cback");
     ui->tabWidget_Ns->setTabText(0,"Concentration (Number Density: Ns)");
     ui->tabWidget_Ns->setTabEnabled(1,true);
     ui->tabWidget_Ns->setTabText(1,"Size Parameter");
@@ -507,8 +514,8 @@ void MainWindow::on_radioButton_PolyDisperse_clicked()
     ui->tabWidget_Scat->setTabText(1,"Ave. Csca");
     ui->tabWidget_Scat->setTabText(2,"Ave. Cext");
     ui->tabWidget_Scat->setTabText(3,"Ave. Cback");
-        ui->tabWidget_Ns->setTabText(0,"Scatterer Distribution and Concentration (Ns)");
-    ui->tabWidget_Ns->setTabEnabled(1,false);    
+    ui->tabWidget_Ns->setTabText(0,"Scatterer Distribution and Concentration (Ns)");
+    ui->tabWidget_Ns->setTabEnabled(1,false);
     ui->tabWidget_Ns->setTabText(1,"");
     mOtherPlotsFlag = false;
     mDistPlotFlag = false;
@@ -590,30 +597,6 @@ void MainWindow::on_radioButton_PhaseLog_clicked()
     UpdatePhaseFunctionPolarPlot();
 }
 
-//radioButton_PhaseAverage_clicked: Select average
-void MainWindow::on_radioButton_PhaseAverage_clicked()
-{
-    UpdatePhaseFunctionPolarPlot();
-}
-
-//radioButton_PhasePara_clicked: Select Parallel component
-void MainWindow::on_radioButton_PhasePara_clicked()
-{
-    UpdatePhaseFunctionPolarPlot();
-}
-
-//radioButton_PhasePerp_clicked: Select Perpendicular component
-void MainWindow::on_radioButton_PhasePerp_clicked()
-{
-    UpdatePhaseFunctionPolarPlot();
-}
-
-//radioButton_PhasePerp_clicked: Select both Parallel and Perpendicular components
-void MainWindow::on_radioButton_PhaseAll_clicked()
-{
-    UpdatePhaseFunctionPolarPlot();
-}
-
 //radioButton_dTheta0_1 is clicked: Simulation time warning
 void MainWindow::on_radioButton_Phase_DTheta0_1_clicked()
 {
@@ -630,12 +613,12 @@ void MainWindow::on_radioButton_Phase_DTheta0_1_clicked()
 
     switch (ret)
     {
-      case QMessageBox::Yes:
-          ui->radioButton_Phase_DTheta0_1->setChecked(true);
-          break;
-      case QMessageBox::No:
-          ui->radioButton_Phase_DTheta0_5->setChecked(true);
-          break;
+    case QMessageBox::Yes:
+        ui->radioButton_Phase_DTheta0_1->setChecked(true);
+        break;
+    case QMessageBox::No:
+        ui->radioButton_Phase_DTheta0_5->setChecked(true);
+        break;
     }
 }
 
@@ -723,6 +706,44 @@ void MainWindow::on_radioButton_RefWavel1000_clicked()
     mPara->refWavelIdx = mPara->wavel1000;
 }
 
+/********************************** CheckBox Selection **********************************/
+
+//checkBox_PhaseLinearAve_toggled: Select or deselect Ave.
+void MainWindow::on_checkBox_PhaseLinearAve_toggled()
+{
+    UpdatePhaseFunctionLinearPlot();
+}
+
+//checkBox_PhaseLinearPara_toggled: Select or deselect Para.
+void MainWindow::on_checkBox_PhaseLinearPara_toggled()
+{
+    UpdatePhaseFunctionLinearPlot();
+}
+
+//checkBox_PhaseLinearPerp_toggled: Select or deselect Perp.
+void MainWindow::on_checkBox_PhaseLinearPerp_toggled()
+{
+    UpdatePhaseFunctionLinearPlot();
+}
+
+//checkBox_PhasePolarAve_toggled: Select or deselect Ave.
+void MainWindow::on_checkBox_PhasePolarAve_toggled()
+{
+    UpdatePhaseFunctionPolarPlot();
+}
+
+//checkBox_PhasePolarPara_toggled: Select or deselect Para.
+void MainWindow::on_checkBox_PhasePolarPara_toggled()
+{
+    UpdatePhaseFunctionPolarPlot();
+}
+
+//checkBox_PhasePerp_toggled: Select or deselect Perp.
+void MainWindow::on_checkBox_PhasePolarPerp_toggled()
+{
+    UpdatePhaseFunctionPolarPlot();
+}
+
 /********************************** Slider Selection **********************************/
 
 //sliderConcPercentChange_slidervalueChanged: Change Conc or VolFrac
@@ -756,25 +777,29 @@ void MainWindow::on_slider_ConcPercentChange_valueChanged(int position)
 //on_slider_WL_PFPolar_valueChanged: Change Phase Function Wavelenghth Slider
 void MainWindow::on_slider_WL_PFPolar_valueChanged(int value)
 {
-   int wavel = static_cast<int>(mPara->startWavel + value*mPara->stepWavel);
-   ui->label_CurrentWL_PFPolar->setText(QString::number(wavel));
-   UpdatePhaseFunctionPolarPlot();
+    int wavel = static_cast<int>(mPara->startWavel + value*mPara->stepWavel);
+    ui->label_CurrentWL_PFPolar->setText(QString::number(wavel));
+    if (mOtherPlotsFlag)
+    {
+        PlotData plot;
+        plot.AssignValuesPhaseFunctionPolarPlot(ui,mPara);
+    }
 }
 
 //on_slider_WL_PFLinear_valueChanged: Change Phase Function Wavelenghth Slider
 void MainWindow::on_slider_WL_PFLinear_valueChanged(int value)
 {
-   int wavel = static_cast<int>(mPara->startWavel + value*mPara->stepWavel);
-   ui->label_CurrentWL_PFLinear->setText(QString::number(wavel));
-   UpdatePhaseFunctionLinearPlot();
+    int wavel = static_cast<int>(mPara->startWavel + value*mPara->stepWavel);
+    ui->label_CurrentWL_PFLinear->setText(QString::number(wavel));
+    UpdatePhaseFunctionLinearPlot();
 }
 
 //on_slider_WL_S1S2_valueChanged: Change S1/S2 Wavelenghth Slider
 void MainWindow::on_slider_WL_S1S2_valueChanged(int value)
 {
-   int wavel = static_cast<int>(mPara->startWavel + value*mPara->stepWavel);
-   ui->label_CurrentWL_S1S2->setText(QString::number(wavel));
-   UpdateS1S2Plot();
+    int wavel = static_cast<int>(mPara->startWavel + value*mPara->stepWavel);
+    ui->label_CurrentWL_S1S2->setText(QString::number(wavel));
+    UpdateS1S2Plot();
 }
 
 /********************************** When 'PolyDisperse:Custom' is selected ***********************/
@@ -807,118 +832,137 @@ void MainWindow::on_comboBox_Distribution_currentIndexChanged(int value)
 //MouseOver PlotScatteringCrossSection
 void MainWindow::MouseOverPlotScatteringCrossSection(QMouseEvent *event)
 {
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_Csca;
     QString strNameX = "WL";
+    QString strNameY;
+    QString strUnitX = " nm";
+    QString strUnitY = " \u00B5m\u00B2";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Csca)";
     else
         strNameY = "Csca";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 
 //MouseOver PlotExtinctionCrossSection
 void MainWindow::MouseOverPlotExtinctionCrossSection(QMouseEvent *event)
 {
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_Cext;
     QString strNameX = "WL";
+    QString strNameY;
+    QString strUnitX = " nm";
+    QString strUnitY = " \u00B5m\u00B2";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Cext)";
     else
         strNameY = "Cext";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //MouseOver PlotBackscatteringCrossSection
 void MainWindow::MouseOverPlotBackscatteringCrossSection(QMouseEvent *event)
 {
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_Cback;
     QString strNameX = "WL";
+    QString strNameY;
+    QString strUnitX = " nm";
+    QString strUnitY = " \u00B5m\u00B2";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Cback)";
     else
         strNameY = "Cback";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //MouseOver PlotSizeParameter
 void MainWindow::MouseOverPlotSizeParameter(QMouseEvent *event)
 {
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_SizePara;
     QString strNameX = "WL";
+    QString strNameY;
+    QString strUnitX = " nm";
+    QString strUnitY = "";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Size Parameter)";
     else
         strNameY = "Size Parameter";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //MouseOver PlotMus
-void MainWindow::MouseOverPlotMus(QMouseEvent *event)
-{
-    QString strNameY;
+void MainWindow::MouseOverPlotMus(QMouseEvent *event){
     QCustomPlot *customPlot = ui->customPlot_Mus;
     QString strNameX = "WL";
+    QString strNameY;
+    QString strUnitX = " nm";
+    QString strUnitY = " mm\u207B\u00B9";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(μs)";
     else
         strNameY = "μs";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //MouseOver PlotMusp
 void MainWindow::MouseOverPlotMusp(QMouseEvent *event)
 {
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_Musp;
     QString strNameX = "WL";
+    QString strNameY;
+    QString strUnitX = " nm";
+    QString strUnitY = " mm\u207B\u00B9";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(μs')";
     else
         strNameY = "μs'";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //MouseOver PlotG
 void MainWindow::MouseOverPlotG(QMouseEvent *event)
 {
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_G;
     QString strNameX = "WL";
+    QString strNameY;
+    QString strUnitX = " nm";
+    QString strUnitY = "";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(g)";
     else
         strNameY = "g";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //MouseOver PlotForwardBackward
 void MainWindow::MouseOverPlotForwardBackward(QMouseEvent *event)
 {
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_FB;
     customPlot->legend->setVisible(false);
     customPlot->replot();
+
     QString strNameX = "WL";
+    QString strNameY;
+    QString strUnitX = " nm";
+    QString strUnitY = "%";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(%)";
     else
-        strNameY = "%";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+        strNameY = "Scat %";
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //MouseOver PlotS1S2
 void MainWindow::MouseOverPlotS1S2(QMouseEvent *event)
-{    
-    QString strNameX = "Ang.";
-    QString strNameY;
+{
     QCustomPlot *customPlot = ui->customPlot_S1S2;
     customPlot->legend->setVisible(false);
     customPlot->replot();
+
+    QString strNameX = "Angle";
+    QString strNameY;
+    QString strUnitX = "\u00B0";
+    QString strUnitY = "";
     if (ui->radioButton_LogYAxis->isChecked())
     {
         if (ui->radioButton_S1->isChecked())
@@ -937,65 +981,76 @@ void MainWindow::MouseOverPlotS1S2(QMouseEvent *event)
         if (ui->radioButton_S1S2->isChecked())
             strNameY = "S";
     }
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //MouseOver PlotPhaseFunctionLinear
 void MainWindow::MouseOverPlotPhaseFunctionLinear(QMouseEvent *event)
 {
-    QString strNameX = "Ang.";
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_PhaseFunctionLinear;
     customPlot->legend->setVisible(false);
     customPlot->replot();
+
+    QString strNameX = "Angle";
+    QString strNameY;
+    QString strUnitX = "\u00B0";
+    QString strUnitY = "";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Magnitude)";
     else
         strNameY = "Magnitude";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 void MainWindow::MouseOverPlotPhaseFunctionPolar(QMouseEvent *event)
 {
-    QString strNameX = "Ang.";
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_PhaseFunctionPolar;
     customPlot->legend->setVisible(false);
     customPlot->replot();
+
+    QString strNameX = "Angle";
+    QString strNameY;
+    QString strUnitX = "\u00B0";
+    QString strUnitY = "";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Magnitude)";
     else
         strNameY = "Magnitude";
     PlotData plot;
-    DisplayPolarCurveData(event, customPlot, strNameX, strNameY);
+    DisplayPolarCurveData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //MouseOver PlotDistribution
 void MainWindow::MouseOverPlotDistribution(QMouseEvent *event)
 {
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_Distribution;
     QString strNameX = "Dia.";
+    QString strNameY;
+    QString strUnitX = " \u00B5m";
+    QString strUnitY = "";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(Ns)";
     else
         strNameY = "Ns";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //MouseOver Musp power Law
 void MainWindow::MouseOverPlotMuspPowerLaw(QMouseEvent *event)
 {
-    QString strNameY;
     QCustomPlot *customPlot = ui->customPlot_MuspPowerLaw;
     customPlot->legend->setVisible(false);
     customPlot->replot();
+
     QString strNameX = "WL";
+    QString strNameY;
+    QString strUnitX = " nm";
+    QString strUnitY = " mm\u207B\u00B9";
     if (ui->radioButton_LogYAxis->isChecked())
         strNameY = "Log(μs')";
     else
         strNameY = "μs'";
-    DisplayGraphData(event, customPlot, strNameX, strNameY);
+    DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
 //Slot: SpinBoxF_valueChanged
@@ -1079,7 +1134,8 @@ void MainWindow::RememberLastDirectory(QString fileName)
 
 //Display x and y values
 void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
-                                  QString strNameX, QString strNameY)
+                                  QString strNameX, QString strUnitX,
+                                  QString strNameY, QString strUnitY)
 {
     QCPAbstractPlottable *plottable = customPlot->plottableAt(event->position());
     if(plottable)
@@ -1120,15 +1176,22 @@ void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
 
                 if (ok)
                 {
+                    auto placeholder = tr("<table>"
+                                          "<tr>"
+                                          "<td>%L1:</td>"
+                                          "<td>%L2%L3</td>"
+                                          "</tr>"
+                                          "<tr>"
+                                          "<td>%L4:</td>"
+                                          "<td>%L5%L6</td>"
+                                          "</tr>"
+                                          "</table>");
                     QToolTip::showText(event->globalPosition().toPoint(),
-                                       tr("<table>"
-                                          "<tr>"
-                                          "<td>%L1:</td>" "<td>%L2</td>"
-                                          "</tr>"
-                                          "<tr>"
-                                          "<td>%L3:</td>" "<td>%L4</td>"
-                                          "</tr>"
-                                          "</table>").arg(strNameX).arg(key).arg(strNameY).arg(value),
+                                       placeholder.arg(strNameX)
+                                           .arg(key)
+                                           .arg(strUnitX, strNameY)
+                                           .arg(value)
+                                           .arg(strUnitY),
                                        customPlot, customPlot->rect());
                 }
             }
@@ -1140,7 +1203,8 @@ void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
 
 //Display x and y values
 void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPlot,
-                                       QString strNameX, QString strNameY)
+                                       QString strNameX, QString strUnitX,
+                                       QString strNameY, QString strUnitY)
 {
     PlotData plot;
 
@@ -1149,7 +1213,6 @@ void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPl
     {
         double x = customPlot->xAxis->pixelToCoord(event->position().x());
         double *dx;
-
         QCPCurve *curve =  qobject_cast<QCPCurve*>(plottable);
         if (curve)
         {
@@ -1194,15 +1257,22 @@ void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPl
 
                 if (ok)
                 {
+                    auto placeholder = tr("<table>"
+                                          "<tr>"
+                                          "<td>%L1:</td>"
+                                          "<td>%L2%L3</td>"
+                                          "</tr>"
+                                          "<tr>"
+                                          "<td>%L4:</td>"
+                                          "<td>%L5%L6</td>"
+                                          "</tr>"
+                                          "</table>");
                     QToolTip::showText(event->globalPosition().toPoint(),
-                                       tr("<table>"
-                                          "<tr>"
-                                          "<td>%L1:</td>" "<td>%L2</td>"
-                                          "</tr>"
-                                          "<tr>"
-                                          "<td>%L3:</td>" "<td>%L4</td>"
-                                          "</tr>"
-                                          "</table>").arg(strNameX).arg(angle).arg(strNameY).arg(rho),
+                                       placeholder.arg(strNameX)
+                                           .arg(angle)
+                                           .arg(strUnitX, strNameY)
+                                           .arg(rho)
+                                           .arg(strUnitY),
                                        customPlot, customPlot->rect());
                 }
             }
@@ -1210,4 +1280,13 @@ void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPl
     }
     else
         QToolTip::hideText();
+}
+
+void MainWindow::DisplayWarning(QString warningMessage)
+{
+    QMessageBox msgBoxWarning;
+    msgBoxWarning.setWindowTitle("Warning");
+    msgBoxWarning.setIcon(QMessageBox::Warning);
+    msgBoxWarning.setText(warningMessage);
+    msgBoxWarning.exec();
 }

@@ -74,7 +74,7 @@ public:
     double *cSca = nullptr;                 // cSca: Scattering cross section
     double *cExt = nullptr;                 // cExt: Extinction cross section
     double *cBack = nullptr;                // cBack: Backscattering cross section
-    double *SizePara = nullptr;             // SizePara: Size Parameter
+    double *sizePara = nullptr;             // sizePara: Size Parameter
     double *mus = nullptr;                  // mus: scattering coefficient
     double *g = nullptr;                    // g: average cosine of phase function
     std::complex<double> **S1 = nullptr;    // S1: amplitude matrix component S1
@@ -85,10 +85,11 @@ public:
     double fRay = 1.0;                         //fRay: fitting parameter fRay
     double bMie = 4.0;                         //bMie: fitting parameter bMie
     double muspAtRefWavel[6] = {1,2,3,4,5,6};  //muspAtRefWavel:  musp value array at lambda = 500, 600, 700, 800, 900 and 1000nm
-    unsigned int refWavelIdx = wavel500;              //refWavelIdx: current index of refWavel
+    unsigned int refWavelIdx = wavel1000;      //refWavelIdx: current index of refWavel
     double muspFittingError = 0;               //muspfittingError: fitting error
     double refWavel = 1000;                    //refWavel: reference lambda: 500, 600, 700, 800, 900 and 1000nm
-    bool fittingComplex = true;                //fittingComplex; False: Simple,  True: Ccomplex
+    bool fittingComplex = true;                //fittingComplex; True: Ccomplex, False: Simple
+    bool independentScat = true;               //independentScat; True: independent scattering; False: otherwise
 };
 
 #endif // PARAMETERS_H

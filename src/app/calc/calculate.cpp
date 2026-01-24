@@ -131,7 +131,7 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
         para->cSca[w]  = sumCsca / sumNumDen ;
         para->cExt[w]  = sumCext / sumNumDen;
         para->cBack[w] = sumCback / sumNumDen;
-        para->SizePara[w] = xPara;
+        para->sizePara[w] = xPara;
         para->mus[w] = sumMus * 1e-6;   //1e-6--> 1micron2 to 1mm2
         para->g[w] = sumMusG /sumMus;
         para->forward[w] = sumForward*100.0/(sumForward+sumBackward);    //Not necessary to divide by sumMus in ratio calculation
@@ -175,7 +175,6 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
     for (unsigned int i = 0; i< 6; i++)
     {
         double lambda = 0.5 + 0.1*i;            // in um
-
 
         sumMus = 0.0;
         sumMusG = 0.0;
@@ -350,30 +349,46 @@ double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
 //Set sphere parameters
 void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index, bool flagVolOrConc)
 {
-    double temp, factor;
-    double totalSphereVolume = 0.0;
-    double totalFuncSum = 0.0;
-    double stepR;
-    double *funcArray;
-
     if (para->nRadius == 1)  //Mono Disperse
     {
+        double volFraction;
+        double singleSphereVolume = 4.0 * M_PI *para->meanRadius * para->meanRadius * para->meanRadius / 3.0;
         if (flagVolOrConc)  //If volume fraction is selected, update number density
         {
-           double sphereVolume = 4.0 * M_PI *para->meanRadius * para->meanRadius * para->meanRadius / 3.0;
-           para->sphNumDensity = std::round(1e9 * para->volFraction /sphereVolume) ;
+            para->sphNumDensity = std::round(1e9 * para->volFraction /singleSphereVolume);
+            volFraction = para->volFraction;
         }
+        else
+            volFraction = singleSphereVolume * para->sphNumDensity / 1e9;
+
         para->radArray[0] = para->meanRadius;
         para->numDensityArray[0] = para->sphNumDensity;
         para->scatRefRealArray[0] = para->scatRefReal;
         para->scatRefImagArray[0] = para->scatRefImag;
         para->medRefArray[0] = para->medRef;
+
+        //check independent/dependent scattering (Yalcin ACS Photonics 9(2022))
+        double interParticleDistance = pow(para->sphNumDensity, 1.0/3.0);
+        double clearanceToWavelength = (interParticleDistance - 2 * para->meanRadius)/(1e-3 * para->startWavel);
+        if (volFraction < 0.006 && clearanceToWavelength > 0.5)   //  fv < 0.6% and clearnace/lambda > 0.5
+            para->independentScat = true;
+        else
+            para->independentScat = false;
     }
     else                    //Poly Disperse
     {
-        funcArray = new double[para->nRadius];
+        double temp, factor, stepR;
+        double volFraction;
+        double totalSphereVolume = 0.0;
+        double totalFuncSum = 0.0;
+        double *funcArray = new double[para->nRadius];
+        double *sphereVolume = new double[para->nRadius];
         for (unsigned int i = 0; i < para->nRadius; i++)
-			funcArray[i] = 1.0;
+        {
+            funcArray[i] = 0.0;
+            sphereVolume[i] = 0.0;
+        }
+
         stepR = (para->maxRadius - para->minRadius)/(para->nRadius -1);
 
         switch (index)
@@ -385,8 +400,9 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
                 temp = log(para->radArray[i])-log(para->meanRadius);
                 funcArray[i] = (exp(-(temp*temp)/(2.0 * para->stdDev * para->stdDev)))/
                                 (para->radArray[i] * para->stdDev * sqrt (2.0 * M_PI)) ;
-                totalSphereVolume += funcArray[i] * 4.0 * M_PI * para->radArray[i] *
-                                 para->radArray[i] * para->radArray[i] /3.0;
+                sphereVolume[i] = 4.0 * M_PI * para->radArray[i] *
+                                  para->radArray[i] * para->radArray[i] /3.0;
+                totalSphereVolume += funcArray[i] * sphereVolume[i];
                 totalFuncSum += funcArray[i];
             }
             break;
@@ -397,25 +413,46 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
                 temp = para->radArray[i]-para->meanRadius;
                 funcArray[i]  = (exp(-(temp*temp/(2.0 * para->stdDev * para->stdDev))))/
                                    (para->stdDev * sqrt (2.0 * M_PI)) ;
-                totalSphereVolume += funcArray[i] * 4.0 * M_PI * para->radArray[i] *
-                                   para->radArray[i] * para->radArray[i] /3.0;
+                sphereVolume[i] = 4.0 * M_PI * para->radArray[i] *
+                                  para->radArray[i] * para->radArray[i] /3.0;
+                totalSphereVolume += funcArray[i] * sphereVolume[i];
                 totalFuncSum += funcArray[i];
             }
             break;
         }
 
+        // Compute factor to compute number density
         if (flagVolOrConc)
-            factor = 1e9 * para->volFraction /totalSphereVolume;   //1mm3 x volume Fraction / Total volume of spheres
+        {
+            factor = 1e9 * para->volFraction /totalSphereVolume;
+            volFraction = para->volFraction;
+        }
         else
+        {
             factor = para->sphNumDensity/totalFuncSum;
+            volFraction = (totalSphereVolume/totalFuncSum)*(para->sphNumDensity/1e9);
+        }
 
+        double totalNumDensity = 0.0;
         for (unsigned int i=0; i<para->nRadius; i++)
         {
             para->numDensityArray[i] = std::round(funcArray[i]*factor);
+            totalNumDensity += para->numDensityArray[i];
             para->scatRefRealArray[i] = para->scatRefReal;
             para->scatRefImagArray[i] = para->scatRefImag;
             para->medRefArray[i] = para->medRef;
         }
+
+        //check independent/dependent scattering (Yalcin ACS Photonics 9(2022))
+        double interParticleDistance = pow(totalNumDensity, 1.0/3.0);
+        double clearanceToWavelength = (interParticleDistance - 2 * para->meanRadius)/(1e-3 * para->startWavel);
+        if (volFraction < 0.006 && clearanceToWavelength > 0.5)   //  fv < 0.6% and clearnace/lambda > 0.5
+            para->independentScat = true;
+        else
+            para->independentScat = false;
+
+
+        delete []sphereVolume;
         delete []funcArray;
     }
 }
