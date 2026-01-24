@@ -90,14 +90,14 @@ void MainWindowSupport::SetWidgets(Ui_MainWindow *ui, Parameters *para)
         //Enable or disable according to the selection
         if (ui->radioButton_NumDen->isChecked())
         {
-            ui->lineEdit_NumDen->setDisabled(false);
+            ui->lineEdit_NumDen->setEnabled(true);
             ui->lineEdit_VolFrac->setDisabled(true);
         }
 
         if (ui->radioButton_VolFrac->isChecked())
         {
             ui->lineEdit_NumDen->setDisabled(true);
-            ui->lineEdit_VolFrac->setDisabled(false);
+            ui->lineEdit_VolFrac->setEnabled(true);
         }
     }
 
@@ -387,7 +387,7 @@ void MainWindowSupport::DisableWidgetsDuringSimulation(Ui_MainWindow *ui, Parame
 
 // Disable/Enable widgets during "Custom" Polydisperse data
 void MainWindowSupport::DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow *ui, bool flag)
-{
+{    
     //disable widgets during simulation
     ui->lineEdit_MeanDiameter->setDisabled(flag);
     ui->lineEdit_StdDev->setDisabled(flag);
