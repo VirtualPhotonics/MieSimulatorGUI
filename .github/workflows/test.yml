@@ -37,3 +37,7 @@ jobs:
         working-directory: ./src/build/test
         run: chmod +x MieSimulatorGUI_test
              ./MieSimulatorGUI_test
+
+      - name: Delete Output on Success
+        if: success()
+        run: rm output.log
