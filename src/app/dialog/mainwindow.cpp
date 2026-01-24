@@ -169,8 +169,10 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
                 mOtherPlotsFlag = true;
                 mDistPlotFlag = true;
                 if(!mPara->independentScat)
-                    DisplayWarning("High concentration or volume fraction detected. The independent scattering"
-                                   " approximation may be invalid. Interpret these results with caution.");
+                    DisplayWarning("The concentration or volume fraction exceeds the "
+                                   "limits for the independent scattering approximation. "
+                                   "As this tool is best suited for dilute systems, "
+                                   "results should be interpreted with caution.");
                 //Enable widgets
                 support.DisableWidgetsDuringSimulation(ui, mPara, false);
             }
@@ -187,8 +189,10 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
                     mOtherPlotsFlag = true;
                     mDistPlotFlag = true;
                     if(!mPara->independentScat)
-                        DisplayWarning("High concentration or volume fraction detected. The independent scattering"
-                                       " approximation may be invalid. Interpret these results with caution.");
+                        DisplayWarning("The concentration or volume fraction exceeds the "
+                                       "limits for the independent scattering approximation. "
+                                       "As this tool is best suited for dilute systems, "
+                                       "results should be interpreted with caution.");
                 }
                 //Enable widgets
                 support.DisableWidgetsDuringSimulation(ui, mPara, false);
