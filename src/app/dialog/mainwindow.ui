@@ -28,7 +28,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Mie Simulator GUI v2.0 Pre-Release</string>
+   <string>Mie Simulator GUI v2.0</string>
   </property>
   <property name="windowIcon">
    <iconset theme="VPlogoMie">
@@ -633,7 +633,7 @@
                   <string>Para.</string>
                  </property>
                  <property name="checked">
-                  <bool>true</bool>
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
@@ -745,7 +745,7 @@
                   <string>Perp.</string>
                  </property>
                  <property name="checked">
-                  <bool>true</bool>
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>

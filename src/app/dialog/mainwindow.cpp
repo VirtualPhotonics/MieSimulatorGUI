@@ -141,7 +141,7 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
         QMessageBox msgBox;
         msgBox.setWindowTitle("Error");
         msgBox.setText("No Data available.");
-        msgBox.setInformativeText("Click 'Load Custom Data'");
+        msgBox.setInformativeText("Click 'Load Custom Data' to import your data");
         msgBox.exec();
     }
     else
@@ -169,7 +169,12 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
                 mOtherPlotsFlag = true;
                 mDistPlotFlag = true;
                 if(!mPara->independentScat)
-                    DisplayWarning("Note: High Concentration or Volume Fraction indicates dependent scattering. Interpret results with caution.");
+                    DisplayWarning("The concentration or volume fraction exceeds the "
+                                   "limits for the independent scattering approximation. "
+                                   "As this tool is best suited for dilute systems, "
+                                   "results should be interpreted with caution.");
+                //Enable widgets
+                support.DisableWidgetsDuringSimulation(ui, mPara, false);
             }
 
             //Poly disperse
@@ -184,15 +189,20 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
                     mOtherPlotsFlag = true;
                     mDistPlotFlag = true;
                     if(!mPara->independentScat)
-                        DisplayWarning("Note: High Concentration or Volume Fraction indicates dependent scattering. Interpret results with caution.");
+                        DisplayWarning("The concentration or volume fraction exceeds the "
+                                       "limits for the independent scattering approximation. "
+                                       "As this tool is best suited for dilute systems, "
+                                       "results should be interpreted with caution.");
                 }
+                //Enable widgets
+                support.DisableWidgetsDuringSimulation(ui, mPara, false);
+
+                // Enable disable widgets for Custom selection
                 if (ui->comboBox_Distribution->currentIndex() == mPara->Custom)
                     support.DisableWidgetsDuringCustomPolyDisperseData(ui, true);
                 else
                     support.DisableWidgetsDuringCustomPolyDisperseData(ui, false);
             }
-            //Enable widgets
-            support.DisableWidgetsDuringSimulation(ui, mPara, false);
         }
     }
 }
@@ -235,6 +245,29 @@ void MainWindow::on_pushButton_ShowDistributionAndCustom_clicked()
                 support.SetWidgets(ui, mPara);
                 support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
                 mDistPlotFlag = true;
+
+                // compute parameters required to check dependent/independent scattering
+                double totalSphereVolume = 0.0;
+                double totalNumDensity = 0.0;
+                double totalRadius = 0.0;
+                for (unsigned int i=0; i<mPara->nRadius; i++)
+                {
+                    double singleSphereVolume = 4.0 * M_PI * mPara->radArray[i] *
+                                      mPara->radArray[i] * mPara->radArray[i] /3.0;
+                    totalSphereVolume += singleSphereVolume * mPara->numDensityArray[i];
+                    totalNumDensity += mPara->numDensityArray[i];
+                    totalRadius += mPara->radArray[i];
+                }
+                double volFraction = totalSphereVolume/1e9;
+                double meanRadius = totalRadius/mPara->nRadius;
+
+                //check independent/dependent scattering (Yalcin ACS Photonics 9(2022))
+                double interParticleDistance = pow(totalNumDensity, 1.0/3.0);
+                double clearanceToWavelength = (interParticleDistance - 2 * meanRadius)/(1e-3 * mPara->startWavel);
+                if (volFraction < 0.006 && clearanceToWavelength > 0.5)   //  fv < 0.6% and clearnace/lambda > 0.5
+                    mPara->independentScat = true;
+                else
+                    mPara->independentScat = false;
             }
         }
         mLoadCustomNoGoodFlag = false;

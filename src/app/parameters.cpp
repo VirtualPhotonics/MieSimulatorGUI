@@ -135,7 +135,7 @@ ParameterValidationResult Parameters::CheckValidityCommonParameters(
         if (volFraction >= 1.0)
         {
             result.isValid = false;
-            result.errorMessage = "Volume Fraction cannot exceed 1.0.";
+            result.errorMessage = "Volume Fraction must be less than 1.0.";
             return result;
         }
     }
