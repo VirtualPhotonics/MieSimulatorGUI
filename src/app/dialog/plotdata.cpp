@@ -109,14 +109,14 @@ void PlotData::InitialSetupOtherPlots(Ui_MainWindow *ui)
 
 //Plot Musp for fitting
 void PlotData::InitialSetupMuspPowerLawFit(Ui_MainWindow *ui)
-{   
+{
+    ui->doubleSpinBox_B->setValue(4);
+    ui->doubleSpinBox_F->setValue(0);
+
     double minX = ui->lineEdit_StartWL->text().toDouble();
     double maxX = ui->lineEdit_EndWL->text().toDouble();
 
     InitialSetupPlot(ui->customPlot_MuspPowerLaw, "Wavelength (nm)", "μs' (mmˉˡ)", minX, maxX);
-
-    ui->doubleSpinBox_B->setValue(4);
-    ui->doubleSpinBox_F->setValue(0);
 }
 
 // Prepare polar plot based on data
@@ -358,7 +358,7 @@ void PlotData::AssignValuesOtherPlots(Ui_MainWindow *ui, Parameters* para)
         yF[i] = para->forward[i];
         yB[i] = para->backward[i];
         if (ui->radioButton_MonoDisperse->isChecked())
-            ySizePara[i] = para->SizePara[i];
+            ySizePara[i] = para->sizePara[i];
 
         if (ui->radioButton_LogYAxis->isChecked())
         {
@@ -366,12 +366,12 @@ void PlotData::AssignValuesOtherPlots(Ui_MainWindow *ui, Parameters* para)
             yCext[i] = log10(para->cExt[i] + tiny);    //extinction cross section
             yCback[i] = log10(para->cBack[i] + tiny);  //backscattering cross section
             yG[i] = log10(para->g[i] +tiny);           //g - average cosine of phase function
-            yMus[i] = log10(mus + tiny);              //scattering coefficient
+            yMus[i] = log10(mus + tiny);               //scattering coefficient
             yMusp[i] = log10((mus * (1.0 - para->g[i])) + tiny);    //reduced scattering coefficient
             yF[i] = log10(para->forward[i] + tiny);
             yB[i] = log10(para->backward[i] + tiny);
             if (ui->radioButton_MonoDisperse->isChecked())
-                ySizePara[i] = log10(para->SizePara[i] + tiny);
+                ySizePara[i] = log10(para->sizePara[i] + tiny);
             fbLimit = 2;   //100%
         }
     }
@@ -506,28 +506,42 @@ void PlotData::PlotPhaseFunctionLinear(Ui_MainWindow *ui, QVector<double> x, QVe
     RemoveGraphs(customPlot);
     RemoveLegends(customPlot);
 
-    //Set Min and Max values for the y-axis
-    double minY = util.FindMinMax(yPara, yPerp, yAve, true);   //true:Min
-    double maxY = util.FindMinMax(yPara, yPerp, yAve, false);  //false: Max
-    maxY = maxY + 0.02*(maxY-minY);
-    minY = minY - 0.02*(maxY-minY);
-    customPlot->yAxis->setRange(minY, maxY);    
+    if (ui->checkBox_PhaseLinearAve->isChecked() || ui->checkBox_PhaseLinearPara->isChecked() || ui->checkBox_PhaseLinearPerp->isChecked())
+    {
+        //Set Min and Max values for the y-axis
+        double minY = util.FindMinMax(yPara, yPerp, yAve, true);   //true:Min
+        double maxY = util.FindMinMax(yPara, yPerp, yAve, false);  //false: Max
+        maxY = maxY + 0.02*(maxY-minY);
+        minY = minY - 0.02*(maxY-minY);
+        customPlot->yAxis->setRange(minY, maxY);
 
-    //Add new graph
-    PlotSingleGraph(customPlot, x, yAve, Qt::red, "Ave.", 0, 2);
-    PlotSingleGraph(customPlot, x, yPara, Qt::blue, "Para.", 1, 2);
-    PlotSingleGraph(customPlot, x, yPerp, Qt::darkGreen, "Perp.", 2, 2);
+        int idx = 0;
+        if (ui->checkBox_PhaseLinearAve->isChecked())
+        {
+            PlotSingleGraph(customPlot, x, yAve, Qt::red, "Ave.", idx, 2);
+            idx++;
+        }
+        if (ui->checkBox_PhaseLinearPara->isChecked())
+        {
+            PlotSingleGraph(customPlot, x, yPara, Qt::blue, "Para.", idx, 2);
+            idx++;
+        }
+        if (ui->checkBox_PhaseLinearPerp->isChecked())
+            PlotSingleGraph(customPlot, x, yPerp, Qt::darkGreen, "Perp.", idx, 2);
 
-    if (ui->radioButton_LinearYAxis->isChecked())
-        customPlot->yAxis->setLabel("Magnitude");
-    if (ui->radioButton_LogYAxis->isChecked())
-        customPlot->yAxis->setLabel("Log (Magnitude)");
+        if (ui->radioButton_LinearYAxis->isChecked())
+            customPlot->yAxis->setLabel("Magnitude");
+        if (ui->radioButton_LogYAxis->isChecked())
+            customPlot->yAxis->setLabel("Log (Magnitude)");
 
-    //Legend    
-    customPlot->legend->setBrush(QBrush(QColor(255, 255, 255, 0)));
-    customPlot->legend->setBorderPen(QPen(Qt::NoPen));
-    customPlot->legend->setVisible(true);
-    customPlot->axisRect()->insetLayout()->setInsetAlignment(0,Qt::AlignTop|Qt::AlignRight);
+        // // Legend configuration
+        // customPlot->legend->setWrap(3);
+        // customPlot->legend->setFillOrder(QCPLayoutGrid::FillOrder::foColumnsFirst,true);
+        // customPlot->legend->setBrush(QBrush(QColor(255, 255, 255, 0)));
+        // customPlot->legend->setBorderPen(QPen(Qt::NoPen));
+        // customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignBottom);
+        // customPlot->legend->setVisible(true);
+    }
     customPlot->replot();
 }
 
@@ -535,23 +549,16 @@ void PlotData::PlotPhaseFunctionLinear(Ui_MainWindow *ui, QVector<double> x, QVe
 void PlotData::PlotPhaseFunctionPolar(Ui_MainWindow *ui, QVector<double> theta, QVector<double> yPara,
                                       QVector<double> yPerp, QVector<double> yAve, int totalSize)
 {
-    double radialMin = 0;
-    if (ui->radioButton_PhaseLog->isChecked())
-        radialMin = log10(mPolarMinRadius);
-
-    QVector<double> phaseData1 = yAve;  //Default
-    QVector<double> phaseData2 = yPara;
-    QVector<double> phaseData3 = yPerp;
-
-    if (ui->radioButton_PhasePara->isChecked())
-        phaseData1 = yPara;
-    if (ui->radioButton_PhasePerp->isChecked())
-        phaseData1 = yPerp;
-
     auto customPlot = ui->customPlot_PhaseFunctionPolar;
+    RemoveLegends(customPlot);
+    RemovePlotables(customPlot);
 
-    if (ui->radioButton_PhaseAll->isChecked())
+    if (ui->checkBox_PhasePolarAve->isChecked() || ui->checkBox_PhasePolarPara->isChecked() || ui->checkBox_PhasePolarPerp->isChecked())
     {
+        double radialMin = 0;
+        if (ui->radioButton_PhaseLog->isChecked())
+            radialMin = log10(mPolarMinRadius);
+
         QVector<double> x1, y1;
         QVector<double> x2, y2;
         QVector<double> x3, y3;
@@ -560,40 +567,33 @@ void PlotData::PlotPhaseFunctionPolar(Ui_MainWindow *ui, QVector<double> theta, 
             double cost = cos(theta[i]);
             double sint = sin(theta[i]);
 
-            double rho1 = phaseData1[i] - radialMin;
+            double rho1 = yAve[i] - radialMin;
             x1.append(rho1 * cost);
             y1.append(rho1 * sint);
 
-            double rho2 = phaseData2[i] - radialMin;
+            double rho2 = yPara[i] - radialMin;
             x2.append(rho2 * cost);
             y2.append(rho2 * sint);
 
-            double rho3 = phaseData3[i] - radialMin;
+            double rho3 = yPerp[i] - radialMin;
             x3.append(rho3 * cost);
             y3.append(rho3 * sint);
         }
-        PlotSingleCurve(customPlot, x1, y1, Qt::red, "Ave.", totalSize);
-        PlotSingleCurve(customPlot, x2, y2, Qt::blue, "Para.", totalSize);
-        PlotSingleCurve(customPlot, x3, y3, Qt::darkGreen, "Perp.", totalSize);
 
-        // Add legend
-        customPlot->legend->setVisible(true);
-        customPlot->legend->setBrush(QBrush(QColor(255, 255, 255, 0)));
-        customPlot->legend->setBorderPen(QPen(Qt::NoPen));
-        customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignLeft|Qt::AlignBottom);
-    }
-    else
-    {
-        QVector<double> x1, y1;
-        for (int i = 0; i < totalSize; i++)
-        {
-            double cost = cos(theta[i]);
-            double sint = sin(theta[i]);
-            double rho1 = phaseData1[i] - radialMin;
-            x1.append(rho1 * cost);
-            y1.append(rho1 * sint);
-        }
-        PlotSingleCurve(customPlot, x1, y1, Qt::red, "", totalSize);
+        if (ui->checkBox_PhasePolarAve->isChecked())
+            PlotSingleCurve(customPlot, x1, y1, Qt::red, "Ave.", totalSize);
+        if (ui->checkBox_PhasePolarPara->isChecked())
+            PlotSingleCurve(customPlot, x2, y2, Qt::blue, "Para.", totalSize);
+        if (ui->checkBox_PhasePolarPerp->isChecked())
+            PlotSingleCurve(customPlot, x3, y3, Qt::darkGreen, "Perp.", totalSize);
+
+        // // Legend configuration
+        // customPlot->legend->setWrap(3);
+        // customPlot->legend->setFillOrder(QCPLayoutGrid::FillOrder::foColumnsFirst,true);
+        // customPlot->legend->setBrush(QBrush(QColor(255, 255, 255, 0)));
+        // customPlot->legend->setBorderPen(QPen(Qt::NoPen));
+        // customPlot->axisRect()->insetLayout()->setInsetAlignment(1, Qt::AlignBottom);
+        // customPlot->legend->setVisible(true);
     }
     customPlot->replot();
 }
@@ -1071,7 +1071,7 @@ void PlotData::CreateRadialGrid(QCustomPlot *customPlot, bool flagLinearLog)
 
     QPen majorGridPen(Qt::black, 1.0, Qt::SolidLine);
     QPen minorGridPen(Qt::gray, 0.5, Qt::SolidLine);
-    double labelRadius = radialMax * 1.17;
+    double labelRadius = radialMax * 1.15;
     int numLines = 36;
     double angleStep = 10;
 
@@ -1094,7 +1094,7 @@ void PlotData::CreateRadialGrid(QCustomPlot *customPlot, bool flagLinearLog)
         } else  // Minor line
             radialLine->setPen(minorGridPen);
     }
-    customPlot->xAxis->setRange(-1.3*radialMax, 1.3*radialMax);
+    customPlot->xAxis->setRange(-1.28*radialMax, 1.28*radialMax);
     customPlot->yAxis->setRange(-1.3*radialMax, 1.3*radialMax);
     HideCartesianAxes(customPlot);
 }
@@ -1122,6 +1122,7 @@ void PlotData::RemoveGraphs(QCustomPlot *customPlot)
     }
 }
 
+//Remove Legends
 void PlotData::RemoveLegends(QCustomPlot *customPlot)
 {
     if (customPlot->legend->itemCount() >0)
@@ -1234,6 +1235,3 @@ void PlotData::RearrangePhaseFunctionData(Parameters *para, QVector<double> &the
         }
     }
 }
-
-
-

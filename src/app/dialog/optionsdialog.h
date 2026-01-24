@@ -5,6 +5,7 @@
 #include <QRadioButton>
 #include <QComboBox>
 #include <QSlider>
+#include "qcheckbox.h"
 #include "ui_optionsdialog.h"
 #include "parameters.h"
 
@@ -25,10 +26,10 @@ public:
                   QRadioButton *radioButton_NumDen,
                   QRadioButton *radioButton_VolFrac,
                   QComboBox *comboBox_Distribution,
-                   QSlider *slider_ConcPercentChange,
-                  QRadioButton *radioButton_PhaseAverage,
-                  QRadioButton *radioButton_PhasePara,
-                  QRadioButton *radioButton_PhasePerp,
+                  QSlider *slider_ConcPercentChange,
+                  QCheckBox *checkBox_PhasePolarAve,
+                  QCheckBox *checkBox_PhasePolarPara,
+                  QCheckBox *checkBox_PhasePolarPerp,
                   Parameters *para);
 
 private slots:
@@ -52,9 +53,9 @@ private:
                       QComboBox *comboBox_Distribution,
                       Parameters *para, QString fileName,
                       double margin);
-    void SavePhaseFunction(QRadioButton *radioButton_PhaseAverage,
-                           QRadioButton *radioButton_PhasePara,
-                           QRadioButton *radioButton_PhasePerp,
+    void SavePhaseFunction(QCheckBox *checkBox_PhasePolarAve,
+                           QCheckBox *checkBox_PhasePolarPara,
+                           QCheckBox *checkBox_PhasePolarPerp,
                            Parameters *para, QString fileName);
     void SaveS1(Parameters *para, QString fileName);
     void SaveS2(Parameters *para, QString fileName);

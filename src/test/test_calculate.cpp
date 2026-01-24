@@ -33,7 +33,7 @@ void TestCalculate::init()
     mPara->cSca = new double[mPara->nWavel];
     mPara->cExt = new double[mPara->nWavel];
     mPara->cBack = new double[mPara->nWavel];
-    mPara->SizePara = new double[mPara->nWavel];
+    mPara->sizePara = new double[mPara->nWavel];
     mPara->forward = new double[mPara->nWavel];
     mPara->backward = new double[mPara->nWavel];
 
@@ -98,7 +98,7 @@ void TestCalculate::cleanup()
     if (mPara->cSca) delete[] mPara->cSca;
     if (mPara->cExt) delete[] mPara->cExt;
     if (mPara->cBack) delete[] mPara->cBack;
-    if (mPara->SizePara) delete[] mPara->SizePara;
+    if (mPara->sizePara) delete[] mPara->sizePara;
     if (mPara->forward) delete[] mPara->forward;
     if (mPara->backward) delete[] mPara->backward;
 
@@ -112,7 +112,7 @@ void TestCalculate::cleanup()
     mPara->cSca = nullptr;
     mPara->cExt = nullptr;
     mPara->cBack = nullptr;
-    mPara->SizePara = nullptr;
+    mPara->sizePara = nullptr;
     mPara->forward = nullptr;
     mPara->backward = nullptr;
 
@@ -154,6 +154,32 @@ void TestCalculate::test_DoSimulationdata()
     QVERIFY(fabs(mPara->backward[0] - expectedBackward) <1e-8);
 }
 
+//Test case: Check real path vs complex path with tiny imaginary value
+void TestCalculate::test_DoSimulation_RealVsComplexRefIndex()
+{
+    mPara->nRadius = 1;
+    mPara->nWavel = 1;
+    mPara->wavelArray[0] = 632.8;
+    mPara->radArray[0] = 0.5;
+    mPara->medRefArray[0] = 1.33;
+    mPara->scatRefRealArray[0] = 1.5;
+    mPara->numDensityArray[0] = 1e6;
+
+    QLabel mockLabel;
+
+    // Purely real
+    mPara->scatRefImagArray[0] = 0.0;
+    mCalc->DoSimulation(&mockLabel, mPara);
+    double musReal = mPara->mus[0];
+    QVERIFY(musReal > 0);
+
+    // Complex (very small imaginary part)
+    mPara->scatRefImagArray[0] = 1e-10;
+    mCalc->DoSimulation(&mockLabel, mPara);
+
+    QVERIFY(qAbs(mPara->mus[0] - musReal) < 1e-5);
+}
+
 // Test case: Check DiameterRangeSetting with log-normal distribution
 void TestCalculate::test_DiameterRangeSetting_logNormal()
 {
@@ -165,7 +191,7 @@ void TestCalculate::test_DiameterRangeSetting_logNormal()
     // Check range
     QVERIFY(mPara->minRadius > 0);
     QVERIFY(mPara->minRadius < mPara->meanRadius);
-    QVERIFY(mPara->maxRadius > mPara->minRadius);   
+    QVERIFY(mPara->maxRadius > mPara->minRadius);
     QVERIFY(mPara->maxRadius > mPara->meanRadius);
 }
 
@@ -328,7 +354,7 @@ void TestCalculate::test_CalculatePowerLawAutoFitComplex()
     mPara->refWavel = 800;
     mPara->refWavelIdx = mPara->wavel800;
     mPara->muspAtRefWavel[3] = 10.0;
-    mPara->nWavel = 9;    
+    mPara->nWavel = 9;
 
     mPara->wavelArray = new double[mPara->nWavel];
     mPara->mus = new double[mPara->nWavel];
@@ -346,6 +372,38 @@ void TestCalculate::test_CalculatePowerLawAutoFitComplex()
     // The calculated values should be close to the expected values.
     QCOMPARE(mPara->fRay, fRay);
     QCOMPARE(mPara->bMie, bMie);
+}
+
+// Test case: Independent Scattering Logic
+void TestCalculate::test_IndependentScatteringCheck()
+{
+    mPara->nRadius = 1;
+    mPara->meanRadius = 0.5; // Diameter = 1.0 um
+    mPara->startWavel = 500; // 0.5 um
+
+    // Low concentration (Independent)
+    mPara->volFraction = 0.001;
+    mCalc->SetSphereRadiusAndRefIndex(mPara, 3, true);
+    QVERIFY(mPara->independentScat == true);
+
+    // High concentration (Dependent)
+    mPara->volFraction = 0.1;
+    mCalc->SetSphereRadiusAndRefIndex(mPara, 3, true);
+    QVERIFY(mPara->independentScat == false);
+}
+
+// Test case: Test for zero density
+void TestCalculate::test_DoSimulation_ZeroDensitySafety()
+{
+    mPara->nRadius = 1;
+    mPara->nWavel = 1;
+    mPara->numDensityArray[0] = 0.0; // Zero density
+    mPara->wavelArray[0] = 632.8;
+
+    QLabel mockLabel;
+    mCalc->DoSimulation(&mockLabel, mPara);
+
+    QVERIFY(qIsNaN(mPara->g[0]) || mPara->g[0] == 0.0);
 }
 
 // Sanity check for the ComputeMuspAtRefWavel method.

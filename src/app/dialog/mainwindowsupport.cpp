@@ -5,7 +5,6 @@
 
 #include "dialog/mainwindowsupport.h"
 #include "dialog/plotdata.h"
-#include "lib/qcustomplot.h"
 #include <QMessageBox>
 
 MainWindowSupport::MainWindowSupport(void)
@@ -80,7 +79,6 @@ void MainWindowSupport::SetWidgets(Ui_MainWindow *ui, Parameters *para)
     ui->label_DistXAxis->setDisabled(trueFlag);
 
     if (ui->comboBox_Distribution->currentIndex() != para->Custom)  // if not "Custom"""""""""
-
     {
         ui->lineEdit_MeanDiameter->setDisabled(trueFlag);
         ui->label_MeanDiameter->setDisabled(trueFlag);
@@ -216,7 +214,7 @@ void MainWindowSupport::InitializeArrays(Ui_MainWindow *ui, Parameters *para, bo
     para->cSca = new double [para->nWavel];
     para->cExt = new double [para->nWavel];
     para->cBack = new double [para->nWavel];
-    para->SizePara = new double [para->nWavel];
+    para->sizePara = new double [para->nWavel];
     para->mus = new double [para->nWavel];
     para->g = new double [para->nWavel];
     para->forward = new double [para->nWavel];
@@ -232,7 +230,7 @@ void MainWindowSupport::DeleteArrays(Parameters *para, bool *arrayFlag)
     delete[] para->cSca;
     delete[] para->cExt;
     delete[] para->cBack;
-    delete[] para->SizePara;
+    delete[] para->sizePara;
     delete[] para->mus;
     delete[] para->g;
     delete[] para->forward;

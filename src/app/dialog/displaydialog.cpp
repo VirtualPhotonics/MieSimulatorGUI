@@ -30,9 +30,9 @@ void DisplayDialog::DisplayData(QRadioButton *radioButton_MonoDisperse,
                                 QComboBox *comboBox_Distribution,
                                 QSlider *slider_ConcPercentChange,
                                 QSlider *slider_WL_PFPolar,
-                                QRadioButton *radioButton_PhaseAverage,
-                                QRadioButton *radioButton_PhasePara,
-                                QRadioButton *radioButton_PhasePerp,
+                                QCheckBox *checkBox_PhasePolarAve,
+                                QCheckBox *checkBox_PhasePolarPara,
+                                QCheckBox *checkBox_PhasePolarPerp,
                                 Parameters *para)
 {
     double margin = (1.0 + slider_ConcPercentChange->value() / 200.0);
@@ -96,7 +96,7 @@ void DisplayDialog::DisplayData(QRadioButton *radioButton_MonoDisperse,
         ui->textBrowser_Display->append("WL(nm)\t2*pi*R/lambda");
         for (unsigned int i = 0; i<para->nWavel; i++)
             ui->textBrowser_Display->append(QString::number(para->wavelArray[i]) + "\t" +
-                                            QString::number(para->SizePara[i]) );
+                                            QString::number(para->sizePara[i]) );
     }
 
     ui->textBrowser_Display->append("\nScattering Coefficient (us), g (Average Cosine of Phase Function) and Reduced Scattering Coefficient (us'):");
@@ -126,21 +126,24 @@ void DisplayDialog::DisplayData(QRadioButton *radioButton_MonoDisperse,
 	double currentWL = para->startWavel + indexWL*para->stepWavel;
 
     ui->textBrowser_Display->append("\nPhase Function @ Wavelength of " + QString::number(currentWL) + " nm:");
-    if (radioButton_PhaseAverage->isChecked())
-        ui->textBrowser_Display->append("Angle(deg)\tPhase Function (Ave)");
-    if (radioButton_PhasePara->isChecked())
-        ui->textBrowser_Display->append("Angle(deg)\tPhase Function (Para)");
-    if (radioButton_PhasePerp->isChecked())
-        ui->textBrowser_Display->append("Angle(deg)\tPhase Function (Perp)");
-    for (unsigned int i = 0; i<para->nTheta; i++)
+    if (checkBox_PhasePolarAve->isChecked())
     {
-        if (radioButton_PhaseAverage->isChecked())
+        ui->textBrowser_Display->append("\nAngle(deg)\tPhase Function (Ave)");
+        for (unsigned int i = 0; i<para->nTheta; i++)
             ui->textBrowser_Display->append(QString::number(180.0 * i / (para->nTheta - 1)) + "\t" +
                                             QString::number(para->phaseFunctionAve[indexWL][i]));
-        if (radioButton_PhasePara->isChecked())
+    }
+    if (checkBox_PhasePolarPara->isChecked())
+    {
+        ui->textBrowser_Display->append("\nAngle(deg)\tPhase Function (Para)");
+        for (unsigned int i = 0; i<para->nTheta; i++)
             ui->textBrowser_Display->append(QString::number(180.0 * i / (para->nTheta - 1)) + "\t" +
                                             QString::number(para->phaseFunctionPara[indexWL][i]));
-        if (radioButton_PhasePerp->isChecked())
+    }
+    if (checkBox_PhasePolarPerp->isChecked())
+    {
+        ui->textBrowser_Display->append("\nAngle(deg)\tPhase Function (Perp)");
+        for (unsigned int i = 0; i<para->nTheta; i++)
             ui->textBrowser_Display->append(QString::number(180.0 * i / (para->nTheta - 1)) + "\t" +
                                             QString::number(para->phaseFunctionPerp[indexWL][i]));
     }

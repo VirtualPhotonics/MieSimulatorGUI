@@ -44,29 +44,48 @@
 #include <QtPlugin>
 #include <QScreen>
 #include <QFont>
+#include <QStyleFactory>
+#include <QGuiApplication>
 #include "dialog/mainwindow.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication::setHighDpiScaleFactorRoundingPolicy(
+        Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
+    QApplication app(argc, argv);
 
     // Use this for cross-platform font consistency
     QFont defaultFont;
     defaultFont.setPointSize(9);
     defaultFont.setFamily("Arial");
-    a.setStyleSheet("QWidget { font-size: 11px; }");
-    a.setFont(defaultFont);
+    app.setFont(defaultFont);
+    app.setStyle(QStyleFactory::create("Fusion"));
 
-    // Use the first window setting
-    MainWindow w;
-    QList<QScreen *> screens = QGuiApplication::screens();
-    if (!screens.isEmpty())
+    MainWindow mainWindow;
+
+    // Use the primary window setting
+    QScreen *primaryScreen = QGuiApplication::primaryScreen();
+    if (primaryScreen)
     {
-        QScreen *screen = screens.first();
-        QSize screenSize = screen->size();
-        w.resize(screenSize.width() / 2, screenSize.height() / 2);
+        QSize currentScreenSize = primaryScreen->availableSize();
+
+        QSize referenceScreenSize(1920, 1080);
+
+        double scaleFactor = qMin(
+            (double)currentScreenSize.width() / referenceScreenSize.width(),
+            (double)currentScreenSize.height() / referenceScreenSize.height()
+            );
+
+        QSize baseSize(1120, 768);
+
+        int newWidth = baseSize.width() * scaleFactor;
+        int newHeight = baseSize.height() * scaleFactor;
+
+        // Resize the window
+        mainWindow.resize(newWidth, newHeight);
     }
 
-    w.show();
-    return a.exec();
+    mainWindow.show();
+    return app.exec();
 }
