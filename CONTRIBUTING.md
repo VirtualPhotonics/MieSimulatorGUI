@@ -64,6 +64,8 @@ When contributing to the **MieSimulatorGUI**, please follow the coding conventio
   * *Example:* `stepTheta`, `para`, `curMus`.
 * **UI Methods (Qt Slots):** Should follow the standard Qt underscore convention. 
   * *Example:* `on_button_clicked`.
+* **UI Elements :** Should follow the underscore with Pascal Case. 
+  * *Example:* `QRadioButton *radioButton_NumDen`.
 * **Constants and Macros:** Must be **Uppercase Underscore Delimited**. 
   * *Example:* `CALCULATE_H`, `M_PI`.
 
@@ -115,3 +117,4 @@ private:
 };
 
 #endif
+
