@@ -56,10 +56,17 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // Use this for cross-platform font consistency
-    QFont defaultFont;
-    defaultFont.setPointSize(9);
-    defaultFont.setFamily("Arial");
-    app.setFont(defaultFont);
+    #ifdef Q_OS_WIN
+        QString family = "Arial";
+        QFont appFont(family, 9);
+    #elif defined(Q_OS_MAC)
+        QString family = "Helvetica";
+        QFont appFont(family, 11);
+    #else
+        QString family = "Liberation Sans";
+        QFont appFont(family, 10);
+    #endif
+    QApplication::setFont(appFont);
     app.setStyle(QStyleFactory::create("Fusion"));
 
     MainWindow mainWindow;
@@ -68,21 +75,30 @@ int main(int argc, char *argv[])
     QScreen *primaryScreen = QGuiApplication::primaryScreen();
     if (primaryScreen)
     {
-        QSize currentScreenSize = primaryScreen->availableSize();
+        // Get availableSize()
+        QSize availableSize = primaryScreen->availableSize();
 
-        QSize referenceScreenSize(1920, 1080);
+        // Use a reference resolution
+        QSize referenceSize(1920, 1080);
 
-        double scaleFactor = qMin(
-            (double)currentScreenSize.width() / referenceScreenSize.width(),
-            (double)currentScreenSize.height() / referenceScreenSize.height()
-            );
+        // Calculate scale factor
+        double scaleWidth = (double)availableSize.width() / referenceSize.width();
+        double scaleHeight = (double)availableSize.height() / referenceSize.height();
 
-        QSize baseSize(1120, 768);
+        // Use the smaller ratio to ensure the window always fits the screen
+        double scaleFactor = qMin(scaleWidth, scaleHeight);
 
-        int newWidth = baseSize.width() * scaleFactor;
-        int newHeight = baseSize.height() * scaleFactor;
+        // Define your base design size
+        QSize baseSize(1120, 760);
 
-        // Resize the window
+        // Apply scale factor
+        int newWidth = static_cast<int>(baseSize.width() * scaleFactor);
+        int newHeight = static_cast<int>(baseSize.height() * scaleFactor);
+
+        // Subtract a small margin for window decorations/taskbar padding
+        newWidth = qMin(newWidth, availableSize.width() - 50);
+        newHeight = qMin(newHeight, availableSize.height() - 50);
+
         mainWindow.resize(newWidth, newHeight);
     }
 

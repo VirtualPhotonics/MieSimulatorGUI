@@ -18,7 +18,7 @@ Calculate::~Calculate()
 //Calculate parameters using mie solution
 void Calculate::DoSimulation(QLabel *progress, Parameters *para)
 {
-    MieSimulation sim;
+    MieSimulation mieSim;
     double curMus;
     double sumMus, sumMusG;
     double sumForward, sumBackward;
@@ -46,8 +46,8 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
     Utilities util;
     for (unsigned int w = 0; w < para->nWavel; w++)
     {
-        mWavel = para->wavelArray[w]/1000;   //in microns
-        progress->setText("<font color=\"red\">WL: <font>"+QString::number(1000*mWavel)+"nm</font>");
+        mWavel = para->wavelArray[w] / 1000.0;   //in microns
+        progress->setText("<font color=\"red\">WL: <font>"+QString::number(1000 * mWavel)+"nm</font>");
         util.Delay();        
         sumMus = 0.0;
         sumMusG = 0.0;
@@ -66,7 +66,7 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
         }
         for (unsigned int r = 0; r < para->nRadius; r++)
         {
-            mK = 2 * M_PI * para->medRefArray[r] /mWavel;
+            mK = 2 * M_PI * para->medRefArray[r] / mWavel;
             xPara = mK * para->radArray[r];
             piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
 
@@ -78,7 +78,7 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
                     mMu = cos(mMinTheta + t * stepTheta);
-                    sim.FarFieldSolutionForRealRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara, refRelRe, mMu);
+                    mieSim.FarFieldSolutionForRealRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara, refRelRe, mMu);
                     curS1[t] = mCS1;
                     curS2[t] = mCS2;
                 }
@@ -88,7 +88,7 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
                     mMu = cos(mMinTheta + t * stepTheta);
-                    sim.FarFieldSolutionForComplexRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara,
+                    mieSim.FarFieldSolutionForComplexRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara,
                                                            std::complex<double>(refRelRe,-refRelIm), mMu);  //multiply by -1 to use "n-ik" convention
                     curS1[t] = mCS1;
                     curS2[t] = mCS2;
@@ -158,7 +158,7 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
 //Compute Musp at reference wavelength
 void Calculate::ComputeMuspAtRefWavel(Parameters *para)
 {
-    MieSimulation sim;
+    MieSimulation mieSim;
     double curMus;
     double sumMus, sumMusG;
     double piRadiusSquared;
@@ -194,7 +194,7 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
                     mMu = cos(mMinTheta + t * stepTheta);
-                    sim.FarFieldSolutionForRealRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara, refRelRe, mMu);
+                    mieSim.FarFieldSolutionForRealRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara, refRelRe, mMu);
                     curS1[t] = mCS1;
                     curS2[t] = mCS2;
                 }
@@ -204,7 +204,7 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
                 for (unsigned int t = 0; t < para->nTheta; t++)
                 {
                     mMu = cos(mMinTheta + t * stepTheta);
-                    sim.FarFieldSolutionForComplexRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara,
+                    mieSim.FarFieldSolutionForComplexRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara,
                                                            std::complex<double>(refRelRe,-refRelIm), mMu);  //multiply by -1 to use "n-ik" convention
                     curS1[t] = mCS1;
                     curS2[t] = mCS2;
@@ -328,7 +328,7 @@ double Calculate::CalculateForwardBackward(std::complex<double> *S1,
 //Calculate average cosine of phase function
 double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para)
 {
-    double S;
+    double sVal;
     double theta, twoPiSinTheta;
     double num = 0.0;
     double den = 0.0;
@@ -337,11 +337,11 @@ double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
     Utilities util;
     for (unsigned int i = 0; i < para->nTheta; i++)
     {
-        S = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i]))/2.0;
+        sVal = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i]))/2.0;
         theta = mMinTheta + i * stepTheta;
         twoPiSinTheta = 2.0 * M_PI * sin(theta);
-        num += S * cos(theta) * twoPiSinTheta * util.SimpsonsWeight (i, para->nTheta);
-        den += S * twoPiSinTheta * util.SimpsonsWeight (i, para->nTheta);
+        num += sVal * cos(theta) * twoPiSinTheta * util.SimpsonsWeight (i, para->nTheta);
+        den += sVal * twoPiSinTheta * util.SimpsonsWeight (i, para->nTheta);
     }
     return num/den;
 }

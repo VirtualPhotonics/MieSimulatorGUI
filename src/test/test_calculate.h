@@ -19,6 +19,8 @@ private slots:
 
     void test_DoSimulationdata();
     void test_DoSimulation_RealVsComplexRefIndex();
+    void test_DoSimulation_MultiWavelength();
+    void test_DoSimulation_ZeroDensitySafety();
     void test_DiameterRangeSetting_logNormal();
     void test_DiameterRangeSetting_gaussian();
     void test_DiameterRangeSetting_monoDisperse();
@@ -30,7 +32,6 @@ private slots:
     void test_CalculatePowerLawAutoFitSimple();
     void test_CalculatePowerLawAutoFitComplex();
     void test_IndependentScatteringCheck();
-    void test_DoSimulation_ZeroDensitySafety();
     void test_ComputeMuspAtRefWavel_sanityCheck();
 
 private:

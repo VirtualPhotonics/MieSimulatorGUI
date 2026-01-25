@@ -68,9 +68,11 @@ void MainWindowSupport::SetWidgets(Ui_MainWindow *ui, Parameters *para)
         falseFlag = true;
         trueFlag = false;
     }
+
     //Mono Dispere Parameters
     ui->lineEdit_Diameter->setDisabled(falseFlag);
     ui->label_Diameter->setDisabled(falseFlag);
+
     //Poly Dispere Parameters
     ui->comboBox_Distribution->setDisabled(trueFlag);
     ui->pushButton_ShowDistributionAndCustom->setDisabled(trueFlag);
@@ -121,10 +123,15 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, Parameters *para)
     para->scatRefReal = ui->lineEdit_ScatRefReal->text().toDouble();
     para->scatRefImag = ui->lineEdit_ScatRefImag->text().toDouble();
     para->medRef = ui->lineEdit_MedRef->text().toDouble();
+
     if (ui->radioButton_NumDen->isChecked())
+    {
         para->sphNumDensity = ui->lineEdit_NumDen->text().toDouble();
+    }
     if (ui->radioButton_VolFrac->isChecked())
+    {
         para->volFraction = ui->lineEdit_VolFrac->text().toDouble();
+    }
 
     if (ui->radioButton_MonoDisperse->isChecked())
     {
@@ -142,9 +149,13 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, Parameters *para)
     para->bMie = ui->doubleSpinBox_B->text().toDouble();
 
     if (ui->radioButton_FittingComplex->isChecked())
+    {
         para->fittingComplex = true;
+    }
     if (ui->radioButton_FittingSimple->isChecked())
+    {
         para->fittingComplex = false;
+    }
     if (ui->radioButton_RefWavel500->isChecked())
     {
         para->refWavel = 500.0;
@@ -189,27 +200,39 @@ void MainWindowSupport::InitializeArrays(Ui_MainWindow *ui, Parameters *para, bo
     para->nWavel = static_cast<unsigned int>(floor(para->endWavel - para->startWavel) / para->stepWavel) + 1;
     para->wavelArray = new double [para->nWavel];
     for (unsigned int i=0; i<para->nWavel; ++i)
+    {
         para->wavelArray[i] = para->startWavel + i * para->stepWavel;
+    }
 
     para->phaseFunctionAve = new double *[para->nWavel];
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
         para->phaseFunctionAve[i] = new double [para->nTheta];
+    }
 
     para->phaseFunctionPara = new double *[para->nWavel];
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
         para->phaseFunctionPara[i] = new double [para->nTheta];
+    }
 
     para->phaseFunctionPerp = new double *[para->nWavel];
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
         para->phaseFunctionPerp[i] = new double [para->nTheta];
+    }
 
     para->S1 = new std::complex<double> *[para->nWavel];
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
         para->S1[i] = new std::complex<double> [para->nTheta];
+    }
 
     para->S2 = new std::complex<double> *[para->nWavel];
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
         para->S2[i] = new std::complex<double> [para->nTheta];
+    }
 
     para->cSca = new double [para->nWavel];
     para->cExt = new double [para->nWavel];
@@ -237,15 +260,25 @@ void MainWindowSupport::DeleteArrays(Parameters *para, bool *arrayFlag)
     delete[] para->backward;
 
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
         delete [] para->phaseFunctionAve[i];
+    }
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
         delete [] para->phaseFunctionPara[i];
+    }
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
         delete [] para->phaseFunctionPerp[i];
+    }
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
         delete [] para->S1[i];
+    }
     for (unsigned int i=0; i<para->nWavel; i++)
-        delete [] para->S2[i];    
+    {
+        delete [] para->S2[i];
+    }
 
     *arrayFlag = false;
 }
@@ -318,7 +351,7 @@ void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, Parameters *para)
 void MainWindowSupport::ProcessDistribution(Ui_MainWindow *ui, Parameters *para, unsigned int distIndex)
 {
     PlotData plot;
-    if (distIndex !=2)
+    if (distIndex != 2)
     {
         bool flagVolOrConc = true;
         para->radArray = new double [para->nRadius];
@@ -329,9 +362,13 @@ void MainWindowSupport::ProcessDistribution(Ui_MainWindow *ui, Parameters *para,
 
         //Find size of spheres
         if (ui->radioButton_VolFrac->isChecked())
+        {
             flagVolOrConc = true;
+        }
         if (ui->radioButton_NumDen->isChecked())
+        {
             flagVolOrConc = false;
+        }
         mCalc->DiameterRangeSetting(para, distIndex);
         mCalc->SetSphereRadiusAndRefIndex(para, distIndex, flagVolOrConc);
     }
@@ -404,9 +441,13 @@ void MainWindowSupport::DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow
     ui->radioButton_NumDen->setDisabled(flag);
     ui->radioButton_VolFrac->setDisabled(flag);
     if (flag)
+    {
         ui->pushButton_ShowDistributionAndCustom->setText("Load Custom Data");
+    }
     else
+    {
         ui->pushButton_ShowDistributionAndCustom->setText("Show Distribution");
+    }
 }
 
 //Read "Custom" (PolyDisperse) data from a file
@@ -431,8 +472,11 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
     {
         line = in.readLine();
         QStringList list = line.split(QRegularExpression(",|;|\t"));
-        if (!(list.size()==4 || list.size()==5))
+
+        if (!(list.size() == 4 || list.size() == 5))
+        {
             badLines++;
+        }
         else
         {
             if (list.size()==4)
@@ -443,7 +487,9 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
                 list.at(2).toDouble(&check3);
                 list.at(3).toDouble(&check4);
                 if (!check1 || !check2 || !check3 || !check4)
+                {
                     badLines++;
+                }
             }
             if (list.size()==5)
             {
@@ -454,14 +500,17 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
                 list.at(3).toDouble(&check4);
                 list.at(4).toDouble(&check5);
                 if (!check1 || !check2 || !check3 || !check4 || !check5)
+                {
                     badLines++;
+                }
             }
         }
         count++;
     }while (!line.isNull());
+
     file.close();
 
-    if ((badLines>0) || (count < 1))
+    if ((badLines > 0) || (count < 1))
     {
         QMessageBox msgBox;
         msgBox.setWindowTitle("Error");
@@ -489,7 +538,7 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
         {
             line = in.readLine();
             QStringList list = line.split(QRegularExpression(",|;|\t"));
-            if (list.size()==4)
+            if (list.size() == 4)
             {
                  para->radArray[idx] = list.at(0).toDouble()/2.0;
                  para->numDensityArray[idx] = list.at(1).toDouble();
@@ -498,12 +547,16 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
                  para->medRefArray[idx] = para->medRef; //use default
                  sumRad += para->radArray[idx];
                  if (para->radArray[idx] >maxRad)
+                 {
                      maxRad = para->radArray[idx];
+                 }
                  if (para->radArray[idx] < minRad)
+                 {
                      minRad = para->radArray[idx];
+                 }
                  idx++;
             }
-            if (list.size()==5)
+            if (list.size() == 5)
             {
                  para->radArray[idx] = list.at(0).toDouble()/2.0;
                  para->numDensityArray[idx] = list.at(1).toDouble();
@@ -512,13 +565,19 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
                  para->medRefArray[idx] = list.at(4).toDouble();
                  sumRad += para->radArray[idx];
                  if (para->radArray[idx] >maxRad)
+                 {
                      maxRad = para->radArray[idx];
+                 }
                  if (para->radArray[idx] < minRad)
+                 {
                      minRad = para->radArray[idx];
+                 }
                  idx++;
             }
         }while (!line.isNull());
+
         file.close();
+
         para->meanRadius = sumRad/para->nRadius;
         para->minRadius = minRad;
         para->maxRadius = maxRad;

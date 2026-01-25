@@ -40,10 +40,10 @@ private slots:
     void on_pushButton_Cancel_clicked();
 
 private:
-    bool flagScatPara;
-    bool flagPhaseFunction;
-    bool flagS1;
-    bool flagS2;
+    bool mFlagScatPara;
+    bool mFlagPhaseFunction;
+    bool mFlagS1;
+    bool mFlagS2;
     Ui::OptionsDialog *ui;
 
     void SaveScatPara(QRadioButton *radioButton_MonoDisperse,

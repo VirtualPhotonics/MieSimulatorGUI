@@ -1,79 +1,120 @@
-When contributing to the Mie Simulator GUI please follow the coding conventions detailed below. Some of the initial development did not adhere to these guidelines but going forward, this will be the code style and structure.
-## Naming Conventions
+# Contribution Workflow
+
+All contributions to the **MieSimulatorGUI** must follow the workflow outlined below to ensure changes are traceable, reviewable, and consistent.
+
+## 1. Create an Issue First
+Before starting any work:
+* **Create a GitHub issue** describing the bug, enhancement, or feature request.
+* Clearly explain the motivation, scope, and expected behavior.
+* Wait for confirmation or discussion if the change is significant.
+* *Every code change must be associated with an issue.*
+
+## 2. Fork the Repository
+* Fork the main repository into your own GitHub account.
+* All development work must be done in your fork, not directly in the main repository.
+
+## 3. Create a Feature Branch
+Create a new branch from the default branch (e.g., `master`). The branch name must be derived from the issue and prepended with `feature/`.
+
+**Branch naming format:**
+`feature/<issue-number>-short-description`
+
+**Example:**
+`feature/42-add-particle-size-slider`
+
+## 4. Implement the Change
+* Follow all coding conventions defined in this document.
+* Keep changes focused on the scope of the issue.
+* Ensure the code builds and tests pass before submitting.
+
+## 5. Open a Pull Request
+Open a Pull Request (PR) from your feature branch to the main repository. Reference the related issue in the PR description (e.g., `Closes #42`).
+
+**Clearly describe:**
+* What was changed
+* Why the change was made
+* Any relevant design or implementation details
+
+## 6. Code Review and Approval
+* All pull requests require review before merging.
+* Be prepared to address feedback or requested changes.
+* Once approved, the pull request will be merged by a repository maintainer.
+
+> [!IMPORTANT]
+> Direct commits to the main repository are not permitted.
+
+# Coding Convention
+When contributing to the **MieSimulatorGUI**, please follow the coding conventions detailed below. These guidelines represent the established style observed in the core simulation engine (e.g., `Calculate` and `MieSimulation` classes).
+
+## 1. Naming Conventions
+
 ### Definitions:
-* __Camel Case:__ Naming convention where the first letter of each word is capitalized with the exception of the first letter. Example: __thisIsCamelCased__
-* __Pascal Case:__ Naming convention where the first letter of each word is capitalized including the first letter. Example: __ThisIsPascalCased__
-* __Underscore Uppercase Delimited:__ Naming convention that places underscores between the words and the first letter of each word is capitalized. Example: __This_Is_Underscore_Delimited__
-* __Underscore Lowercase Delimited:__ Naming convention that places underscores between the words and the first letter of each word is not capitalized. Example: __this_is_underscore_lowercase_delimited__<br />
+* **Camel Case:** Naming convention where the first letter of each word is capitalized with the exception of the first letter. Example: `thisIsCamelCase`
+* **Pascal Case:** Naming convention where the first letter of every word is capitalized. Example: `ThisIsPascalCase`
+* **M-Prefix Pascal Case:** Member variables prefixed with a lowercase 'm' followed by the variable name in Pascal Case. Example: `mMemberVariable`
 
-These are the only naming conventions that should be used in the Mie Simulator GUI and apply to different aspects of the code defined below.
-* __Classes__, __properties__, and __functions__, should be Pascal cased. Example: __MyClass__
-* __Private variables__  (except UI variables) should be prefixed with an underscore and camel cased. Example: ___privateVariables__
-* __Member variables__, __parameters__ , __UI variables__, and __local variables__</strong> should be camel cased. Example: __memberVariable__
-* __UI Methods__ should be Underscore Lowercase Delimited. Example: __on_object_name_action__
-* __Test methods__ should be underscore delimited. Example: __Test_Methods__
+### Application:
+* **Source and Header Files:** Must be **lowercase**.
+  * *Example:* `miesimulation.cpp`, `miesimulation.h`, .
+* **Classes and Functions:** Must be **Pascal Case**. 
+  * *Example:* `class Calculate`, `void DoSimulation()`, `double CalculateG()`.
+* **Member Variables:** Must use **M-Prefix Pascal Case**. 
+  * *Example:* `mWavel`, `mQSca`, `mMinTheta`.
+* **Local Variables and Parameters:** Must be **Camel Case**. 
+  * *Example:* `stepTheta`, `para`, `curMus`.
+* **UI Methods (Qt Slots):** Should follow the standard Qt underscore convention. 
+  * *Example:* `on_button_clicked`.
+* **UI Elements :** Should follow the underscore with Pascal Case. 
+  * *Example:* `QRadioButton *radioButton_NumDen`.
+* **Constants and Macros:** Must be **Uppercase Underscore Delimited**. 
+  * *Example:* `CALCULATE_H`, `M_PI`.
 
-
-## Indenting
+## 2. Indenting
 Code should be indented with 4 space characters, if a tab character is used, make sure your source-code editor replaces tabs with 4 spaces.
-## Braces
-An opening brace { should appear on the line after the start of a statement block and the code inside the brace should be indented 4 spaces. The closing brace } should be inline with the opening brace on it's own line. 
 
-Braces may may be avoided when there is only a single line of code.  
+## 3. Braces
+An opening brace { should appear on the line after the start of a statement block and the code inside the brace should be indented 4 spaces. The closing brace } should be inline with the opening brace on it's own line.<br /> 
 
-## Spacing
-Spacing improves the readability of the source-code, follow these guidlines for spacing:<br /> 
+## 4. Spacing
+Spacing improves the readability of the source-code, follow these guidlines for spacing:
+* Use a **space after commas** between function arguments: `void Function(int a, int b)`.
+* Use a **space after control statements** like `if`, `while`, and `for`: `for (unsigned int i = 0; ...)`.
+* Use a **space before and after binary operators**: `x = a + b` or `refRelRe = para->scatRefRealArray[r] / para->medRefArray[r]`.
+* **No space** between a function name and its opening parenthesis: `CalculateG(curS1, curS2, para)`.
 
- * Use a space after the comma between arguments in a function
- * Use a space after statements like __if__, __while__, and __for
- * Use a space before and after operators with the exception of ++ and --
-
-Example:
+## 5. Example
+The following snippet demonstrates the conventions used in the project:
 
 ```c++
-#include <math.h>
+#ifndef SAMPLE_H
+#define SAMPLE_H
 
-class Complex
+class Simulation
 {
 public:
-    Complex(double re, double im)
-        : _re(re), _im(im)
-    {}
-    double modulus() const
-    {
-        return sqrt(_re * _re + _im * _im);
-    }
-private:
-    double _re;
-    double _im;
-};
+    Simulation(void);
+    
+    double mResultValue; // Member variable with 'm' prefix
 
-void bar(int i)
-{
-    static int counter = 0;
-    counter += i;
-}
-
-namespace Foo
-{
-namespace Bar
-{
-void foo(int a, int b)
-{
-    for (int i = 0; i < a; i++)
+    void RunProcess(Parameters *para)
     {
-        if (i < b)
-            bar(i);
-        else
+        double localStep = 0.1; // Local variable in Camel Case
+        
+        for (int i = 0; i < para->nTheta; i++)
         {
-            bar(i);
-            bar(b);
+            if (i % 2 == 0)
+                CalculateInternal(i);
+            else
+            {
+                mResultValue += i * localStep;
+                UpdateLog();
+            }
         }
     }
-}
-} // namespace Bar
-} // namespace Foo
-```
-## Comments
-The style for the code comments is two slashes // even for multi-line comments. Avoid using /* comments */
+
+private:
+    void CalculateInternal(int value);
+};
+
+#endif
 

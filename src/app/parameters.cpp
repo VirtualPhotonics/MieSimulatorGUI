@@ -8,11 +8,11 @@
 #include <QRadioButton>
 #include <QMessageBox>
 
-Parameters::Parameters(void)
+Parameters::Parameters()
 {
 }
 
-Parameters::~Parameters(void)
+Parameters::~Parameters()
 {
 }
 
@@ -26,11 +26,17 @@ bool Parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
     bool volFracSelection = false;
 
     if (radioButton_MonoDisperse->isChecked())
+    {
         monoDisperseSelection = true;
+    }
     if (radioButton_NumDen->isChecked())
+    {
         numDenSelection = true;
+    }
     if (radioButton_VolFrac->isChecked())
+    {
         volFracSelection = true;
+    }
 
     ParameterValidationResult check = CheckValidityCommonParameters(monoDisperseSelection,
                                                                     numDenSelection,
@@ -61,7 +67,6 @@ ParameterValidationResult Parameters::CheckValidityCommonParameters(
         result.isValid = false;
         result.errorMessage = "Refractive index cannot be zero.";
         return result;
-
     }
     if ((scatRefReal/medRef == 1.0))
     {

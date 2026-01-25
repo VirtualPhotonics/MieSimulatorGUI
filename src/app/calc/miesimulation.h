@@ -6,8 +6,8 @@
 class MieSimulation
 {
 public:
-    MieSimulation(void);
-    ~MieSimulation(void);
+    MieSimulation();
+    ~MieSimulation();
 
     void FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, std::complex<double> *cS2, double *qSca,
                                          double *qExt, double *qBack, double xPara, double relRef, double mu);

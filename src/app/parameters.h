@@ -14,8 +14,8 @@ struct ParameterValidationResult {
 class Parameters
 {
 public:
-    Parameters(void);
-    ~Parameters(void);
+    Parameters();
+    ~Parameters();
 
     bool CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
                                QRadioButton *radioButton_NumDen,

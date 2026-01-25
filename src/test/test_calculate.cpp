@@ -180,6 +180,49 @@ void TestCalculate::test_DoSimulation_RealVsComplexRefIndex()
     QVERIFY(qAbs(mPara->mus[0] - musReal) < 1e-5);
 }
 
+//Test case: Check DoSimulation with multiple wavelengths
+void TestCalculate::test_DoSimulation_MultiWavelength()
+{
+    mPara->nRadius = 1;
+    mPara->nWavel = 2;
+    mPara->nTheta = 181;
+    mPara->wavelArray[0] = 500.0;
+    mPara->wavelArray[1] = 800.0;
+    mPara->radArray[0] = 0.5;
+    mPara->medRefArray[0] = 1.33;
+    mPara->scatRefRealArray[0] = 1.5;
+    mPara->scatRefImagArray[0] = 0.0;
+    mPara->numDensityArray[0] = 1e6;
+
+    QLabel mockLabel;
+    mCalc->DoSimulation(&mockLabel, mPara);
+
+    // Mus should generally decrease as wavelength increases for this size
+    QVERIFY(mPara->mus[0] > 0);
+    QVERIFY(mPara->mus[1] > 0);
+    QVERIFY(mPara->mus[0] != mPara->mus[1]);
+}
+
+// Test case: Test for zero density
+void TestCalculate::test_DoSimulation_ZeroDensitySafety()
+{
+    mPara->nRadius = 1;
+    mPara->nWavel = 2;
+    mPara->nTheta = 181;
+    mPara->wavelArray[0] = 500.0;
+    mPara->wavelArray[1] = 800.0;
+    mPara->radArray[0] = 0.5;
+    mPara->medRefArray[0] = 1.33;
+    mPara->scatRefRealArray[0] = 1.5;
+    mPara->scatRefImagArray[0] = 0.0;
+    mPara->numDensityArray[0] = 0;
+
+    QLabel mockLabel;
+    mCalc->DoSimulation(&mockLabel, mPara);
+
+    QVERIFY(qIsNaN(mPara->g[0]) || mPara->g[0] == 0.0);
+}
+
 // Test case: Check DiameterRangeSetting with log-normal distribution
 void TestCalculate::test_DiameterRangeSetting_logNormal()
 {
@@ -390,20 +433,6 @@ void TestCalculate::test_IndependentScatteringCheck()
     mPara->volFraction = 0.1;
     mCalc->SetSphereRadiusAndRefIndex(mPara, 3, true);
     QVERIFY(mPara->independentScat == false);
-}
-
-// Test case: Test for zero density
-void TestCalculate::test_DoSimulation_ZeroDensitySafety()
-{
-    mPara->nRadius = 1;
-    mPara->nWavel = 1;
-    mPara->numDensityArray[0] = 0.0; // Zero density
-    mPara->wavelArray[0] = 632.8;
-
-    QLabel mockLabel;
-    mCalc->DoSimulation(&mockLabel, mPara);
-
-    QVERIFY(qIsNaN(mPara->g[0]) || mPara->g[0] == 0.0);
 }
 
 // Sanity check for the ComputeMuspAtRefWavel method.
