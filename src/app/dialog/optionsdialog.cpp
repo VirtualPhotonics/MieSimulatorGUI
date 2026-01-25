@@ -10,11 +10,11 @@
 OptionsDialog::OptionsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::OptionsDialog)
-{    
-    flagScatPara = false;
-    flagPhaseFunction = false;
-    flagS1 = false;
-    flagS2 = false;
+{
+    mFlagScatPara = false;
+    mFlagPhaseFunction = false;
+    mFlagS1 = false;
+    mFlagS2 = false;
     ui->setupUi(this);
 }
 
@@ -25,25 +25,25 @@ OptionsDialog::~OptionsDialog()
 
 void OptionsDialog::on_pushButton_ScatPara_clicked()
 {
-    flagScatPara = true;
+    mFlagScatPara = true;
     this->close();
 }
 
 void OptionsDialog::on_pushButton_PhaseFunction_clicked()
 {
-    flagPhaseFunction = true;
+    mFlagPhaseFunction = true;
     this->close();
 }
 
 void OptionsDialog::on_pushButton_S1_clicked()
 {
-    flagS1 = true;
+    mFlagS1 = true;
     this->close();
 }
 
 void OptionsDialog::on_pushButton_S2_clicked()
 {
-    flagS2 = true;
+    mFlagS2 = true;
     this->close();
 }
 
@@ -67,14 +67,16 @@ void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
     exec();
 
     double margin = (1.0 + slider_ConcPercentChange->value() /200.0);
-    if (flagScatPara)
+    if (mFlagScatPara)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
                  tr("Save Data"), "Mie_ScatteringParameters",
                  tr("Text File (*.txt);;All Files (*)"));
 
         if (fileName.isEmpty())
+        {
             return;
+        }
         else
         {
             SaveScatPara(radioButton_MonoDisperse,
@@ -86,14 +88,16 @@ void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
 
 
     }
-    if (flagPhaseFunction)
+    if (mFlagPhaseFunction)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
                  tr("Save Data"), "Mie_PhaseFunctionData",
                  tr("Text File (*.txt);;All Files (*)"));
 
         if (fileName.isEmpty())
+        {
             return;
+        }
         else
         {
             SavePhaseFunction(checkBox_PhasePolarAve,
@@ -103,28 +107,32 @@ void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
             RememberLastDirectory(fileName);
         }
     }
-    if (flagS1)
+    if (mFlagS1)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
                  tr("Save Data"), "Mie_S1Data",
                  tr("Text File (*.txt);;All Files (*)"));
 
         if (fileName.isEmpty())
+        {
             return;
+        }
         else
         {
             SaveS1(para,fileName);
             RememberLastDirectory(fileName);
         }
     }
-    if (flagS2)
+    if (mFlagS2)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
                  tr("Save Data"), "Mie_S2Data",
                  tr("Text File (*.txt);;All Files (*)"));
 
         if (fileName.isEmpty())
+        {
             return;
+        }
         else
         {
             SaveS2(para,fileName);
@@ -161,44 +169,61 @@ void OptionsDialog::SaveScatPara(QRadioButton *radioButton_MonoDisperse,
     {
         out << "Distribution: Mono Disperse \n";
         out << "Diameter of spheres: " << 2.0*para->meanRadius <<" um\n";
+
         if (radioButton_NumDen->isChecked())
+        {
             out << "Concentration (Spheres in a volume of 1mm^3): " << para->sphNumDensity * margin<<"\n";
+        }
         if (radioButton_VolFrac->isChecked())
+        {
             out << "Volume Fraction (Total sphere volume / 1mm^3): " << para->volFraction * margin<<"\n";
+        }
     }
 
     if(radioButton_PolyDisperse->isChecked())
     {
         int currentIndex = comboBox_Distribution->currentIndex();
         if (currentIndex == para->LogNormal) //Log normal distribution
+        {
             out << "Distribution: Poly Disperse - Log Normal \n";
+        }
         if (currentIndex == para->Gaussian) //Gaussian distribution
+        {
             out << "Distribution: Poly Disperse - Gaussian \n";
+        }
         if (currentIndex == para->Custom) //Custom distribution
+        {
             out << "Distribution: Poly Disperse - Custom \n";
+        }
         out << "Number of discrete sphere sizes: " << para->nRadius <<"\n";
         if (currentIndex != para->Custom)
         {
             out << "Mean diameter of spheres: " << 2.0*para->meanRadius <<" um\n";
             out << "Std. deviation: " << para->stdDev <<" um\n";
             if (radioButton_NumDen->isChecked())
+            {
                 out << "Total Concentration (Spheres in a volume of 1mm^3): " << para->sphNumDensity * margin <<"\n";
+            }
             if (radioButton_VolFrac->isChecked())
+            {
                 out << "Volume Fraction (Total sphere volume / 1mm^3): " << para->volFraction * margin <<"\n";
+            }
         }
     }
 
     out << "\nWavelength Range: " << para->startWavel << "nm to "  << para->endWavel << "nm in "
         << para->stepWavel <<"nm steps\n";
-
     out << "\nSphere and Medium Data:\n";
     out << "Dia.(um)\tNum. Den.(in a vol. of 1mm^3)\tRef. Index of sphere (real | imag)\n";
+
     for (unsigned int i=0; i<para->nRadius; i++)
+    {
         out << 2.0 * para->radArray[i] <<"\t"
             << para->numDensityArray[i]*margin<<"\t"
             <<para->scatRefRealArray[i]<<"\t"
             << para->scatRefImagArray[i] <<"\t"
             << para->medRefArray[i] <<"\n";
+    }
 
     out << "\n\nOutput:\n\n";
     if (radioButton_MonoDisperse->isChecked())
@@ -206,25 +231,35 @@ void OptionsDialog::SaveScatPara(QRadioButton *radioButton_MonoDisperse,
         out << "Size Parameter (2*pi*R/lambda):\n";
         out << "WL(nm)\t2*pi*R/lambda\n";
         for (unsigned int i=0; i<para->nWavel; i++)
+        {
             out << para->wavelArray[i] <<"\t" << para->sizePara[i] <<"\n";
+        }
     }
 
     out << "\nScattering Coefficient (us), g and Reduced Scattering Coefficient (us'):\n";
     out << "WL(nm)\tus(mm^-1)\tg\tus'(mm^-1)\n";
     for (unsigned int i=0; i<para->nWavel; i++)
-        out << para->wavelArray[i] <<"\t" << para->mus[i]* margin << "\t" << para->g[i] <<"\t" << para->mus[i]*(1-para->g[i])* margin <<"\n";
+    {
+        out << para->wavelArray[i] <<"\t" << para->mus[i]* margin << "\t"
+            << para->g[i] <<"\t" << para->mus[i]*(1-para->g[i])* margin <<"\n";
+    }
     out << "\n";
 
     out << "Scattering (Csca), Extinction (Cext) and Backscattering (Cback) Cross Sections:\n";
     out << "WL(nm)\tCsca(um^2)\tCext(um^2)\tCback(um^2)\n";
     for (unsigned int i=0; i<para->nWavel; i++)
-        out << para->wavelArray[i] <<"\t" << para->cSca[i] <<"\t" << para->cExt[i] <<"\t" << para->cBack[i] <<"\n";
+    {
+        out << para->wavelArray[i] <<"\t" << para->cSca[i] <<"\t"
+            << para->cExt[i] <<"\t" << para->cBack[i] <<"\n";
+    }
     out << "\n";
 
     out << "Forward and Backward Scattering percentages:\n";
     out << "WL(nm)\tForward %\tBackward %\n";
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
         out << para->wavelArray[i] <<"\t" << para->forward[i] <<"\t" << para->backward[i] <<"\n";
+    }
     out << "\n";
 }
 
@@ -246,15 +281,23 @@ void OptionsDialog::SavePhaseFunction(QCheckBox *checkBox_PhasePolarAve,
 
     out << "Phase Function ";
     if (checkBox_PhasePolarAve->isChecked())
+    {
         out << "(Ave): ";
+    }
     if (checkBox_PhasePolarPara->isChecked())
+    {
          out << "(Para): ";
+    }
     if (checkBox_PhasePolarPerp->isChecked())
+    {
          out << "(Perp): ";
-     out << "\n\tWL(nm)-->\nAngle(deg)\t";
-     for (unsigned int i=0; i<para->nWavel; i++)
+    }
+    out << "\n\tWL(nm)-->\nAngle(deg)\t";
+    for (unsigned int i=0; i<para->nWavel; i++)
+    {
         out << para->wavelArray[i] <<"\t";
-     out << "\n";
+    }
+    out << "\n";
 
     for (int j=0; j<static_cast<int>(para->nTheta); j++)
     {
@@ -262,11 +305,17 @@ void OptionsDialog::SavePhaseFunction(QCheckBox *checkBox_PhasePolarAve,
         for (unsigned int i=0; i<para->nWavel; i++)
         {
             if (checkBox_PhasePolarAve->isChecked())
+            {
                 out << para->phaseFunctionAve[i][j] <<"\t";
+            }
             if (checkBox_PhasePolarPara->isChecked())
+            {
                 out << para->phaseFunctionPara[i][j]<<"\t";
+            }
             if (checkBox_PhasePolarPerp->isChecked())
+            {
                 out << para->phaseFunctionPerp[i][j]<<"\t";
+            }
         }
         out << "\n";
     }
@@ -274,7 +323,6 @@ void OptionsDialog::SavePhaseFunction(QCheckBox *checkBox_PhasePolarAve,
 
 void OptionsDialog::SaveS1(Parameters *para, QString fileName)
 {
-
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -288,21 +336,24 @@ void OptionsDialog::SaveS1(Parameters *para, QString fileName)
     out << "S1 (Real, Imaginary):";
     out << "\n\tWL(nm)-->\nAngle(deg)";
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
        out << para->wavelArray[i] <<"\t\t";
+    }
     out << "\n";
 
     for (int j=0; j<static_cast<int>(para->nTheta); j++)
     {
         out << 180.0 * j /(para->nTheta-1) <<"\t";
         for (unsigned int i=0; i<para->nWavel; i++)
+        {
             out << para->S1[i][j].real() <<"\t" << para->S1[i][j].imag() <<"\t";
+        }
          out << "\n";
     }
 }
 
 void OptionsDialog::SaveS2(Parameters *para, QString fileName)
 {
-
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -316,15 +367,19 @@ void OptionsDialog::SaveS2(Parameters *para, QString fileName)
     out << "S2 (Real, Imaginary):";
     out << "\n\tWL(nm)-->\nAngle(deg)";
     for (unsigned int i=0; i<para->nWavel; i++)
+    {
        out << para->wavelArray[i] <<"\t\t";
+    }
     out << "\n";
 
     for (int j=0; j<static_cast<int>(para->nTheta); j++)
     {
         out << 180.0 * j /(para->nTheta-1) <<"\t";
         for (unsigned int i=0; i<para->nWavel; i++)
+        {
             out << para->S2[i][j].real() <<"\t" << para->S2[i][j].imag() <<"\t";
-         out << "\n";
+        }
+        out << "\n";
     }
 }
 

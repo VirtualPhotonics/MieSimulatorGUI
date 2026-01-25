@@ -15,15 +15,18 @@ Utilities::~Utilities()
 //Delay function for display update
 void Utilities::Delay()
 {
-    QTime dieTime= QTime::currentTime().addMSecs(1);
+    QTime dieTime = QTime::currentTime().addMSecs(1);
+
     while( QTime::currentTime() < dieTime )
-    QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
+    {
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
+    }
 }
 
 //Intensity calculation (Amplitude^2)
 double Utilities::ComplexAbsSquared(std::complex<double> c)
 {
-    return (c.real()*c.real() + c.imag()*c.imag());
+    return (c.real() * c.real() + c.imag() * c.imag());
 }
 
 //Absolute value (amplitude) calculation
@@ -35,8 +38,16 @@ double Utilities::ComplexAbs(std::complex<double> c)
 //Simpson's 1/3 rule
 double Utilities::SimpsonsWeight (unsigned int i, unsigned int n)
 {
-    if (i == 0 || i == n - 1)  return 1.0 / 3.0;
-    if (i % 2 != 0)   return 4.0 / 3.0;
+    if (i == 0 || i == n - 1)
+    {
+        return 1.0 / 3.0;
+    }
+
+    if (i % 2 != 0)
+    {
+        return 4.0 / 3.0;
+    }
+
     return 2.0 / 3.0;
 }
 
@@ -84,7 +95,11 @@ double Utilities::FindMinMax(const QVector<double>& yPara, const QVector<double>
         return std::nan("");
 
     if (flagMinMax)
+    {
         return *std::min_element(allY.constBegin(), allY.constEnd());
+    }
     else
+    {
         return *std::max_element(allY.constBegin(), allY.constEnd());
+    }
 }

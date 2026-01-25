@@ -7,14 +7,14 @@
 #include "calc/utilities.h"
 #include <cmath>
 
-#define max(a,b)    (((a) > (b)) ? (a) : (b))
+#define MAX(a,b)    (((a) > (b)) ? (a) : (b))
 
-MieSimulation::MieSimulation(void)
+MieSimulation::MieSimulation()
 {
 }
 
 
-MieSimulation::~MieSimulation(void)
+MieSimulation::~MieSimulation()
 {
 }
 
@@ -36,35 +36,38 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
     //use conventional symbols
     double x = xPara;
     double m = relRef;
-    double mx = m*x;
-    double xstop = x+4.05*(pow(x,(1.0/3.0)))+2.0;
-    unsigned int nstop = static_cast<unsigned int>(ceil(xstop));
-    unsigned int ymod = static_cast<unsigned int>(ceil(fabs(mx)));
-    unsigned int nmx = static_cast<unsigned int>(max(xstop,ymod)+15);
-    unsigned int arraySize = nstop+1;
-    double x2 = x*x;
+    double mx = m * x;
+    double xStop = x + 4.05 * (pow(x,(1.0 / 3.0))) + 2.0;
 
-    double *Dn_mx = new double [nmx];
-    Dn_mx[nmx-1]=0;
-    for (unsigned int N = nmx-1; N>0; N--)
-        Dn_mx[N-1] = (double(N)/mx)-(1.0/(Dn_mx[N]+double(N)/mx));
+    unsigned int nStop = static_cast<unsigned int>(ceil(xStop));
+    unsigned int yMod = static_cast<unsigned int>(ceil(fabs(mx)));
+    unsigned int nMx = static_cast<unsigned int>(MAX(xStop, yMod) + 15);
+    unsigned int arraySize = nStop + 1;
+    double x2 = x * x;
 
+    double *dnMx = new double [nMx];
+    dnMx[nMx-1] = 0;
+
+    for (unsigned int n = nMx - 1; n>0; n--)
+    {
+        dnMx[n-1] = (double(n)/mx)-(1.0/(dnMx[n]+double(n)/mx));
+    }
     // Legendre Polynomials
     double dPCost0 = 0.0;  //pi0
     double dPCost1 = 1.0;  //pi1
 
     // at the sphere boundary
-    double j_x0 = cos(x);  // phi(-1)
-    double y_x0 = -sin(x); // kai(-1)
-    double j_x1 = sin(x);  // phi(0)
-    double y_x1 = cos(x);  // kai(0)
+    double jX0 = cos(x);  // phi(-1)
+    double yX0 = -sin(x); // kai(-1)
+    double jX1 = sin(x);  // phi(0)
+    double yX1 = cos(x);  // kai(0)
 
-    double *j_x = new double [arraySize];
-    double *y_x = new double [arraySize];
+    double *jX = new double [arraySize];
+    double *yX = new double [arraySize];
     std::complex<double> *xi_x = new std::complex<double>  [arraySize];
-    j_x[0] = j_x1;
-    y_x[0] = y_x1;
-    xi_x[0]=std::complex<double> (j_x1,-y_x1); // xi(1)
+    jX[0] = jX1;
+    yX[0] = yX1;
+    xi_x[0]=std::complex<double> (jX1,-yX1); // xi(1)
 
     //Initialize temp holders
     std::complex<double> tempS1 = std::complex<double>  (0.0, 0.0);
@@ -75,60 +78,61 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
 
     double *piCost = new double [arraySize];
     double *tauCost = new double [arraySize];
+
     unsigned int n=1;
-    while (static_cast<int>(n-1-nstop) < 0)
+    while (static_cast<int>(n - 1 - nStop) < 0)
     {
-        double fac0 = double(n);		// n
-        double fac1 = fac0+1.0;         // n+1
-        double fac2 = 2.0*fac1 -1.0;	// 2n+1
-        double fac3 = fac2 -2.0;        // 2n-1
-        double fac4 = fac2/(fac0*fac1); // (2n+1)/(n*(n+1))
+        double fac0 = double(n);		     // n
+        double fac1 = fac0 + 1.0;            // n+1
+        double fac2 = 2.0 * fac1 - 1.0;	     // 2n+1
+        double fac3 = fac2 - 2.0;            // 2n-1
+        double fac4 = fac2 / (fac0 * fac1);  // (2n+1)/(n*(n+1))
 
         //Update Legrendre polynomials (Array indices = n)
         piCost[n-1] = dPCost1;
-        tauCost[n-1] = (fac0*mu*dPCost1) - (fac1*dPCost0);
+        tauCost[n-1] = (fac0 * mu * dPCost1) - (fac1 * dPCost0);
 
-        dPCost1 = (fac2*mu*dPCost1/fac0) - (fac1*dPCost0/fac0);
+        dPCost1 = (fac2 * mu * dPCost1 / fac0) - (fac1 * dPCost0 / fac0);
         dPCost0 = piCost[n-1];
 
         //Update riccati Bessel functions  for x (Array indices = n+1)
-        j_x[n] = fac3*j_x1/x-j_x0;		// phi recurrence
-        y_x[n] = fac3*y_x1/x-y_x0;		// kai recurrence
-        xi_x[n] = std::complex<double> (j_x[n],-y_x[n]);
+        jX[n] = fac3 * jX1 / x - jX0;		// phi recurrence
+        yX[n] = fac3 * yX1 / x - yX0;		// kai recurrence
+        xi_x[n] = std::complex<double> (jX[n], -yX[n]);
 
-        j_x0 = j_x1;
-        j_x1 = j_x[n];
-        y_x0 = y_x1;
-        y_x1 = y_x[n];
+        jX0 = jX1;
+        jX1 = jX[n];
+        yX0 = yX1;
+        yX1 = yX[n];
 
         // Calculate an and bn  (According to Bohren and Huffman book)
         // Remark: GouGouesbet  uses size parameter as "ka" instead of "kx"
-        double dervDn1 = (Dn_mx[n]/m) + (double(n)/x);
-        double dervDn2 = (m*Dn_mx[n]) + (double(n)/x);
+        double dervDn1 = (dnMx[n]/m) + (double(n) / x);
+        double dervDn2 = (m*dnMx[n]) + (double(n) / x);
 
-        std::complex<double> an = (dervDn1*j_x[n]-j_x[n-1])/ (dervDn1*xi_x[n]-xi_x[n-1]);
-        std::complex<double> bn = (dervDn2*j_x[n]-j_x[n-1])/ (dervDn2*xi_x[n]-xi_x[n-1]);
-        tempQback += fac2*pow(-1.0,(n-1.0))*(an-bn);
-        tempQsca += fac2*(util.ComplexAbs(an)*util.ComplexAbs(an) + util.ComplexAbs(bn)*util.ComplexAbs(bn));
-        tempQext += fac2*(an+bn).real();
+        std::complex<double> an = (dervDn1*jX[n] - jX[n-1])/ (dervDn1*xi_x[n] - xi_x[n-1]);
+        std::complex<double> bn = (dervDn2*jX[n] - jX[n-1])/ (dervDn2*xi_x[n] - xi_x[n-1]);
+        tempQback += fac2 * pow(-1.0,(n - 1.0)) * (an-bn);
+        tempQsca += fac2 * (util.ComplexAbs(an) * util.ComplexAbs(an) + util.ComplexAbs(bn) * util.ComplexAbs(bn));
+        tempQext += fac2 * (an + bn).real();
 
         // Calculate cS1 and cS2
-        tempS1 += fac4*(an*piCost[n-1]+bn*tauCost[n-1]);
-        tempS2 += fac4*(an*tauCost[n-1]+bn*piCost[n-1]);
+        tempS1 += fac4 * (an * piCost[n-1] + bn * tauCost[n-1]);
+        tempS2 += fac4 * (an * tauCost[n-1] + bn * piCost[n-1]);
 
         n = n+1;
     }    
     *qBack = util.ComplexAbsSquared(tempQback)/x2;  //back scattering efficiency
-    *qSca = 2.0 * tempQsca/x2;                      //scattering efficiency
-    *qExt= 2.0 * tempQext/x2;                       //extinction efficiency
+    *qSca = 2.0 * tempQsca / x2;                      //scattering efficiency
+    *qExt= 2.0 * tempQext / x2;                       //extinction efficiency
     *cS1 = tempS1;
     *cS2 = tempS2;
 
-    delete[] Dn_mx;
+    delete[] dnMx;
     delete[] tauCost;
     delete[] piCost;
-    delete[] y_x;
-    delete[] j_x;
+    delete[] yX;
+    delete[] jX;
     delete[] xi_x;
 }
 
@@ -151,34 +155,37 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
     double x = xPara;
     std::complex<double> m = cRelRef;
     std::complex<double> mx = m*x;
-    double xstop = x+4.05*(pow(x,(1.0/3.0)))+2.0;
-    unsigned int nstop = static_cast<unsigned int>(ceil(xstop));
-    unsigned int ymod = static_cast<unsigned int>(ceil(util.ComplexAbs(mx)));
-    unsigned int nmx = static_cast<unsigned int>(max(xstop,ymod)+15);
-    unsigned int arraySize = nstop+1;
+    double xStop = x + 4.05 * (pow(x,(1.0 / 3.0))) + 2.0;
+    unsigned int nStop = static_cast<unsigned int>(ceil(xStop));
+    unsigned int yMod = static_cast<unsigned int>(ceil(util.ComplexAbs(mx)));
+    unsigned int nMx = static_cast<unsigned int>(MAX(xStop,yMod)+15);
+    unsigned int arraySize = nStop+1;
     double x2 = x*x;
 
-    std::complex<double> *Dn_mx = new std::complex<double> [nmx];
-    Dn_mx[nmx-1] = 0;
-    for (unsigned int N = nmx-1; N>0; N--)
-        Dn_mx[N-1] = (double(N)/mx)-(1.0/(Dn_mx[N]+double(N)/mx));
+    std::complex<double> *dnMx = new std::complex<double> [nMx];
+    dnMx[nMx-1] = 0;
+
+    for (unsigned int n = nMx - 1; n>0; n--)
+    {
+        dnMx[n-1] = (double(n)/mx)-(1.0 / (dnMx[n] + double(n) / mx));
+    }
 
     // Legendre Polynomials
     double dPCost0 = 0.0;  //pi0
     double dPCost1 = 1.0;  //pi1
 
     // at the sphere boundary
-    double j_x0 = cos(x);  // phi(-1)
-    double y_x0 = -sin(x); // kai(-1)
-    double j_x1 = sin(x);  // phi(0)
-    double y_x1 = cos(x);  // kai(0)
+    double jX0 = cos(x);  // phi(-1)
+    double yX0 = -sin(x); // kai(-1)
+    double jX1 = sin(x);  // phi(0)
+    double yX1 = cos(x);  // kai(0)
 
-    double *j_x = new double [arraySize];
-    double *y_x = new double [arraySize];
+    double *jX = new double [arraySize];
+    double *yX = new double [arraySize];
     std::complex<double> *xi_x = new std::complex<double>  [arraySize];
-    j_x[0] = j_x1;
-    y_x[0] = y_x1;
-    xi_x[0]=std::complex<double> (j_x1,-y_x1); // xi(1)
+    jX[0] = jX1;
+    yX[0] = yX1;
+    xi_x[0]=std::complex<double> (jX1,-yX1); // xi(1)
 
     std::complex<double> tempS1 = std::complex<double>  (0.0, 0.0);
     std::complex<double> tempS2 = std::complex<double>  (0.0, 0.0);
@@ -188,59 +195,60 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
 
     double *piCost = new double [arraySize];
     double *tauCost = new double [arraySize];
+
     unsigned int n=1;
-    while (static_cast<int>(n-1-nstop) < 0)
+    while (static_cast<int>(n - 1 - nStop) < 0)
     {
-        double fac0 = double(n);		// n
-        double fac1 = fac0+1.0;		// n+1
-        double fac2 = 2.0*fac1 -1.0;	// 2n+1
-        double fac3 = fac2 -2.0;		// 2n-1
-        double fac4 = fac2/(fac0*fac1);// (2n+1)/(n*(n+1))
+        double fac0 = double(n);		     // n
+        double fac1 = fac0 + 1.0;		     // n+1
+        double fac2 = 2.0 * fac1 -1.0;	     // 2n+1
+        double fac3 = fac2 - 2.0;		     // 2n-1
+        double fac4 = fac2 / (fac0 * fac1);  // (2n+1)/(n*(n+1))
 
         //Update Legrendre polynomials (Array indices = n)
-        piCost[n-1]=dPCost1;
-        tauCost[n-1]=(fac0*mu*dPCost1) - (fac1*dPCost0);
+        piCost[n-1] = dPCost1;
+        tauCost[n-1] = (fac0 * mu * dPCost1) - (fac1 * dPCost0);
 
-        dPCost1 = (fac2*mu*dPCost1/fac0) - (fac1*dPCost0/fac0);
+        dPCost1 = (fac2 * mu * dPCost1 / fac0) - (fac1* dPCost0 / fac0);
         dPCost0 = piCost[n-1];
 
         //Update riccati Bessel functions  for x (Array indices = n+1)
-        j_x[n] = fac3*j_x1/x-j_x0;		// phi recurrence
-        y_x[n] = fac3*y_x1/x-y_x0;		// kai recurrence
-        xi_x[n] = std::complex<double> (j_x[n],-y_x[n]);
+        jX[n] = fac3*jX1/x-jX0;		// phi recurrence
+        yX[n] = fac3*yX1/x-yX0;		// kai recurrence
+        xi_x[n] = std::complex<double> (jX[n],-yX[n]);
 
-        j_x0 = j_x1;
-        j_x1 = j_x[n];
-        y_x0 = y_x1;
-        y_x1 = y_x[n];
+        jX0 = jX1;
+        jX1 = jX[n];
+        yX0 = yX1;
+        yX1 = yX[n];
 
         // Calculate an and bn  (According to Bohren and Huffman book)
         // Remark: GouGouesbet  uses size parameter as "ka" instead of "kx"
-        std::complex<double> dervDn1 = (Dn_mx[n]/m) + (double(n)/x);
-        std::complex<double> dervDn2 = (m*Dn_mx[n]) + (double(n)/x);
+        std::complex<double> dervDn1 = (dnMx[n]/m) + (double(n)/x);
+        std::complex<double> dervDn2 = (m*dnMx[n]) + (double(n)/x);
 
-        std::complex<double> an = (dervDn1*j_x[n]-j_x[n-1])/ (dervDn1*xi_x[n]-xi_x[n-1]);
-        std::complex<double> bn = (dervDn2*j_x[n]-j_x[n-1])/ (dervDn2*xi_x[n]-xi_x[n-1]);
-        tempQback += fac2*pow(-1.0,(n-1.0))*(an-bn);
-        tempQsca += fac2*(util.ComplexAbs(an)*util.ComplexAbs(an) + util.ComplexAbs(bn)*util.ComplexAbs(bn));
-        tempQext += fac2*(an+bn).real();
+        std::complex<double> an = (dervDn1*jX[n]-jX[n-1])/ (dervDn1*xi_x[n]-xi_x[n-1]);
+        std::complex<double> bn = (dervDn2*jX[n]-jX[n-1])/ (dervDn2*xi_x[n]-xi_x[n-1]);
+        tempQback += fac2 * pow(-1.0, (n-1.0)) * (an - bn);
+        tempQsca += fac2 * (util.ComplexAbs(an) * util.ComplexAbs(an) + util.ComplexAbs(bn) * util.ComplexAbs(bn));
+        tempQext += fac2 * (an+bn).real();
 
         // Calculate cS1 and cS2
-        tempS1 += fac4*(an*piCost[n-1]+bn*tauCost[n-1]);
-        tempS2 += fac4*(an*tauCost[n-1]+bn*piCost[n-1]);
+        tempS1 += fac4 * (an * piCost[n-1] + bn * tauCost[n-1]);
+        tempS2 += fac4 * (an * tauCost[n-1] +bn * piCost[n-1]);
 
-        n = n+1;
+        n = n + 1;
     }
-    *qBack = util.ComplexAbsSquared(tempQback)/x2;  //back scattering efficiency
+    *qBack = util.ComplexAbsSquared(tempQback) / x2;  //back scattering efficiency
     *qSca= 2.0 * tempQsca/x2;                       //scattering efficiency
     *qExt= 2.0 * tempQext/x2;                       //extinction efficiency
     *cS1 = tempS1;
     *cS2 = tempS2;
 
-    delete[] Dn_mx;
+    delete[] dnMx;
     delete[] tauCost;
     delete[] piCost;
-    delete[] y_x;
-    delete[] j_x;
+    delete[] yX;
+    delete[] jX;
     delete[] xi_x;
 }

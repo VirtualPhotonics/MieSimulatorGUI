@@ -258,11 +258,11 @@ void MainWindow::on_pushButton_ShowDistributionAndCustom_clicked()
                     totalNumDensity += mPara->numDensityArray[i];
                     totalRadius += mPara->radArray[i];
                 }
-                double volFraction = totalSphereVolume/1e9;
-                double meanRadius = totalRadius/mPara->nRadius;
+                double volFraction = totalSphereVolume / 1e9;
+                double meanRadius = totalRadius / mPara->nRadius;
 
                 //check independent/dependent scattering (Yalcin ACS Photonics 9(2022))
-                double interParticleDistance = pow(totalNumDensity, 1.0/3.0);
+                double interParticleDistance = pow(totalNumDensity, 1.0 / 3.0);
                 double clearanceToWavelength = (interParticleDistance - 2 * meanRadius)/(1e-3 * mPara->startWavel);
                 if (volFraction < 0.006 && clearanceToWavelength > 0.5)   //  fv < 0.6% and clearnace/lambda > 0.5
                     mPara->independentScat = true;
@@ -783,7 +783,7 @@ void MainWindow::on_checkBox_PhasePolarPerp_toggled()
 void MainWindow::on_slider_ConcPercentChange_valueChanged(int position)
 {
     double value;
-    double margin = (1.0 + position /200.0);
+    double margin = (1.0 + position / 200.0);
     ui->label_ActualConcPercent->setText(QString::number(position/2.0)+"%");
 
     if (ui->radioButton_NumDen->isChecked())
@@ -799,7 +799,10 @@ void MainWindow::on_slider_ConcPercentChange_valueChanged(int position)
 
     PlotData plot;
     if (mDistPlotFlag)
+    {
         plot.AssignValuesDistributionPlot(ui, mPara);
+    }
+
     if (mOtherPlotsFlag)
     {   MainWindowSupport support;
         support.DisableEnableRealImagButtons(ui);
@@ -812,6 +815,7 @@ void MainWindow::on_slider_WL_PFPolar_valueChanged(int value)
 {
     int wavel = static_cast<int>(mPara->startWavel + value*mPara->stepWavel);
     ui->label_CurrentWL_PFPolar->setText(QString::number(wavel));
+
     if (mOtherPlotsFlag)
     {
         PlotData plot;
@@ -848,6 +852,7 @@ void MainWindow::on_comboBox_Distribution_currentIndexChanged(int value)
     // 0: Log Normal
     // 1: Gaussian
     // 2: Custom
+
     if (value == mPara->Custom) //Custom Distribution
     {
         support.DisableWidgetsDuringCustomPolyDisperseData(ui, true);
@@ -870,10 +875,15 @@ void MainWindow::MouseOverPlotScatteringCrossSection(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = " nm";
     QString strUnitY = " \u00B5m\u00B2";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(Csca)";
+    }
     else
+    {
         strNameY = "Csca";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -886,10 +896,15 @@ void MainWindow::MouseOverPlotExtinctionCrossSection(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = " nm";
     QString strUnitY = " \u00B5m\u00B2";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(Cext)";
+    }
     else
+    {
         strNameY = "Cext";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -901,10 +916,15 @@ void MainWindow::MouseOverPlotBackscatteringCrossSection(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = " nm";
     QString strUnitY = " \u00B5m\u00B2";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(Cback)";
+    }
     else
+    {
         strNameY = "Cback";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -917,9 +937,13 @@ void MainWindow::MouseOverPlotSizeParameter(QMouseEvent *event)
     QString strUnitX = " nm";
     QString strUnitY = "";
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(Size Parameter)";
+    }
     else
+    {
         strNameY = "Size Parameter";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -930,10 +954,15 @@ void MainWindow::MouseOverPlotMus(QMouseEvent *event){
     QString strNameY;
     QString strUnitX = " nm";
     QString strUnitY = " mm\u207B\u00B9";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(μs)";
+    }
     else
+    {
         strNameY = "μs";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -945,10 +974,15 @@ void MainWindow::MouseOverPlotMusp(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = " nm";
     QString strUnitY = " mm\u207B\u00B9";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(μs')";
+    }
     else
+    {
         strNameY = "μs'";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -960,10 +994,15 @@ void MainWindow::MouseOverPlotG(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = " nm";
     QString strUnitY = "";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(g)";
+    }
     else
+    {
         strNameY = "g";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -978,10 +1017,15 @@ void MainWindow::MouseOverPlotForwardBackward(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = " nm";
     QString strUnitY = "%";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(%)";
+    }
     else
+    {
         strNameY = "Scat %";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -996,23 +1040,36 @@ void MainWindow::MouseOverPlotS1S2(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = "\u00B0";
     QString strUnitY = "";
+
     if (ui->radioButton_LogYAxis->isChecked())
     {
         if (ui->radioButton_S1->isChecked())
+        {
             strNameY = "Log(S1)";
+        }
         if (ui->radioButton_S2->isChecked())
+        {
             strNameY = "Log(S2)";
+        }
         if (ui->radioButton_S1S2->isChecked())
+        {
             strNameY = "Log(S)";
+        }
     }
     else
     {
         if (ui->radioButton_S1->isChecked())
+        {
             strNameY = "S1";
+        }
         if (ui->radioButton_S2->isChecked())
+        {
             strNameY = "S2";
+        }
         if (ui->radioButton_S1S2->isChecked())
+        {
             strNameY = "S";
+        }
     }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
@@ -1028,10 +1085,15 @@ void MainWindow::MouseOverPlotPhaseFunctionLinear(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = "\u00B0";
     QString strUnitY = "";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(Magnitude)";
+    }
     else
+    {
         strNameY = "Magnitude";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -1045,10 +1107,15 @@ void MainWindow::MouseOverPlotPhaseFunctionPolar(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = "\u00B0";
     QString strUnitY = "";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(Magnitude)";
+    }
     else
+    {
         strNameY = "Magnitude";
+    }
     PlotData plot;
     DisplayPolarCurveData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
@@ -1061,10 +1128,15 @@ void MainWindow::MouseOverPlotDistribution(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = " \u00B5m";
     QString strUnitY = "";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(Ns)";
+    }
     else
+    {
         strNameY = "Ns";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -1079,10 +1151,15 @@ void MainWindow::MouseOverPlotMuspPowerLaw(QMouseEvent *event)
     QString strNameY;
     QString strUnitX = " nm";
     QString strUnitY = " mm\u207B\u00B9";
+
     if (ui->radioButton_LogYAxis->isChecked())
+    {
         strNameY = "Log(μs')";
+    }
     else
+    {
         strNameY = "μs'";
+    }
     DisplayGraphData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -1143,17 +1220,27 @@ void MainWindow::SavePlot(QCustomPlot *customPlot, QString fileName)
         getSaveFileName(this, tr("Save Plot"),fileName,
                         filesTypes);
     if (name.isEmpty())
+    {
         return;
+    }
     else
     {
         if (name.endsWith(".png", Qt::CaseInsensitive))
+        {
             customPlot->savePng(name,QPrinter::HighResolution);
+        }
         if (name.endsWith(".jpg", Qt::CaseInsensitive))
+        {
             customPlot->saveJpg(name);
+        }
         if (name.endsWith(".bmp", Qt::CaseInsensitive))
+        {
             customPlot->saveBmp(name);
+        }
         if (name.endsWith(".pdf", Qt::CaseInsensitive))
+        {
             customPlot->savePdf(name);
+        }
         RememberLastDirectory(name);
     }
 }
@@ -1177,12 +1264,13 @@ void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
         double *dx;
 
         QCPGraph *graph =  qobject_cast<QCPGraph*>(plottable);
+
         if (graph)
         {
             double key = 0;
             double value = 0;
             bool ok = false;
-            double maxx = std::numeric_limits<double>::max();
+            double minDistance = std::numeric_limits<double>::max();
 
             QCPDataRange dataRange = graph->data()->dataRange();
             QCPGraphDataContainer::const_iterator begin = graph->data()->at(dataRange.begin()); // get range begin iterator from index
@@ -1196,12 +1284,12 @@ void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
                 for (QCPGraphDataContainer::const_iterator it=begin; it<end; it++)
                 {
                     dx[index] = qAbs(x - it->key);
-                    if ((dx[index] < maxx) )
+                    if ((dx[index] < minDistance) )
                     {
                         key = it->key;
                         value = it->value;
                         ok = true;
-                        maxx = dx[index];
+                        minDistance = dx[index];
                     }
                     index++;
                 }
@@ -1231,7 +1319,9 @@ void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
         }
     }
     else
+    {
         QToolTip::hideText();
+    }
 }
 
 //Display x and y values
@@ -1248,6 +1338,7 @@ void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPl
         double mouseY = customPlot->yAxis->pixelToCoord(event->position().y());
 
         QCPCurve *curve = qobject_cast<QCPCurve*>(plottable);
+
         if (curve)
         {
             double key = 0;
