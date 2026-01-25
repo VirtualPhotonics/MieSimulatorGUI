@@ -44,7 +44,7 @@ Open a Pull Request (PR) from your feature branch to the main repository. Refere
 > Direct commits to the main repository are not permitted.
 
 # Coding Convention
-When contributing to the **MieSimulatorGUI**, please follow the coding conventions detailed below. These guidelines represent the established style observed in the core simulation engine (e.g., `Calculate` and `MieSimulation` classes).
+When contributing to the **MieSimulatorGUI**, please follow the coding conventions detailed below. Some of the initial development did not adhere to these guidelines but going forward, this will be the code style and structure.
 
 ## 1. Naming Conventions
 
@@ -117,4 +117,5 @@ private:
 };
 
 #endif
+
 
