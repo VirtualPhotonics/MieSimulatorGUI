@@ -1209,7 +1209,7 @@ void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
 
                 if (ok)
                 {
-                    auto placeholder = tr("<table>"
+                    QString placeholder = tr("<table>"
                                           "<tr>"
                                           "<td>%L1:</td>"
                                           "<td>%L2%L3</td>"
@@ -1243,76 +1243,77 @@ void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPl
 
     QCPAbstractPlottable *plottable = customPlot->plottableAt(event->position());
     if(plottable)
-    {
-        double x = customPlot->xAxis->pixelToCoord(event->position().x());
-        double *dx;
-        QCPCurve *curve =  qobject_cast<QCPCurve*>(plottable);
+    {        
+        double mouseX = customPlot->xAxis->pixelToCoord(event->position().x());
+        double mouseY = customPlot->yAxis->pixelToCoord(event->position().y());
+
+        QCPCurve *curve = qobject_cast<QCPCurve*>(plottable);
         if (curve)
         {
             double key = 0;
             double value = 0;
-            double rho = 0;
-            double angle = 0;
             bool ok = false;
-            double maxx = std::numeric_limits<double>::max();
+            double minDistanceSq = std::numeric_limits<double>::max();
 
-            QCPCurveDataContainer::const_iterator begin = curve->data()->constBegin();
-            QCPCurveDataContainer::const_iterator end = curve->data()->constEnd();
+            auto begin = curve->data()->constBegin();
+            auto end = curve->data()->constEnd();
 
-            unsigned int n = static_cast<unsigned int>(end-begin);
-            if (n>0)
+            for (auto it = begin; it != end; ++it)
             {
-                dx = new double[n];
-                int index =0;
-                for (QCPCurveDataContainer::const_iterator it=begin; it<end; it++)
+                double dk = mouseX - it->key;
+                double dv = mouseY - it->value;
+                double distSq = dk*dk + dv*dv;
+
+                if (distSq < minDistanceSq)
                 {
-                    dx[index] = qAbs(x - it->key);
-                    if ((dx[index] < maxx) )
-                    {
-                        key = it->key;
-                        value = it->value;
-                        ok = true;
-                        maxx = dx[index];
-                    }
-                    index++;
+                    minDistanceSq = distSq;
+                    key = it->key;
+                    value = it->value;
+                    ok = true;
                 }
-                delete[] dx;
-                //For polar plot
-                rho = sqrt(key*key + value*value);
+            }
+
+            if (ok)
+            {
+                double rho = sqrt(key*key + value*value);
+
                 if (ui->radioButton_PhaseLog->isChecked())
                 {
                     double logMin = plot.FindMinLogPolarPlot(mPara);
-                    rho = pow(10, rho+logMin);
+                    rho = pow(10, rho + logMin);
                 }
-                angle = 180*atan2(value,key)/M_PI;
-                if (angle<0)
-                    angle = angle + 360;
 
-                if (ok)
-                {
-                    auto placeholder = tr("<table>"
-                                          "<tr>"
-                                          "<td>%L1:</td>"
-                                          "<td>%L2%L3</td>"
-                                          "</tr>"
-                                          "<tr>"
-                                          "<td>%L4:</td>"
-                                          "<td>%L5%L6</td>"
-                                          "</tr>"
-                                          "</table>");
-                    QToolTip::showText(event->globalPosition().toPoint(),
-                                       placeholder.arg(strNameX)
-                                           .arg(angle)
-                                           .arg(strUnitX, strNameY)
-                                           .arg(rho)
-                                           .arg(strUnitY),
-                                       customPlot, customPlot->rect());
-                }
+
+                // Use atan2(y, x) to get radians, then convert to degrees
+                double angle = atan2(value, key) * 180.0 / M_PI;
+                if (angle < 0) angle += 360.0;
+
+                QString placeholder = tr("<table>"
+                                         "<tr>"
+                                         "<td>%1:</td>"
+                                         "<td>%2 %3</td>"
+                                         "</tr>"
+                                         "<tr>"
+                                         "<td>%4:</td>"
+                                         "<td>%5 %6</td>"
+                                         "</tr>"
+                                         "</table>");
+
+                QToolTip::showText(event->globalPosition().toPoint(),
+                                   placeholder.arg(strNameX)
+                                       .arg(angle, 0, 'f', 2)
+                                       .arg(strUnitX)
+                                       .arg(strNameY)
+                                       .arg(rho, 0, 'g', 4)
+                                       .arg(strUnitY),
+                                   customPlot);
             }
         }
     }
     else
+    {
         QToolTip::hideText();
+    }
 }
 
 void MainWindow::DisplayWarning(QString warningMessage)

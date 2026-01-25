@@ -4,6 +4,7 @@
 
 #include "optionsdialog.h"
 #include <QFileDialog>
+#include <QTextStream>
 #include <QMessageBox>
 
 OptionsDialog::OptionsDialog(QWidget *parent) :

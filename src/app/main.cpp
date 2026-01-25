@@ -56,10 +56,17 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // Use this for cross-platform font consistency
-    QFont defaultFont;
-    defaultFont.setPointSize(9);
-    defaultFont.setFamily("Arial");
-    app.setFont(defaultFont);
+    #ifdef Q_OS_WIN
+        QString family = "Arial";
+        QFont appFont(family, 9);
+    #elif defined(Q_OS_MAC)
+        QString family = "Helvetica";
+        QFont appFont(family, 11);
+    #else
+        QString family = "Liberation Sans";
+        QFont appFont(family, 10);
+    #endif
+    QApplication::setFont(appFont);
     app.setStyle(QStyleFactory::create("Fusion"));
 
     MainWindow mainWindow;

@@ -59,8 +59,8 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>10</width>
-        <height>0</height>
+        <width>0</width>
+        <height>23</height>
        </size>
       </property>
       <property name="font">
@@ -424,6 +424,12 @@
         </item>
         <item row="2" column="0" colspan="4">
          <widget class="QPushButton" name="pushButton_SavePlot_PhaseFunctionPolar">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Phase Function (Polar) Plot</string>
           </property>
@@ -602,8 +608,8 @@
                      <brush brushstyle="SolidPattern">
                       <color alpha="255">
                        <red>0</red>
-                       <green>0</green>
-                       <blue>225</blue>
+                       <green>135</green>
+                       <blue>255</blue>
                       </color>
                      </brush>
                     </colorrole>
@@ -613,8 +619,8 @@
                      <brush brushstyle="SolidPattern">
                       <color alpha="255">
                        <red>0</red>
-                       <green>0</green>
-                       <blue>225</blue>
+                       <green>135</green>
+                       <blue>255</blue>
                       </color>
                      </brush>
                     </colorrole>
@@ -714,7 +720,7 @@
                      <brush brushstyle="SolidPattern">
                       <color alpha="255">
                        <red>0</red>
-                       <green>100</green>
+                       <green>150</green>
                        <blue>0</blue>
                       </color>
                      </brush>
@@ -725,7 +731,7 @@
                      <brush brushstyle="SolidPattern">
                       <color alpha="255">
                        <red>0</red>
-                       <green>100</green>
+                       <green>150</green>
                        <blue>0</blue>
                       </color>
                      </brush>
@@ -970,6 +976,12 @@
         </property>
         <item row="2" column="0" colspan="3">
          <widget class="QPushButton" name="pushButton_SavePlot_PhaseFunctionLinear">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Phase Function (Linear) Plot</string>
           </property>
@@ -1156,7 +1168,7 @@
                    <brush brushstyle="SolidPattern">
                     <color alpha="255">
                      <red>0</red>
-                     <green>0</green>
+                     <green>135</green>
                      <blue>225</blue>
                     </color>
                    </brush>
@@ -1167,7 +1179,7 @@
                    <brush brushstyle="SolidPattern">
                     <color alpha="255">
                      <red>0</red>
-                     <green>0</green>
+                     <green>135</green>
                      <blue>225</blue>
                     </color>
                    </brush>
@@ -1200,7 +1212,7 @@
                    <brush brushstyle="SolidPattern">
                     <color alpha="255">
                      <red>0</red>
-                     <green>100</green>
+                     <green>150</green>
                      <blue>0</blue>
                     </color>
                    </brush>
@@ -1211,7 +1223,7 @@
                    <brush brushstyle="SolidPattern">
                     <color alpha="255">
                      <red>0</red>
-                     <green>100</green>
+                     <green>150</green>
                      <blue>0</blue>
                     </color>
                    </brush>
@@ -1307,6 +1319,12 @@
         </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="pushButton_SavePlot_Musp">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Reduced Scattering Plot</string>
           </property>
@@ -1334,6 +1352,35 @@
         <property name="spacing">
          <number>5</number>
         </property>
+        <item row="1" column="2">
+         <widget class="QLabel" name="label_BLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>10</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>9</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff5500;&quot;&gt;b&lt;/span&gt;&lt;span style=&quot; color:#ff5500; vertical-align:sub;&quot;&gt;Mie&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0" rowspan="4">
          <widget class="QCustomPlot" name="customPlot_MuspPowerLaw" native="true">
           <property name="sizePolicy">
@@ -1399,6 +1446,139 @@
           </property>
           <property name="value">
            <double>4.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QLabel" name="labelF_1_0">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>1.0</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelF_0_8">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0.8</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelF_0_6">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0.6</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelF_0_4">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0.4</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelF_0_2">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0.2</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelF_0_0">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>0.0</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QSlider" name="slider_F">
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="pageStep">
+             <number>20</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="tickPosition">
+             <enum>QSlider::TicksAbove</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="1">
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_F">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>43</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
           </property>
          </widget>
         </item>
@@ -1816,156 +1996,15 @@
           </item>
           <item>
            <widget class="QPushButton" name="pushButton_SavePlot_MuspPowerLaw">
-            <property name="minimumSize">
-             <size>
-              <width>23</width>
-              <height>0</height>
-             </size>
-            </property>
             <property name="font">
              <font>
               <family>Arial</family>
               <pointsize>9</pointsize>
               <italic>false</italic>
-              <bold>false</bold>
              </font>
             </property>
             <property name="text">
              <string>Save Power Law Fitting Plot</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="2">
-         <widget class="QLabel" name="label_BLabel">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>10</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>9</pointsize>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff5500;&quot;&gt;b&lt;/span&gt;&lt;span style=&quot; color:#ff5500; vertical-align:sub;&quot;&gt;Mie&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
-            <item>
-             <widget class="QLabel" name="labelF_1_0">
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>1.0</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="labelF_0_8">
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>0.8</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="labelF_0_6">
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>0.6</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="labelF_0_4">
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>0.4</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="labelF_0_2">
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>0.2</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="labelF_0_0">
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>0.0</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QSlider" name="slider_F">
-            <property name="maximum">
-             <number>100</number>
-            </property>
-            <property name="pageStep">
-             <number>20</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="tickPosition">
-             <enum>QSlider::TicksAbove</enum>
             </property>
            </widget>
           </item>
@@ -1985,34 +2024,6 @@
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_F">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>43</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="maximum">
-           <double>1.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.010000000000000</double>
           </property>
          </widget>
         </item>
@@ -2160,7 +2171,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -2202,6 +2213,12 @@
         </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="pushButton_SavePlot_Mus">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Scattering Coefficient Plot</string>
           </property>
@@ -2228,6 +2245,12 @@
         </property>
         <item row="1" column="0">
          <widget class="QPushButton" name="pushButton_SavePlot_Csca">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Csca Plot</string>
           </property>
@@ -2278,6 +2301,12 @@
         </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="pushButton_SavePlot_Cext">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Cext Plot</string>
           </property>
@@ -2316,6 +2345,12 @@
         </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="pushButton_SavePlot_Cback">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Cback Plot</string>
           </property>
@@ -3713,6 +3748,12 @@
     </item>
     <item row="1" column="3">
      <widget class="QTabWidget" name="tabWidget_G">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="font">
        <font>
         <family>Arial</family>
@@ -3747,6 +3788,12 @@
         </property>
         <item row="1" column="0">
          <widget class="QPushButton" name="pushButton_SavePlot_G">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Ave. Cosine of Phase Function (g) Plot</string>
           </property>
@@ -3783,6 +3830,12 @@
         </property>
         <item row="1" column="0">
          <widget class="QPushButton" name="pushButton_SavePlot_FB">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Forward &amp;&amp; Backward Scat. % Plot</string>
           </property>
@@ -3825,7 +3878,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_Distribution">
        <attribute name="title">
@@ -3846,6 +3899,12 @@
         </property>
         <item row="2" column="0" colspan="6">
          <widget class="QPushButton" name="pushButton_SavePlot_Distribution">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Number Density Plot</string>
           </property>
@@ -4008,6 +4067,12 @@
         </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="pushButton_SavePlot_SizePara">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>23</height>
+           </size>
+          </property>
           <property name="text">
            <string>Save Size Parameter Plot</string>
           </property>

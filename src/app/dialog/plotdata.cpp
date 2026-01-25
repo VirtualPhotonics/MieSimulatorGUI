@@ -523,11 +523,11 @@ void PlotData::PlotPhaseFunctionLinear(Ui_MainWindow *ui, QVector<double> x, QVe
         }
         if (ui->checkBox_PhaseLinearPara->isChecked())
         {
-            PlotSingleGraph(customPlot, x, yPara, Qt::blue, "Para.", idx, 2);
+            PlotSingleGraph(customPlot, x, yPara, QColor(0, 135, 255), "Para.", idx, 2);
             idx++;
         }
         if (ui->checkBox_PhaseLinearPerp->isChecked())
-            PlotSingleGraph(customPlot, x, yPerp, Qt::darkGreen, "Perp.", idx, 2);
+            PlotSingleGraph(customPlot, x, yPerp, QColor(0, 150, 0), "Perp.", idx, 2);
 
         if (ui->radioButton_LinearYAxis->isChecked())
             customPlot->yAxis->setLabel("Magnitude");
@@ -583,9 +583,9 @@ void PlotData::PlotPhaseFunctionPolar(Ui_MainWindow *ui, QVector<double> theta, 
         if (ui->checkBox_PhasePolarAve->isChecked())
             PlotSingleCurve(customPlot, x1, y1, Qt::red, "Ave.", totalSize);
         if (ui->checkBox_PhasePolarPara->isChecked())
-            PlotSingleCurve(customPlot, x2, y2, Qt::blue, "Para.", totalSize);
+            PlotSingleCurve(customPlot, x2, y2, QColor(0, 135, 255), "Para.", totalSize);
         if (ui->checkBox_PhasePolarPerp->isChecked())
-            PlotSingleCurve(customPlot, x3, y3, Qt::darkGreen, "Perp.", totalSize);
+            PlotSingleCurve(customPlot, x3, y3, QColor(0, 150, 0), "Perp.", totalSize);
 
         // // Legend configuration
         // customPlot->legend->setWrap(3);
@@ -627,7 +627,7 @@ void PlotData::PlotS1S2(Ui_MainWindow *ui, Parameters *para, QVector<double> x, 
     if (ui->radioButton_S1S2->isChecked())
     {
         PlotSingleGraph(customPlot, x, yS1, Qt::red, "S1", 0, 2);
-        PlotSingleGraph(customPlot, x, yS2, Qt::blue, "S2", 1, 2);
+        PlotSingleGraph(customPlot, x, yS2, QColor(0, 135, 255), "S2", 1, 2);
         customPlot->yAxis->setLabel("S1,S2");
         if (ui->radioButton_LogYAxis->isChecked())
             customPlot->yAxis->setLabel("Log (S1,S2)");
@@ -680,7 +680,7 @@ void PlotData::PlotMuspPowerLaw(Ui_MainWindow *ui, QVector<double> x, QVector<do
     PlotSingleGraph(customPlot, x, yMusp, Qt::red, "μs' Data", 0, 4);
 
     //Power law fit plot
-    PlotSingleGraph(customPlot, x, yFit, Qt::blue, "Best Fit", 1, 4);
+    PlotSingleGraph(customPlot, x, yFit, QColor(0, 135, 255), "Best Fit", 1, 4);
 
     customPlot->legend->setBrush(QBrush(QColor(255, 255, 255, 0)));
     customPlot->legend->setBorderPen(QPen(Qt::NoPen));
@@ -834,7 +834,7 @@ void PlotData::PlotForwardBackward(Ui_MainWindow *ui, QVector<double> x, QVector
 
     //Forward and backward Plot
     PlotSingleGraph(customPlot, x, yF, Qt::red, "Forward Scat. %", 0, 4);
-    PlotSingleGraph(customPlot, x, yB, Qt::blue, "Backward Scat. %", 1, 4);
+    PlotSingleGraph(customPlot, x, yB, QColor(0, 135, 255), "Backward Scat. %", 1, 4);
 
     if (ui->radioButton_LinearYAxis->isChecked())
     {
@@ -1171,7 +1171,7 @@ void PlotData::RemovePlotables(QCustomPlot *customPlot)
 
 }
 
-//Rearrange Phase Function Data
+//Rearrange Phase Function Data for Plotting
 void PlotData::RearrangePhaseFunctionData(Parameters *para, QVector<double> &theta,
                                           QVector<double> &phaseFuncPara,
                                           QVector<double> &phaseFuncPerp,
@@ -1185,53 +1185,43 @@ void PlotData::RearrangePhaseFunctionData(Parameters *para, QVector<double> &the
     //Assign "rho(r)" and "theta" values in polar plot
     for (int i=0; i<nTheta; i++)
     {
-        double theta_val1 = -180 + (180.0 * i /(nTheta-1));
-        double theta_val2 = 180 - (180.0 * i /(nTheta-1));
+        double angleDeg = (180.0 * i) / (nTheta - 1);
+        int forwardIndex = (nTheta - 1) + i;
+        int backwardIndex = (nTheta - 1) - i;
 
-        //Theta is from -180 to 180 in degrees
-        theta[i] = theta_val1;
-        theta[2 * nTheta -2  -i] =  theta_val2;
-
-        //Theta is from 0 to 360 in radians
-        if (!flagThetaNegPosOrPos)
+        if (flagThetaNegPosOrPos) // Range: -180 to 180 degrees
         {
-            if (theta_val1 < 0)
-                theta_val1 += 360;
-            if (theta_val2 < 0)
-                theta_val2 += 360;
+            theta[forwardIndex] = angleDeg;
+            theta[backwardIndex] = -angleDeg;
+        }
+        else // Range: 0 to 2*PI radians
+        {
+            double radPos = M_PI * angleDeg / 180.0;
+            double radNeg = M_PI * (360.0 - angleDeg) / 180.0;
 
-            theta[i] = M_PI * theta_val1 /180;
-            theta[2 * nTheta -2  -i] =  M_PI * theta_val2 /180;
+            // At i=0 (0 degrees), both are 0 or 2PI.
+            theta[forwardIndex] = radPos;
+            theta[backwardIndex] = (i == 0) ? 0 : radNeg;
         }
 
-        double phaseFunctionPara = para->phaseFunctionPara[indexWL][i];
-        double phaseFunctionPerp = para->phaseFunctionPerp[indexWL][i];
-        double phaseFunctionAve = para->phaseFunctionAve[indexWL][i];
+        double valPara = para->phaseFunctionPara[indexWL][i];
+        double valPerp = para->phaseFunctionPerp[indexWL][i];
+        double valAve  = para->phaseFunctionAve[indexWL][i];
 
-        int forwardIndex = nTheta - 1 + i;
-        int backwardIndex = nTheta - 1 - i;
-
-        if (flagLinearLog)  // Linear scale
+        if (!flagLinearLog)
         {
-            phaseFuncPara[backwardIndex] = phaseFunctionPara;
-            phaseFuncPara[forwardIndex] = phaseFunctionPara;
-
-            phaseFuncPerp[backwardIndex] = phaseFunctionPerp;
-            phaseFuncPerp[forwardIndex] = phaseFunctionPerp;
-
-            phaseFuncAve[backwardIndex] = phaseFunctionAve;
-            phaseFuncAve[forwardIndex] = phaseFunctionAve;
+            valPara = log10(valPara + tiny);
+            valPerp = log10(valPerp + tiny);
+            valAve  = log10(valAve + tiny);
         }
-        else  //log scale
-        {
-            phaseFuncPara[backwardIndex] = log10(phaseFunctionPara+tiny);
-            phaseFuncPara[forwardIndex] = log10(phaseFunctionPara+tiny);
 
-            phaseFuncPerp[backwardIndex] = log10(phaseFunctionPerp+tiny);
-            phaseFuncPerp[forwardIndex] = log10(phaseFunctionPerp+tiny);
+        phaseFuncPara[forwardIndex] = valPara;
+        phaseFuncPara[backwardIndex] = valPara;
 
-            phaseFuncAve[backwardIndex] = log10(phaseFunctionAve+tiny);
-            phaseFuncAve[forwardIndex] = log10(phaseFunctionAve+tiny);
-        }
+        phaseFuncPerp[forwardIndex] = valPerp;
+        phaseFuncPerp[backwardIndex] = valPerp;
+
+        phaseFuncAve[forwardIndex] = valAve;
+        phaseFuncAve[backwardIndex] = valAve;
     }
 }
