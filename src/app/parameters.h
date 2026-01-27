@@ -21,10 +21,12 @@ public:
                                QRadioButton *radioButton_NumDen,
                                QRadioButton *radioButton_VolFrac);
     bool CheckDistributionParameters(QComboBox *comboBox_Distribution);
+    bool CheckPackingVolume();
     ParameterValidationResult CheckValidityCommonParameters(bool monoDisperseSelection,
                                                             bool numDenSelection,
                                                             bool volFracSelection);
     ParameterValidationResult CheckValidityDistributionParameters(int comboBoxIndex);
+    ParameterValidationResult CheckValidityPackingVolume(double totalVolume);
 
     enum distType {
         LogNormal    = 0,       // poly-disperse: Log Normal
