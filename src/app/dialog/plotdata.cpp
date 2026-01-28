@@ -23,6 +23,7 @@ void PlotData::ClearPlots(Ui_MainWindow *ui)
     InitialSetupS1S2Plot(ui);
     InitialSetupMuspPowerLawFit(ui);
     InitialSetupOtherPlots(ui);
+    ui->label_CurrentTotNumDen->setText("");
 }
 
 //Initialize distribution plot
