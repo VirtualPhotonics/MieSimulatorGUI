@@ -272,7 +272,7 @@ bool Parameters::CheckPackingVolume()
     for (unsigned int i = 0; i< nRadius; i++)
     {
         double singleSphVolume = 4.0 * M_PI * radArray[i] * radArray[i] * radArray[i] / 3.0;
-        totalVolume = singleSphVolume * numDensityArray[i];
+        totalVolume += singleSphVolume * numDensityArray[i];
     }
 
     ParameterValidationResult check = CheckValidityPackingVolume(totalVolume/1e9);
@@ -301,7 +301,7 @@ ParameterValidationResult Parameters::CheckValidityPackingVolume(double totalVol
     if (totalVolume >= M_PI/(3*sqrt(2)))  //Maximum packing factor = PI/(3*sqrt(2))
     {
         result.isValid = false;
-        result.errorMessage = "Total sphere volume in 1mm³ exceeds the maximum packing factor! Reduce Concentration.";
+        result.errorMessage = "Total sphere volume in 1mm³ exceeds the maximum packing factor. Reduce Concentration.";
         return result;
     }
     else

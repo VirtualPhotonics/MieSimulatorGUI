@@ -316,5 +316,5 @@ void TestParameters::test_CheckPackingVolume_valid()
     double totalVolume = 0.8;
     ParameterValidationResult result = mPara->CheckValidityPackingVolume(totalVolume);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Total sphere volume in 1mm³ exceeds the maximum packing factor! Reduce Concentration."));
+    QCOMPARE(result.errorMessage, QString("Total sphere volume in 1mm³ exceeds the maximum packing factor. Reduce Concentration."));
 }
