@@ -45,7 +45,7 @@ public:
 
     double *radArray = nullptr;         // radArray: radius Array
     double *numDensityArray = nullptr;  // numDensityArray: Number Density array
-    double meanRadius = 0.1;            // meanRadius: "mean radius" in Poly disperse and "radius" in mono disperse
+    double meanRadius = 0.1;            // meanRadius: "mean radius" in Poly disperse and "radius" in monodisperse
     double minRadius = 0.0005;          // minRadius: minimum radius
     double maxRadius = 25;              // maxRadius: maximum radius
     double stdDev = 0.25;               // stdDev: Std. deviation
@@ -91,7 +91,6 @@ public:
     double muspFittingError = 0;               //muspfittingError: fitting error
     double refWavel = 1000;                    //refWavel: reference lambda: 500, 600, 700, 800, 900 and 1000nm
     bool fittingComplex = true;                //fittingComplex; True: Ccomplex, False: Simple
-    bool independentScat = true;               //independentScat; True: independent scattering; False: otherwise
 };
 
 #endif // PARAMETERS_H

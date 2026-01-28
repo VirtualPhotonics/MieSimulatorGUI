@@ -156,7 +156,7 @@ ParameterValidationResult Parameters::CheckValidityCommonParameters(
     {
         if (numDenSelection)
         {
-            double singleSphVolume = 4.0 * M_PI *meanRadius * meanRadius * meanRadius / 3.0;
+            double singleSphVolume = (4.0/3.0) * M_PI * pow(meanRadius, 3);
             if (sphNumDensity*singleSphVolume/1e9 >= M_PI/(3*sqrt(2)))  //Maximum packing factor = PI/(3*sqrt(2))
             {
                 result.isValid = false;
@@ -271,7 +271,7 @@ bool Parameters::CheckPackingVolume()
     double totalVolume = 0.0;
     for (unsigned int i = 0; i< nRadius; i++)
     {
-        double singleSphVolume = 4.0 * M_PI * radArray[i] * radArray[i] * radArray[i] / 3.0;
+        double singleSphVolume = (4.0/3.0) * M_PI * pow(radArray[i], 3);
         totalVolume += singleSphVolume * numDensityArray[i];
     }
 
