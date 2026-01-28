@@ -36,7 +36,6 @@ private:
     void DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPlot,
                                QString strNameX, QString strUnitX,
                                QString strNameY, QString strUnitY);
-    void DisplayWarning(QString warningMessage);
 
 private slots:
     void on_pushButton_RunSimulation_clicked();

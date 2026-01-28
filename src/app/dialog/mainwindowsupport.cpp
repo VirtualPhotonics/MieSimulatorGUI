@@ -325,6 +325,15 @@ void MainWindowSupport::ProcessMonoDisperse(Ui_MainWindow *ui, Parameters *para)
     plot.AssignValuesPhaseFunctionLinearPlot(ui,para);
     plot.AssignValuesS1S2Plot(ui, para);
     plot.AssignValuesOtherPlots(ui, para);
+
+    //check dependent scattering
+    if(mCalc->CheckIndependentScattering(para))
+        if(mCalc->CheckIndependentScattering(para))
+            DisplayWarning("High Volume Fraction Alert: The current volume fraction (or "
+                           "concentration) exceeds the recommended range for independent "
+                           "scattering. Since MieSimulatorGUI is best suited for dilute "
+                           "mixtures, results at this concentration should be interpreted"
+                           " with caution.");
 }
 
 // Run Poly disperse distribution
@@ -345,9 +354,17 @@ void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, Parameters *para)
     plot.AssignValuesPhaseFunctionLinearPlot(ui,para);
     plot.AssignValuesS1S2Plot(ui, para);
     plot.AssignValuesOtherPlots(ui, para);
+
+    //check dependent scattering
+    if(mCalc->CheckIndependentScattering(para))
+        DisplayWarning("High Volume Fraction Alert: The current volume fraction (or "
+                       "concentration) exceeds the recommended range for independent "
+                       "scattering. Since MieSimulatorGUI is best suited for dilute "
+                       "mixtures, results at this concentration should be interpreted"
+                       " with caution.");
 }
 
-//Sphere distribution in poly disperse
+//Sphere distribution in polydisperse
 void MainWindowSupport::ProcessDistribution(Ui_MainWindow *ui, Parameters *para, unsigned int distIndex)
 {
     PlotData plot;
@@ -584,4 +601,13 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
         //Assign this values to pass the sanity check
         para->stdDev = 1.0;
     }
+}
+
+void MainWindowSupport::DisplayWarning(QString warningMessage)
+{
+    QMessageBox msgBoxWarning;
+    msgBoxWarning.setWindowTitle("Warning");
+    msgBoxWarning.setIcon(QMessageBox::Warning);
+    msgBoxWarning.setText(warningMessage);
+    msgBoxWarning.exec();
 }

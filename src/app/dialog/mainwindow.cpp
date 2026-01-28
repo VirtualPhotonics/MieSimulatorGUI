@@ -161,18 +161,13 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
             //Mono disperse
             if (ui->radioButton_MonoDisperse->isChecked())
             {
-                support.ProcessDistribution(ui, mPara, mPara->MonoDisperse);  // index = 3: mono disperse
-
+                support.ProcessDistribution(ui, mPara, mPara->MonoDisperse);  // index = 3: monodisperse
                 support.ProcessMonoDisperse(ui,mPara);
                 ui->label_Progress->setText("<font color=\"green\"> Completed!</font>");
                 ui->slider_ConcPercentChange->setValue(0);
                 mOtherPlotsFlag = true;
                 mDistPlotFlag = true;
-                if(!mPara->independentScat)
-                    DisplayWarning("The concentration or volume fraction exceeds the "
-                                   "limits for the independent scattering approximation. "
-                                   "As this tool is best suited for dilute systems, "
-                                   "results should be interpreted with caution.");
+
                 //Enable widgets
                 support.DisableWidgetsDuringSimulation(ui, mPara, false);
             }
@@ -182,17 +177,15 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
             {
                 if (mPara->CheckDistributionParameters(ui->comboBox_Distribution))   //sanity check
                 {
-                    support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));                    
-                    support.ProcessPolyDisperse(ui,mPara);
-                    ui->label_Progress->setText("<font color=\"green\"> Completed!</font>");
-                    ui->slider_ConcPercentChange->setValue(0);
-                    mOtherPlotsFlag = true;
-                    mDistPlotFlag = true;
-                    if(!mPara->independentScat)
-                        DisplayWarning("The concentration or volume fraction exceeds the "
-                                       "limits for the independent scattering approximation. "
-                                       "As this tool is best suited for dilute systems, "
-                                       "results should be interpreted with caution.");
+                    support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
+                    if (mPara->CheckPackingVolume())   // check packing volume for polydisperse
+                    {
+                        support.ProcessPolyDisperse(ui,mPara);
+                        ui->label_Progress->setText("<font color=\"green\"> Completed!</font>");
+                        ui->slider_ConcPercentChange->setValue(0);
+                        mOtherPlotsFlag = true;
+                        mDistPlotFlag = true;
+                    }
                 }
                 //Enable widgets
                 support.DisableWidgetsDuringSimulation(ui, mPara, false);
@@ -245,29 +238,6 @@ void MainWindow::on_pushButton_ShowDistributionAndCustom_clicked()
                 support.SetWidgets(ui, mPara);
                 support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
                 mDistPlotFlag = true;
-
-                // compute parameters required to check dependent/independent scattering
-                double totalSphereVolume = 0.0;
-                double totalNumDensity = 0.0;
-                double totalRadius = 0.0;
-                for (unsigned int i=0; i<mPara->nRadius; i++)
-                {
-                    double singleSphereVolume = 4.0 * M_PI * mPara->radArray[i] *
-                                      mPara->radArray[i] * mPara->radArray[i] /3.0;
-                    totalSphereVolume += singleSphereVolume * mPara->numDensityArray[i];
-                    totalNumDensity += mPara->numDensityArray[i];
-                    totalRadius += mPara->radArray[i];
-                }
-                double volFraction = totalSphereVolume / 1e9;
-                double meanRadius = totalRadius / mPara->nRadius;
-
-                //check independent/dependent scattering (Yalcin ACS Photonics 9(2022))
-                double interParticleDistance = pow(totalNumDensity, 1.0 / 3.0);
-                double clearanceToWavelength = (interParticleDistance - 2 * meanRadius)/(1e-3 * mPara->startWavel);
-                if (volFraction < 0.006 && clearanceToWavelength > 0.5)   //  fv < 0.6% and clearnace/lambda > 0.5
-                    mPara->independentScat = true;
-                else
-                    mPara->independentScat = false;
             }
         }
         mLoadCustomNoGoodFlag = false;
@@ -1405,13 +1375,4 @@ void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPl
     {
         QToolTip::hideText();
     }
-}
-
-void MainWindow::DisplayWarning(QString warningMessage)
-{
-    QMessageBox msgBoxWarning;
-    msgBoxWarning.setWindowTitle("Warning");
-    msgBoxWarning.setIcon(QMessageBox::Warning);
-    msgBoxWarning.setText(warningMessage);
-    msgBoxWarning.exec();
 }
