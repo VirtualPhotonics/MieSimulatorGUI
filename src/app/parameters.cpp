@@ -51,7 +51,9 @@ bool Parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
         return false;
     }
     else
+    {
         return true;
+    }
 }
 
 ParameterValidationResult Parameters::CheckValidityCommonParameters(
@@ -137,10 +139,10 @@ ParameterValidationResult Parameters::CheckValidityCommonParameters(
             return result;
         }
 
-        if (volFraction >= 1.0)
+        if (volFraction >= 0.74048)  //Maximum packing factor = PI/(3*sqrt(2))
         {
             result.isValid = false;
-            result.errorMessage = "Volume Fraction must be less than 1.0.";
+            result.errorMessage = "Volume Fraction must not exceed the maximum packing factor.";
             return result;
         }
     }
@@ -154,11 +156,11 @@ ParameterValidationResult Parameters::CheckValidityCommonParameters(
     {
         if (numDenSelection)
         {
-            double volume = 4.0 * M_PI *meanRadius * meanRadius * meanRadius / 3.0;
-            if (sphNumDensity*volume >= 1e9)
+            double singleSphVolume = (4.0/3.0) * M_PI * pow(meanRadius, 3);
+            if (sphNumDensity*singleSphVolume/1e9 >= M_PI/(3*sqrt(2)))  //Maximum packing factor = PI/(3*sqrt(2))
             {
                 result.isValid = false;
-                result.errorMessage = "Concentration x Sphere Volume exceeds 1mm³! Reduce Concentration (Conc).";
+                result.errorMessage = "'Concentration x Sphere Volume' exceeds the maximum packing factor! Reduce Concentration (Conc).";
                 return result;
             }
         }
@@ -190,7 +192,9 @@ bool Parameters::CheckDistributionParameters(QComboBox *comboBox_Distribution)
         return false;
     }
     else
+    {
         return true;
+    }
 }
 
 ParameterValidationResult Parameters::CheckValidityDistributionParameters(int comboBoxIndex)
@@ -259,4 +263,49 @@ ParameterValidationResult Parameters::CheckValidityDistributionParameters(int co
         return result;
     }
     return result;
+}
+
+//Check the validity of Distribution parameters
+bool Parameters::CheckPackingVolume()
+{
+    double totalVolume = 0.0;
+    for (unsigned int i = 0; i< nRadius; i++)
+    {
+        double singleSphVolume = (4.0/3.0) * M_PI * pow(radArray[i], 3);
+        totalVolume += singleSphVolume * numDensityArray[i];
+    }
+
+    ParameterValidationResult check = CheckValidityPackingVolume(totalVolume/1e9);
+
+    if (!check.isValid)
+    {
+        QMessageBox msgBoxError;
+        msgBoxError.setWindowTitle("Error");
+        msgBoxError.setIcon(QMessageBox::Critical);
+        msgBoxError.setText(check.errorMessage);
+        msgBoxError.exec();
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+// Check packing totalVolume limit for polydisperse distribution
+ParameterValidationResult Parameters::CheckValidityPackingVolume(double totalVolume)
+{
+    ParameterValidationResult result;
+    result.isValid = true;
+
+    if (totalVolume >= M_PI/(3*sqrt(2)))  //Maximum packing factor = PI/(3*sqrt(2))
+    {
+        result.isValid = false;
+        result.errorMessage = "Total sphere volume in 1mm³ exceeds the maximum packing factor. Reduce Concentration.";
+        return result;
+    }
+    else
+    {
+        return result;
+    }
 }

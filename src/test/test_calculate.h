@@ -31,8 +31,13 @@ private slots:
     void test_CalculateForwardBackward();
     void test_CalculatePowerLawAutoFitSimple();
     void test_CalculatePowerLawAutoFitComplex();
-    void test_IndependentScatteringCheck();
+    void test_PhaseFunctionNormalization();
     void test_ComputeMuspAtRefWavel_sanityCheck();
+    void test_CheckIndependentScattering_HighConcentration();
+    void test_CheckIndependentScattering_LowConcSmallSize();
+    void test_CheckIndependentScattering_TransitionalDependent();
+    void test_CheckIndependentScattering_LowConcLargeSizeIndependent();
+    void test_CheckIndependentScattering_Polydisperse();
 
 private:
     Parameters *mPara;

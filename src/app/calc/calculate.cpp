@@ -350,43 +350,28 @@ double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
 void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index, bool flagVolOrConc)
 {
     if (para->nRadius == 1)  //Mono Disperse
-    {
-        double volFraction;
-        double singleSphereVolume = 4.0 * M_PI *para->meanRadius * para->meanRadius * para->meanRadius / 3.0;
+    {       
         if (flagVolOrConc)  //If volume fraction is selected, update number density
         {
+            double singleSphereVolume = 4.0 * M_PI *para->meanRadius * para->meanRadius * para->meanRadius / 3.0;
             para->sphNumDensity = std::round(1e9 * para->volFraction /singleSphereVolume);
-            volFraction = para->volFraction;
-        }
-        else
-            volFraction = singleSphereVolume * para->sphNumDensity / 1e9;
+        }        
 
         para->radArray[0] = para->meanRadius;
         para->numDensityArray[0] = para->sphNumDensity;
         para->scatRefRealArray[0] = para->scatRefReal;
         para->scatRefImagArray[0] = para->scatRefImag;
         para->medRefArray[0] = para->medRef;
-
-        //check independent/dependent scattering (Yalcin ACS Photonics 9(2022))
-        double interParticleDistance = pow(para->sphNumDensity, 1.0/3.0);
-        double clearanceToWavelength = (interParticleDistance - 2 * para->meanRadius)/(1e-3 * para->startWavel);
-        if (volFraction < 0.006 && clearanceToWavelength > 0.5)   //  fv < 0.6% and clearnace/lambda > 0.5
-            para->independentScat = true;
-        else
-            para->independentScat = false;
     }
     else                    //Poly Disperse
     {
         double temp, factor, stepR;
-        double volFraction;
         double totalSphereVolume = 0.0;
         double totalFuncSum = 0.0;
         double *funcArray = new double[para->nRadius];
-        double *sphereVolume = new double[para->nRadius];
         for (unsigned int i = 0; i < para->nRadius; i++)
         {
             funcArray[i] = 0.0;
-            sphereVolume[i] = 0.0;
         }
 
         stepR = (para->maxRadius - para->minRadius)/(para->nRadius -1);
@@ -400,9 +385,9 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
                 temp = log(para->radArray[i])-log(para->meanRadius);
                 funcArray[i] = (exp(-(temp*temp)/(2.0 * para->stdDev * para->stdDev)))/
                                 (para->radArray[i] * para->stdDev * sqrt (2.0 * M_PI)) ;
-                sphereVolume[i] = 4.0 * M_PI * para->radArray[i] *
+                double singleSphVolume = 4.0 * M_PI * para->radArray[i] *
                                   para->radArray[i] * para->radArray[i] /3.0;
-                totalSphereVolume += funcArray[i] * sphereVolume[i];
+                totalSphereVolume += funcArray[i] * singleSphVolume;
                 totalFuncSum += funcArray[i];
             }
             break;
@@ -413,9 +398,9 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
                 temp = para->radArray[i]-para->meanRadius;
                 funcArray[i]  = (exp(-(temp*temp/(2.0 * para->stdDev * para->stdDev))))/
                                    (para->stdDev * sqrt (2.0 * M_PI)) ;
-                sphereVolume[i] = 4.0 * M_PI * para->radArray[i] *
+                double singleSphVolume = 4.0 * M_PI * para->radArray[i] *
                                   para->radArray[i] * para->radArray[i] /3.0;
-                totalSphereVolume += funcArray[i] * sphereVolume[i];
+                totalSphereVolume += funcArray[i] * singleSphVolume;
                 totalFuncSum += funcArray[i];
             }
             break;
@@ -425,39 +410,26 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
         if (flagVolOrConc)
         {
             factor = 1e9 * para->volFraction /totalSphereVolume;
-            volFraction = para->volFraction;
         }
         else
         {
             factor = para->sphNumDensity/totalFuncSum;
-            volFraction = (totalSphereVolume/totalFuncSum)*(para->sphNumDensity/1e9);
         }
 
-        double totalNumDensity = 0.0;
+        // Apply factor to compute data
         for (unsigned int i=0; i<para->nRadius; i++)
         {
             para->numDensityArray[i] = std::round(funcArray[i]*factor);
-            totalNumDensity += para->numDensityArray[i];
             para->scatRefRealArray[i] = para->scatRefReal;
             para->scatRefImagArray[i] = para->scatRefImag;
             para->medRefArray[i] = para->medRef;
         }
 
-        //check independent/dependent scattering (Yalcin ACS Photonics 9(2022))
-        double interParticleDistance = pow(totalNumDensity, 1.0/3.0);
-        double clearanceToWavelength = (interParticleDistance - 2 * para->meanRadius)/(1e-3 * para->startWavel);
-        if (volFraction < 0.006 && clearanceToWavelength > 0.5)   //  fv < 0.6% and clearnace/lambda > 0.5
-            para->independentScat = true;
-        else
-            para->independentScat = false;
-
-
-        delete []sphereVolume;
         delete []funcArray;
     }
 }
 
-//Selction of discrete sphere sizes for poly disperse distribution
+//Selction of discrete sphere sizes for polydisperse distribution
 //This process is used to obtain the best distribution for assigned mean diameter
 void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index)
 {
@@ -545,3 +517,66 @@ void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index)
         break;    
     }
 }
+
+// Determines the scattering regime based on Tien et. al, A.R. Heat Trandfer 1(1987) & Galy et al. JQSRT 246(2020)
+bool Calculate::CheckIndependentScattering(Parameters *para)
+{
+    double volFraction = 0.0;
+    double interParticleDistance;
+    double clearanceToWavelength;
+    double sizeParameter;
+    double wavelengthMicrons = para->startWavel / 1000.0;
+    if (para->nRadius == 1)       //monodisperse
+    {
+        double singleSphVolume = (4.0/3.0) * M_PI * pow(para->meanRadius, 3);
+        volFraction = singleSphVolume * para->numDensityArray[0] / 1e9;
+        interParticleDistance = 1e3 / pow(para->numDensityArray[0], 1.0 / 3.0);
+        clearanceToWavelength = (interParticleDistance - 2 * para->meanRadius) / wavelengthMicrons;
+        sizeParameter = 2.0 * M_PI * para->meanRadius / wavelengthMicrons;
+    }
+    else
+    {
+        double totalVolume = 0.0;
+        double totalNumDensity = 0.0;
+        for (unsigned int i = 0; i < para->nRadius; i++)
+        {
+            double singleSphVolume = (4.0/3.0) * M_PI * pow(para->radArray[i], 3);
+            totalVolume += singleSphVolume * para->numDensityArray[i];
+            totalNumDensity += para->numDensityArray[i];
+        }
+        volFraction = totalVolume / 1e9;
+        interParticleDistance = 1e3 / pow(totalNumDensity, 1.0 / 3.0);
+
+        double averageVolume = totalVolume / totalNumDensity;
+        double effectiveRadius = pow(3.0 * averageVolume / (4.0 * M_PI), 1.0/3.0);
+
+        clearanceToWavelength = (interParticleDistance - 2 * effectiveRadius) / wavelengthMicrons;
+        sizeParameter = 2.0 * M_PI * effectiveRadius / wavelengthMicrons;
+    }
+
+    // Check dependent scattering, True: Dependent, False: Independent
+    double requiredClearance = (sizeParameter <= 2.0) ? 2.0 : 5.0;
+    bool isDependent = false;
+
+    if (volFraction > 0.1)   // High concentration regime
+    {
+        return true;
+    }
+    if (volFraction > 0.006) // Transitional regime
+    {
+        isDependent = (clearanceToWavelength <= requiredClearance);
+    }
+    else // Low concentration regime
+    {
+        if (sizeParameter > 0.388)
+        {
+            isDependent = (clearanceToWavelength <= requiredClearance);
+        }
+        else
+        {
+            isDependent = false;
+        }
+    }
+    return isDependent;
+}
+

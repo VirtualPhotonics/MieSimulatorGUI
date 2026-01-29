@@ -28,9 +28,12 @@ private slots:
     void test_CheckValidityCommonParameters_invalidWavelengthOrder();
     void test_CheckValidityCommonParameters_invalidNumDensityZero();
     void test_CheckValidityCommonParameters_invalidVolFractionZero();
-    void test_CheckValidityCommonParameters_invalidVolFractionExceedsOne();
+    void test_CheckValidityCommonParameters_invalidVolFractionUpperLimit();
     void test_CheckValidityCommonParameters_invalidMeanRadiusRange();
     void test_CheckValidityCommonParameters_invalidVolumeExceedsLimit();
+    void test_CheckValidityCommonParameters_invalidRelativeRefractiveIndexSmall();
+    void test_CheckValidityCommonParameters_volFractionAtLimit();
+    void test_CheckValidityCommonParameters_invalidRelativeRefractiveIndexTooLow();
 
     void test_CheckValidityDistributionParameters_valid();
     void test_CheckValidityDistributionParameters_invalidStdDevZero();
@@ -42,6 +45,10 @@ private slots:
     void test_CheckValidityDistributionParameters_invalidNRadiusRange();
     void test_CheckValidityDistributionParameters_invalidMeanRadiusDistributionRange();
     void test_CheckValidityDistributionParameters_invalidStdDevMeanRadiusRatio();
+    void test_CheckValidityDistributionParameters_invalidMeanRadiusLower();
+
+    void test_CheckPackingVolume_invalid();
+    void test_CheckPackingVolume_valid();
 
 private:
     Parameters *mPara;

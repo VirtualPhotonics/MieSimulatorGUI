@@ -148,12 +148,12 @@ void TestParameters::test_CheckValidityCommonParameters_invalidVolFractionZero()
 }
 
 // Test case: Volume fraction exceeds 1.0 when selected
-void TestParameters::test_CheckValidityCommonParameters_invalidVolFractionExceedsOne()
+void TestParameters::test_CheckValidityCommonParameters_invalidVolFractionUpperLimit()
 {    
     mPara->volFraction = 1.1;
     ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Volume Fraction must be less than 1.0."));
+    QCOMPARE(result.errorMessage, QString("Volume Fraction must not exceed the maximum packing factor."));
 }
 
 // Test case: Mean radius is too large
@@ -172,7 +172,35 @@ void TestParameters::test_CheckValidityCommonParameters_invalidVolumeExceedsLimi
     mPara->sphNumDensity = 239.0;
     ParameterValidationResult result = mPara->CheckValidityCommonParameters(true, true, false);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Concentration x Sphere Volume exceeds 1mm³! Reduce Concentration (Conc)."));
+    QCOMPARE(result.errorMessage, QString("'Concentration x Sphere Volume' exceeds the maximum packing factor! Reduce Concentration (Conc)."));
+}
+
+// Test case: Relative refractive index is too small (m < 0.05)
+void TestParameters::test_CheckValidityCommonParameters_invalidRelativeRefractiveIndexSmall()
+{
+    mPara->scatRefReal = 0.04;
+    mPara->medRef = 1.0;
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    QVERIFY(!result.isValid);
+    QCOMPARE(result.errorMessage, QString("Unrealistic relative refractive index! Check sphere and medium refractive index values."));
+}
+
+// Test case: Volume fraction exactly at the maximum packing factor limit
+void TestParameters::test_CheckValidityCommonParameters_volFractionAtLimit()
+{
+    mPara->volFraction = 0.74048;
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true);
+    QVERIFY(!result.isValid);
+    QCOMPARE(result.errorMessage, QString("Volume Fraction must not exceed the maximum packing factor."));
+}
+
+// Test case: Mean radius is too small (Distribution Parameters)
+void TestParameters::test_CheckValidityCommonParameters_invalidRelativeRefractiveIndexTooLow()
+{
+    mPara->meanRadius = 0.0004; // Below 0.0005
+    ParameterValidationResult result = mPara->CheckValidityDistributionParameters(0);
+    QVERIFY(!result.isValid);
+    QCOMPARE(result.errorMessage, QString("Diameter is out of range! Enter a value between 0.001μm and 50μm."));
 }
 
 // Test case: Ensures a valid set of parameters passes the distribution check (for Log Normal)
@@ -262,4 +290,31 @@ void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevMeanR
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(0);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Standard deviation to mean diameter ratio is smaller than 1e-5! Use 'Mono Disperse'."));
+}
+
+// Test case: Relative refractive index is too low (m < 0.05)
+void TestParameters::test_CheckValidityDistributionParameters_invalidMeanRadiusLower()
+{
+    mPara->scatRefReal = 0.04;
+    mPara->medRef = 1.0;
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    QVERIFY(!result.isValid);
+    QCOMPARE(result.errorMessage, QString("Unrealistic relative refractive index! Check sphere and medium refractive index values."));
+}
+
+// Test case: Polydisperse packing volume is valid
+void TestParameters::test_CheckPackingVolume_invalid()
+{
+    double totalVolume = 0.5;
+    ParameterValidationResult result = mPara->CheckValidityPackingVolume(totalVolume);
+    QVERIFY(result.isValid);
+}
+
+// Test case: Polydisperse packing volume is valid
+void TestParameters::test_CheckPackingVolume_valid()
+{
+    double totalVolume = 0.8;
+    ParameterValidationResult result = mPara->CheckValidityPackingVolume(totalVolume);
+    QVERIFY(!result.isValid);
+    QCOMPARE(result.errorMessage, QString("Total sphere volume in 1mm³ exceeds the maximum packing factor. Reduce Concentration."));
 }

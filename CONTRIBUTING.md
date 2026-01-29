@@ -4,7 +4,7 @@ All contributions to the **MieSimulatorGUI** must follow the workflow outlined b
 
 ## 1. Create an Issue First
 Before starting any work:
-* **Create a GitHub issue** describing the bug, enhancement, or feature request.
+* [**Create a GitHub issue**](https://github.com/VirtualPhotonics/MieSimulatorGUI/issues) describing the bug, enhancement, or feature request.
 * Clearly explain the motivation, scope, and expected behavior.
 * Wait for confirmation or discussion if the change is significant.
 * *Every code change must be associated with an issue.*
@@ -117,5 +117,6 @@ private:
 };
 
 #endif
+
 
 

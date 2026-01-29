@@ -31,6 +31,7 @@ public:
     double CalculateForwardBackward(std::complex<double> *S1, std::complex<double> *S2,
                                     Parameters *para, unsigned int start, unsigned int end);
     double CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para);
+    bool CheckIndependentScattering(Parameters *para);
 };
 
 #endif // CALCULATE_H

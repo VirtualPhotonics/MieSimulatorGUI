@@ -23,6 +23,7 @@ public:
     void DisableWidgetsDuringSimulation(Ui_MainWindow *ui, Parameters *para, bool flag);
     void DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow *ui, bool flag);
     void ReadCustomData(Parameters * para, QString fileName, bool * dataValidFlag);
+    void DisplayWarning(QString warningMessage);
 
 private:
     Calculate *mCalc;

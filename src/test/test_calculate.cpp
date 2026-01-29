@@ -7,6 +7,7 @@
 #include <QTest>
 #include <complex>
 #include "test_calculate.h"
+#include "utilities.h"
 
 TestCalculate::TestCalculate()
 {
@@ -417,22 +418,35 @@ void TestCalculate::test_CalculatePowerLawAutoFitComplex()
     QCOMPARE(mPara->bMie, bMie);
 }
 
-// Test case: Independent Scattering Logic
-void TestCalculate::test_IndependentScatteringCheck()
+// Test case: Check Normalized Phase function
+void TestCalculate::test_PhaseFunctionNormalization()
 {
     mPara->nRadius = 1;
-    mPara->meanRadius = 0.5; // Diameter = 1.0 um
-    mPara->startWavel = 500; // 0.5 um
+    mPara->nWavel = 1;
+    mPara->nTheta = 361;
+    mPara->wavelArray[0] = 500.0;
+    mPara->radArray[0] = 0.5;
+    mPara->medRefArray[0] = 1.33;
+    mPara->scatRefRealArray[0] = 1.5;
+    mPara->scatRefImagArray[0] = 0.0;
+    mPara->numDensityArray[0] = 1e6;
 
-    // Low concentration (Independent)
-    mPara->volFraction = 0.001;
-    mCalc->SetSphereRadiusAndRefIndex(mPara, 3, true);
-    QVERIFY(mPara->independentScat == true);
+    QLabel mockLabel;
+    mCalc->DoSimulation(&mockLabel, mPara);
 
-    // High concentration (Dependent)
-    mPara->volFraction = 0.1;
-    mCalc->SetSphereRadiusAndRefIndex(mPara, 3, true);
-    QVERIFY(mPara->independentScat == false);
+    double integral = 0.0;
+    double stepTheta = M_PI / (mPara->nTheta - 1);
+    Utilities util;
+
+    for (unsigned int t = 0; t < mPara->nTheta; ++t) {
+        double theta = t * stepTheta;
+        double weight = util.SimpsonsWeight(t, mPara->nTheta);
+        integral += mPara->phaseFunctionAve[0][t] * sin(theta) * 2.0 * M_PI * weight;
+    }
+    double unity = integral * stepTheta;
+
+    // Ideally, the normalized phase function integral should be 1.0.
+    QVERIFY(qAbs(unity - 1.0) < 1e-6);
 }
 
 // Sanity check for the ComputeMuspAtRefWavel method.
@@ -450,4 +464,67 @@ void TestCalculate::test_ComputeMuspAtRefWavel_sanityCheck()
         }
     }
     QVERIFY(!all_zero);
+}
+
+// Test case: High concentration regime (f_v > 0.1)
+void TestCalculate::test_CheckIndependentScattering_HighConcentration()
+{
+    mPara->nRadius = 1;
+    mPara->meanRadius = 1.0;
+    mPara->startWavel = 500.0;
+    mPara->numDensityArray[0] = 3e7;
+
+    QVERIFY(mCalc->CheckIndependentScattering(mPara) == true);
+}
+
+// Test case: Low concentration, size parameter below threshold (f_v <= 0.006, sizePara <= 0.388)
+void TestCalculate::test_CheckIndependentScattering_LowConcSmallSize()
+{
+    mPara->nRadius = 1;
+    mPara->meanRadius = 0.01;
+    mPara->startWavel = 1000.0;
+    mPara->numDensityArray[0] = 1e5;
+
+    QVERIFY(mCalc->CheckIndependentScattering(mPara) == false);
+}
+
+// Test case: Transitional regime, Dependent (0.006 < f_v <= 0.1 and low clearance)
+void TestCalculate::test_CheckIndependentScattering_TransitionalDependent()
+{
+    mPara->nRadius = 1;
+    mPara->meanRadius = 1.0;
+    mPara->startWavel = 1000.0;
+    mPara->numDensityArray[0] = 5e6;
+
+    // interParticleDistance = 1000 / (5e6)^(1/3) = 5.84
+    // clearanceToWavelength = (5.84 - 2*1.0) / 1.0 = 3.84
+    // 3.84 <= 5.0 (required clearance)
+    QVERIFY(mCalc->CheckIndependentScattering(mPara) == true);
+}
+
+// Test case: Low concentration, size parameter above threshold, Independent (High clearance)
+void TestCalculate::test_CheckIndependentScattering_LowConcLargeSizeIndependent()
+{
+    mPara->nRadius = 1;
+    mPara->meanRadius = 1.0;
+    mPara->startWavel = 500.0;
+    mPara->numDensityArray[0] = 1e4;
+
+    // interParticleDistance = 1000 / (1e4)^(1/3) = 46.4
+    // clearanceToWavelength = (46.4 - 2) / 0.5 = 88.8
+    // 88.8 > 5.0, should be independent (false)
+    QVERIFY(mCalc->CheckIndependentScattering(mPara) == false);
+}
+
+// Test case: Polydisperse branch logic check
+void TestCalculate::test_CheckIndependentScattering_Polydisperse()
+{
+    mPara->nRadius = 2;
+    mPara->radArray[0] = 0.5;
+    mPara->radArray[1] = 1.5;
+    mPara->numDensityArray[0] = 1e6;
+    mPara->numDensityArray[1] = 1e6;
+    mPara->startWavel = 1000.0;
+
+    QVERIFY(mCalc->CheckIndependentScattering(mPara) == false);
 }
