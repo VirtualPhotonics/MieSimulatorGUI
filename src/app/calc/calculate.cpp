@@ -152,7 +152,6 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
     delete[] sumS1;
     delete[] curS2;
     delete[] curS1;
-
 }
 
 //Compute Musp at reference wavelength
@@ -349,69 +348,60 @@ double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
 //Set sphere parameters
 void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index, bool flagVolOrConc)
 {
+    const double volumeConst = 4.0 * M_PI / 3.0;
+    const double sqrtTwoPi = sqrt(2.0 * M_PI);
+    const double sig = para->stdDev;
+    const double twoSigSq = 2.0 * sig * sig;
+
     if (para->nRadius == 1)  //Mono Disperse
-    {       
+    {
+        para->radArray[0] = para->meanRadius;
         if (flagVolOrConc)  //If volume fraction is selected, update number density
         {
-            double singleSphereVolume = 4.0 * M_PI *para->meanRadius * para->meanRadius * para->meanRadius / 3.0;
-            para->sphNumDensity = std::round(1e9 * para->volFraction /singleSphereVolume);
+            double singleSphereVolume = volumeConst * pow(para->meanRadius, 3);
+            para->sphNumDensity = std::round(1e9 * para->volFraction / singleSphereVolume);
         }        
 
-        para->radArray[0] = para->meanRadius;
         para->numDensityArray[0] = para->sphNumDensity;
         para->scatRefRealArray[0] = para->scatRefReal;
         para->scatRefImagArray[0] = para->scatRefImag;
         para->medRefArray[0] = para->medRef;
     }
     else                    //Poly Disperse
-    {
-        double temp, factor, stepR;
+    {        
         double totalSphereVolume = 0.0;
         double totalFuncSum = 0.0;
-        double *funcArray = new double[para->nRadius];
+        std::vector<double> funcArray(para->nRadius, 0.0);
+        double stepR = (para->maxRadius - para->minRadius) / (para->nRadius - 1);
+
         for (unsigned int i = 0; i < para->nRadius; i++)
         {
-            funcArray[i] = 0.0;
-        }
+            double r = para->minRadius + i * stepR;
+            para->radArray[i] = r;
 
-        stepR = (para->maxRadius - para->minRadius)/(para->nRadius -1);
-
-        switch (index)
-        {
-        case 0:     //Apply log normal distribution
-            for (unsigned int i=0; i<para->nRadius; i++)
+            if (index == 0) // Log-Normal
             {
-                para->radArray[i] = para->minRadius + i*stepR;
-                temp = log(para->radArray[i])-log(para->meanRadius);
-                funcArray[i] = (exp(-(temp*temp)/(2.0 * para->stdDev * para->stdDev)))/
-                                (para->radArray[i] * para->stdDev * sqrt (2.0 * M_PI)) ;
-                double singleSphVolume = 4.0 * M_PI * para->radArray[i] *
-                                  para->radArray[i] * para->radArray[i] /3.0;
-                totalSphereVolume += funcArray[i] * singleSphVolume;
-                totalFuncSum += funcArray[i];
+                double lnR = std::log(r);
+                double lnMean = std::log(para->meanRadius);
+                double diff = lnR - lnMean;
+                funcArray[i] = (std::exp(-(diff * diff) / twoSigSq)) / (r * sig * sqrtTwoPi);
             }
-            break;
-        case 1:     //Apply Gaussian distribution
-            for (unsigned int i=0; i<para->nRadius; i++)
+            else if (index == 1) // Gaussian
             {
-                para->radArray[i] = para->minRadius + i*stepR;
-                temp = para->radArray[i]-para->meanRadius;
-                funcArray[i]  = (exp(-(temp*temp/(2.0 * para->stdDev * para->stdDev))))/
-                                   (para->stdDev * sqrt (2.0 * M_PI)) ;
-                double singleSphVolume = 4.0 * M_PI * para->radArray[i] *
-                                  para->radArray[i] * para->radArray[i] /3.0;
-                totalSphereVolume += funcArray[i] * singleSphVolume;
-                totalFuncSum += funcArray[i];
+                double diff = r - para->meanRadius;
+                funcArray[i] = (std::exp(-(diff * diff) / twoSigSq)) / (sig * sqrtTwoPi);
             }
-            break;
+            totalSphereVolume += funcArray[i] * volumeConst * pow(r, 3);
+            totalFuncSum += funcArray[i];
         }
 
         // Compute factor to compute number density
-        if (flagVolOrConc)
+        double factor = 1e-12;
+        if (flagVolOrConc && totalSphereVolume > 0)
         {
             factor = 1e9 * para->volFraction /totalSphereVolume;
         }
-        else
+        else if (totalFuncSum > 0)
         {
             factor = para->sphNumDensity/totalFuncSum;
         }
@@ -423,9 +413,7 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
             para->scatRefRealArray[i] = para->scatRefReal;
             para->scatRefImagArray[i] = para->scatRefImag;
             para->medRefArray[i] = para->medRef;
-        }
-
-        delete []funcArray;
+        }        
     }
 }
 
@@ -433,114 +421,78 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
 //This process is used to obtain the best distribution for assigned mean diameter
 void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index)
 {
-    double curR, dR;
-    double cutoffPercent = 0.0;
-    double mu, sigma = 0.0;
-    double modeR;
-    double curY, maxY, minY;
-    int i;
-
-    if (index == 3) //Mono sphere Distribution
+    // index: 0 = Log-normal, 1 = Gaussian, 3 = Monodisperse
+    if (index == 3)
     {
         para->minRadius = para->meanRadius;
         para->maxRadius = para->meanRadius;
+        return;
     }
-    else
-    {
-        //Calculate a percentage to cutoff points for Log normal and Gaussian distribution
-        if (para->nRadius <52)
-            cutoffPercent = -0.0005*para->nRadius + 0.031;   //from 2:52 change from  3% to 0.5%
-        else
-            cutoffPercent = -0.00009*para->nRadius + 0.00968;   //from 52:102 change from  0.5% to 0.05%
-        sigma = para->stdDev;
-    }
+
+    double mu, sigma;
+    sigma = para->stdDev;
+
+    // Define how much of the distribution tail to include.
+    // A Z-score of 3.29 covers 99.9% of a Normal distribution.
+    // Scale it based on nRadius if fewer bins require tighter bounds.
+    double zScore = 3.0 + (para->nRadius / 100.0);
 
     switch (index)
     {
-    case 0:     //Apply log normal distribution.  Source: http://en.wikipedia.org/wiki/Log-normal_distribution
-
-        //find minR and maxR for a stand curve of mu=0 and multiply it by mean radius
-        mu = 0;
-        modeR = exp(mu - sigma*sigma);
-        maxY = (exp(-((log(modeR)-mu)*(log(modeR)-mu)/(2.0 * sigma * sigma))))/(modeR * sigma * sqrt (2.0 * M_PI));
-        minY = maxY*cutoffPercent;
-
-        //backward search
-        i = 1;
-        dR = sigma*modeR/1e3;
-        do
+        case 0: // Log-normal Distribution
         {
-            curR = modeR - i*dR;
-            curY = (exp(-((log(curR)-mu)*(log(curR)-mu)/(2.0 * sigma * sigma))))/(curR * sigma * sqrt (2.0 * M_PI));
-            i++;
-        }
-        while (curY>minY);
-        para->minRadius = curR*para->meanRadius;
-        if (para->minRadius <= 0.0)
-            para->minRadius = 1e-10;
+            // If para->meanRadius is the Arithmetic Mean (E[X]),
+            // convert it to the underlying Normal mu.
+            // E[X] = exp(mu + sigma^2 / 2)
+            mu = std::log(para->meanRadius) - (sigma * sigma / 2.0);
 
-        //forward search
-        i = 1;
-        dR = sigma*modeR/1e3;
-        do
+            para->minRadius = std::exp(mu - zScore * sigma);
+            para->maxRadius = std::exp(mu + zScore * sigma);
+
+            // Safety floor
+            if (para->minRadius < 1e-10) para->minRadius = 1e-10;
+            break;
+        }
+
+        case 1: // Gaussian (Normal) Distribution
         {
-            curR = modeR + i*dR;
-            curY = (exp(-((log(curR)-mu)*(log(curR)-mu)/(2.0 * sigma * sigma))))/(curR * sigma * sqrt (2.0 * M_PI));
-            i++;
+            mu = para->meanRadius;
+
+            para->minRadius = mu - zScore * sigma;
+            para->maxRadius = mu + zScore * sigma;
+
+            // Physical constraint: Radius cannot be negative
+            if (para->minRadius < 1e-10) para->minRadius = 1e-10;
+            break;
         }
-        while (curY>minY);
-        para->maxRadius = curR*para->meanRadius;
-        break;
-
-    case 1:     //Apply Gaussian distribution
-
-        mu = 0;
-        maxY = 1.0/(sigma * sqrt (2.0 * M_PI));
-        minY = maxY*cutoffPercent;
-        dR = sigma/1e3;
-
-        //forward search to find right end
-        i = 1;
-        do
-        {
-            curR = mu + i*dR;
-            curY = (exp(-((curR-mu)*(curR-mu)/(2.0 * sigma * sigma))))/(sigma * sqrt (2.0 * M_PI));
-            i++;
-        }
-        while (curY>minY);
-        para->maxRadius = para->meanRadius + curR;
-        //Left end setting
-        if (curR < para->meanRadius)
-            para->minRadius = para->meanRadius - curR;
-        else
-            para->minRadius = 1e-10;
-        break;    
     }
 }
 
 // Determines the scattering regime based on Tien et. al, A.R. Heat Trandfer 1(1987) & Galy et al. JQSRT 246(2020)
-bool Calculate::CheckIndependentScattering(Parameters *para)
+bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceToWavelength, double &sizeParameter,
+                                           double &volFraction, double &criticalWavength, QString &strRegime)
 {
-    double volFraction = 0.0;
+    double const volumeConstant = (4.0/3.0) * M_PI ;
+    double effectiveRadius = 0.0;
     double interParticleDistance;
-    double clearanceToWavelength;
-    double sizeParameter;
-    double wavelengthMicrons = para->startWavel / 1000.0;
+
+    // Calculate wavelengths in microns
+    double criticalWavelength = para->endWavel / (para->medRef * 1000.0);
+
     if (para->nRadius == 1)       //monodisperse
     {
-        double singleSphVolume = (4.0/3.0) * M_PI * pow(para->meanRadius, 3);
+        effectiveRadius = para->meanRadius;
+        double singleSphVolume = volumeConstant * pow(effectiveRadius, 3);
         volFraction = singleSphVolume * para->numDensityArray[0] / 1e9;
         interParticleDistance = 1e3 / pow(para->numDensityArray[0], 1.0 / 3.0);
-        clearanceToWavelength = (interParticleDistance - 2 * para->meanRadius) / wavelengthMicrons;
-        sizeParameter = 2.0 * M_PI * para->meanRadius / wavelengthMicrons;
     }
-    else
+    else                         //polydisperse
     {
         double totalVolume = 0.0;
         double totalNumDensity = 0.0;
         for (unsigned int i = 0; i < para->nRadius; i++)
         {
-            double singleSphVolume = (4.0/3.0) * M_PI * pow(para->radArray[i], 3);
+            double singleSphVolume = volumeConstant * pow(para->radArray[i], 3);
             totalVolume += singleSphVolume * para->numDensityArray[i];
             totalNumDensity += para->numDensityArray[i];
         }
@@ -548,35 +500,31 @@ bool Calculate::CheckIndependentScattering(Parameters *para)
         interParticleDistance = 1e3 / pow(totalNumDensity, 1.0 / 3.0);
 
         double averageVolume = totalVolume / totalNumDensity;
-        double effectiveRadius = pow(3.0 * averageVolume / (4.0 * M_PI), 1.0/3.0);
-
-        clearanceToWavelength = (interParticleDistance - 2 * effectiveRadius) / wavelengthMicrons;
-        sizeParameter = 2.0 * M_PI * effectiveRadius / wavelengthMicrons;
+        effectiveRadius = pow(3.0 * averageVolume / (4.0 * M_PI), 1.0/3.0);
     }
 
-    // Check dependent scattering, True: Dependent, False: Independent
+    clearanceToWavelength = (interParticleDistance - 2 * effectiveRadius) / criticalWavelength;
+    sizeParameter = 2.0 * M_PI * effectiveRadius / criticalWavelength;
+
+    // Determine the threshold for clearance based on the size parameter (Galy 2020)
     double requiredClearance = (sizeParameter <= 2.0) ? 2.0 : 5.0;
+
     bool isDependent = false;
 
-    if (volFraction > 0.1)   // High concentration regime
+    if (volFraction > 0.1) // High concentration regime
     {
-        return true;
+        strRegime = "High Concentration Regime";
+        isDependent = true;
     }
-    if (volFraction > 0.006) // Transitional regime
+    else if (volFraction > 0.006) // Transitional regime
     {
+        strRegime = "Transitional Regime";
         isDependent = (clearanceToWavelength <= requiredClearance);
     }
     else // Low concentration regime
     {
-        if (sizeParameter > 0.388)
-        {
-            isDependent = (clearanceToWavelength <= requiredClearance);
-        }
-        else
-        {
-            isDependent = false;
-        }
+        strRegime = "Low Concentration Regime";
+        isDependent = (sizeParameter > 0.388) ? (clearanceToWavelength <= requiredClearance) : false;
     }
     return isDependent;
 }
-

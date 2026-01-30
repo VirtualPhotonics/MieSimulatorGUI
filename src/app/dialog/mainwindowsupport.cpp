@@ -326,14 +326,13 @@ void MainWindowSupport::ProcessMonoDisperse(Ui_MainWindow *ui, Parameters *para)
     plot.AssignValuesS1S2Plot(ui, para);
     plot.AssignValuesOtherPlots(ui, para);
 
-    //check dependent scattering
-    if(mCalc->CheckIndependentScattering(para))
-        if(mCalc->CheckIndependentScattering(para))
-            DisplayWarning("High Volume Fraction Alert: The current volume fraction (or "
-                           "concentration) exceeds the recommended range for independent "
-                           "scattering. Since MieSimulatorGUI is best suited for dilute "
-                           "mixtures, results at this concentration should be interpreted"
-                           " with caution.");
+    //Check independent/dependent scattering
+    double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
+    QString strRegime;
+    if(mCalc->CheckIndependentScattering(para, clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime))
+    {
+        DisplayScatteringRegimeWarning(clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime);
+    }
 }
 
 // Run Poly disperse distribution
@@ -355,13 +354,13 @@ void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, Parameters *para)
     plot.AssignValuesS1S2Plot(ui, para);
     plot.AssignValuesOtherPlots(ui, para);
 
-    //check dependent scattering
-    if(mCalc->CheckIndependentScattering(para))
-        DisplayWarning("High Volume Fraction Alert: The current volume fraction (or "
-                       "concentration) exceeds the recommended range for independent "
-                       "scattering. Since MieSimulatorGUI is best suited for dilute "
-                       "mixtures, results at this concentration should be interpreted"
-                       " with caution.");
+    //Check independent/dependent scattering
+    double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
+    QString strRegime;
+    if(mCalc->CheckIndependentScattering(para, clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime))
+    {
+        DisplayScatteringRegimeWarning(clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime);
+    }
 }
 
 //Sphere distribution in polydisperse
@@ -603,6 +602,39 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
     }
 }
 
+void MainWindowSupport::DisplayScatteringRegimeWarning(double clearanceToWavelength, double sizeParameter,
+                                                       double volFraction, double criticalWavelength,
+                                                       QString strRegime)
+{
+    QString strTienDorlen = (clearanceToWavelength > 0.5) ? "Independent" : "Dependent";
+
+    QString msg = QString(
+                      "<b>Dependent Scattering Warning</b><br>"
+                      "The current configuration deviates from the independent scattering regime. "
+                      "Since MieSimulatorGUI is best suited for dilute mixtures, results at this "
+                      "concentration should be interpreted with caution.<br><br>"
+                      "<b>Independent or Dependent:</b><br>"
+                      "• <b>Per Tien and Drolen (1987):</b> %1<br>"
+                      "• <b>Per Galy et al. (2020):</b> %2<br><br>"
+                      "<b>Details:</b><br>"
+                      "• <b>Regime:</b> %3<br>"
+                      "• <b>Volume Fraction:</b> %4<br>"
+                      "• <b>Wavelength:</b> %5<br>"
+                      "• <b>Size Parameter:</b> %6<br>"
+                      "• <b>Clearance/Wavelength Ratio:</b> %7"
+                      )
+                      .arg(strTienDorlen)
+                      .arg("Dependent")
+                      .arg(strRegime)
+                      .arg(volFraction, 0, 'f', 4)
+                      .arg(criticalWavelength, 0, 'f', 2)
+                      .arg(sizeParameter, 0, 'f', 4)
+                      .arg(clearanceToWavelength, 0, 'f', 4);
+
+    DisplayWarning(msg);
+}
+
+// Display warning message
 void MainWindowSupport::DisplayWarning(QString warningMessage)
 {
     QMessageBox msgBoxWarning;
@@ -611,3 +643,4 @@ void MainWindowSupport::DisplayWarning(QString warningMessage)
     msgBoxWarning.setText(warningMessage);
     msgBoxWarning.exec();
 }
+
