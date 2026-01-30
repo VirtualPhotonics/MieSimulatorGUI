@@ -266,11 +266,11 @@ void TestParameters::test_CheckValidityDistributionParameters_invalidNRadiusOne(
 
 // Test case: nRadius is out of range
 void TestParameters::test_CheckValidityDistributionParameters_invalidNRadiusRange()
-{    
-    mPara->nRadius = 102;
+{
+    mPara->nRadius = 202;
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(0);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Number of sphere sizes is out of range! Enter a value between 2 and 101."));
+    QCOMPARE(result.errorMessage, QString("Number of sphere sizes is out of range! Enter a value between 2 and 201."));
 }
 
 // Test case: mean radius is too large for distribution check

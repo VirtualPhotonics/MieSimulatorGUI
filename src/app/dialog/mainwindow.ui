@@ -3522,7 +3522,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Num. sph. sizes (2-101)</string>
+            <string>Num. sph. sizes (2-201)</string>
            </property>
            <property name="buddy">
             <cstring>lineEdit_NSphere</cstring>

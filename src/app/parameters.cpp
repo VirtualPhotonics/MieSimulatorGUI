@@ -244,10 +244,10 @@ ParameterValidationResult Parameters::CheckValidityDistributionParameters(int co
         result.errorMessage = "Discrete sphere size is 1! Use 'Mono Disperse'.";
         return result;
     }
-    if ((nRadius < 2.0) ||(nRadius >101.0))
+    if ((nRadius < 2.0) ||(nRadius >201.0))
     {
         result.isValid = false;
-        result.errorMessage = "Number of sphere sizes is out of range! Enter a value between 2 and 101.";
+        result.errorMessage = "Number of sphere sizes is out of range! Enter a value between 2 and 201.";
         return result;
     }
     if ((meanRadius < 0.0005) ||(meanRadius >25))
