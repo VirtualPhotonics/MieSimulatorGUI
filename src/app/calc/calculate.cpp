@@ -470,7 +470,8 @@ void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index)
 
 // Determines the scattering regime based on Tien et. al, A.R. Heat Trandfer 1(1987) & Galy et al. JQSRT 246(2020)
 bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceToWavelength, double &sizeParameter,
-                                           double &volFraction, double &criticalWavelength, QString &strRegime)
+                                           double &volFraction, double &criticalWavelength, QString &strRegime,
+                                           bool flagVolFlag)
 {
     double const volumeConstant = (4.0/3.0) * M_PI ;
     double effectiveRadius = 0.0;
@@ -483,7 +484,14 @@ bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceTo
     {
         effectiveRadius = para->meanRadius;
         double singleSphVolume = volumeConstant * pow(effectiveRadius, 3);
-        volFraction = singleSphVolume * para->numDensityArray[0] / 1e9;
+        if (flagVolFlag)
+        {
+            volFraction = para->volFraction;
+        }
+        else
+        {
+            volFraction = singleSphVolume * para->numDensityArray[0] / 1e9;
+        }
         interParticleDistance = 1e3 / pow(para->numDensityArray[0], 1.0 / 3.0);
     }
     else                         //polydisperse
@@ -496,7 +504,14 @@ bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceTo
             totalVolume += singleSphVolume * para->numDensityArray[i];
             totalNumDensity += para->numDensityArray[i];
         }
-        volFraction = totalVolume / 1e9;
+        if (flagVolFlag)
+        {
+            volFraction = para->volFraction;
+        }
+        else
+        {
+            volFraction = totalVolume / 1e9;
+        }
         interParticleDistance = 1e3 / pow(totalNumDensity, 1.0 / 3.0);
 
         double averageVolume = totalVolume / totalNumDensity;
