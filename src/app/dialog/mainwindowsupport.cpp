@@ -623,8 +623,11 @@ void MainWindowSupport::DisplayScatteringRegimeWarning(double clearanceToWavelen
                                                        double volFraction, double criticalWavelength,
                                                        QString strRegime)
 {
-    QString strTienDorlen = (clearanceToWavelength > 0.5) ? "Independent" : "Dependent";
+    QString strTienDorlen = (clearanceToWavelength > 0.5)
+                                ? "<font color='green'>Independent</font>"
+                                : "<font color='red'>Dependent</font>";
 
+    QString strGaly = "<font color='red'>Dependent</font>";
 
     QString msg = QString(
                       "<b>Dependent Scattering Warning</b><br>"
@@ -637,12 +640,12 @@ void MainWindowSupport::DisplayScatteringRegimeWarning(double clearanceToWavelen
                       "<b>Details:</b><br>"
                       "• <b>Regime:</b> %3<br>"
                       "• <b>Volume Fraction:</b> %4<br>"
-                      "• <b>Wavelength:</b> %5<br>"
+                      "• <b>Critical Wavelength:</b> %5<br>"
                       "• <b>Size Parameter:</b> %6<br>"
                       "• <b>Clearance/Wavelength Ratio:</b> %7"
                       )
                       .arg(strTienDorlen)
-                      .arg("Dependent")
+                      .arg(strGaly)
                       .arg(strRegime)
                       .arg(volFraction, 0, 'g', 6)
                       .arg(criticalWavelength, 0, 'g', 6)
