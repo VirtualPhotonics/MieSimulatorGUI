@@ -25,7 +25,8 @@ void TestUtilities::init()
 // clean up resources
 void TestUtilities::cleanup()
 {
-    if (mUtil) {
+    if (mUtil)
+    {
         delete mUtil;
         mUtil = nullptr;
     }

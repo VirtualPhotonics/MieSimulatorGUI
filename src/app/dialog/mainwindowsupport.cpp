@@ -326,14 +326,13 @@ void MainWindowSupport::ProcessMonoDisperse(Ui_MainWindow *ui, Parameters *para)
     plot.AssignValuesS1S2Plot(ui, para);
     plot.AssignValuesOtherPlots(ui, para);
 
-    //check dependent scattering
-    if(mCalc->CheckIndependentScattering(para))
-        if(mCalc->CheckIndependentScattering(para))
-            DisplayWarning("High Volume Fraction Alert: The current volume fraction (or "
-                           "concentration) exceeds the recommended range for independent "
-                           "scattering. Since MieSimulatorGUI is best suited for dilute "
-                           "mixtures, results at this concentration should be interpreted"
-                           " with caution.");
+    //Check independent/dependent scattering
+    double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
+    QString strRegime;
+    if(mCalc->CheckIndependentScattering(para, clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime))
+    {
+        DisplayScatteringRegimeWarning(clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime);
+    }
 }
 
 // Run Poly disperse distribution
@@ -355,13 +354,13 @@ void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, Parameters *para)
     plot.AssignValuesS1S2Plot(ui, para);
     plot.AssignValuesOtherPlots(ui, para);
 
-    //check dependent scattering
-    if(mCalc->CheckIndependentScattering(para))
-        DisplayWarning("High Volume Fraction Alert: The current volume fraction (or "
-                       "concentration) exceeds the recommended range for independent "
-                       "scattering. Since MieSimulatorGUI is best suited for dilute "
-                       "mixtures, results at this concentration should be interpreted"
-                       " with caution.");
+    //Check independent/dependent scattering
+    double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
+    QString strRegime;
+    if(mCalc->CheckIndependentScattering(para, clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime))
+    {
+        DisplayScatteringRegimeWarning(clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime);
+    }
 }
 
 //Sphere distribution in polydisperse
@@ -448,8 +447,25 @@ void MainWindowSupport::DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow
     ui->lineEdit_NSphere->setDisabled(flag);
     ui->lineEdit_ScatRefReal->setDisabled(flag);
     ui->lineEdit_ScatRefImag->setDisabled(flag);
-    ui->lineEdit_NumDen->setDisabled(flag);
-    ui->lineEdit_VolFrac->setDisabled(flag);
+    if (!flag)
+    {
+        if (ui->radioButton_NumDen->isChecked())
+        {
+            ui->lineEdit_NumDen->setDisabled(flag);
+            ui->lineEdit_VolFrac->setEnabled(flag);
+        }
+
+        if (ui->radioButton_VolFrac->isChecked())
+        {
+            ui->lineEdit_NumDen->setEnabled(flag);
+            ui->lineEdit_VolFrac->setDisabled(flag);
+        }
+    }
+    else
+    {
+        ui->lineEdit_NumDen->setDisabled(flag);
+        ui->lineEdit_VolFrac->setDisabled(flag);
+    }
     ui->label_MeanDiameter->setDisabled(flag);
     ui->label_StdDev->setDisabled(flag);
     ui->label_NSphere->setDisabled(flag);
@@ -603,6 +619,43 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
     }
 }
 
+void MainWindowSupport::DisplayScatteringRegimeWarning(double clearanceToWavelength, double sizeParameter,
+                                                       double volFraction, double criticalWavelength,
+                                                       QString strRegime)
+{
+    QString strTienDorlen = (clearanceToWavelength > 0.5)
+                                ? "<font color='green'>Independent</font>"
+                                : "<font color='red'>Dependent</font>";
+
+    QString strGaly = "<font color='red'>Dependent</font>";
+
+    QString msg = QString(
+                      "<b>Dependent Scattering Warning</b><br>"
+                      "The current configuration deviates from the independent scattering regime. "
+                      "Since MieSimulatorGUI is best suited for dilute mixtures, results at this "
+                      "concentration should be interpreted with caution.<br><br>"
+                      "<b>Independent or Dependent:</b><br>"
+                      "• Per <b>Tien and Drolen (1987):</b> %1<br>"
+                      "• Per <b>Galy et al. (2020):</b> %2<br><br>"
+                      "<b>Details:</b><br>"
+                      "• <b>Regime:</b> %3<br>"
+                      "• <b>Volume Fraction:</b> %4<br>"
+                      "• <b>Critical Wavelength:</b> %5<br>"
+                      "• <b>Size Parameter:</b> %6<br>"
+                      "• <b>Clearance/Wavelength Ratio:</b> %7"
+                      )
+                      .arg(strTienDorlen)
+                      .arg(strGaly)
+                      .arg(strRegime)
+                      .arg(volFraction, 0, 'g', 6)
+                      .arg(criticalWavelength, 0, 'g', 6)
+                      .arg(sizeParameter, 0, 'g', 6)
+                      .arg(clearanceToWavelength, 0, 'g', 6);
+
+    DisplayWarning(msg);
+}
+
+// Display warning message
 void MainWindowSupport::DisplayWarning(QString warningMessage)
 {
     QMessageBox msgBoxWarning;
@@ -611,3 +664,4 @@ void MainWindowSupport::DisplayWarning(QString warningMessage)
     msgBoxWarning.setText(warningMessage);
     msgBoxWarning.exec();
 }
+

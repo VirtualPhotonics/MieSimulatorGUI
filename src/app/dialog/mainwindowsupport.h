@@ -24,6 +24,10 @@ public:
     void DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow *ui, bool flag);
     void ReadCustomData(Parameters * para, QString fileName, bool * dataValidFlag);
     void DisplayWarning(QString warningMessage);
+    // Display dependent scattering warning
+    void DisplayScatteringRegimeWarning(double clearanceToWavelength, double sizeParameter,
+                                        double volFraction, double criticalWavelength,
+                                        QString strRegime);
 
 private:
     Calculate *mCalc;
