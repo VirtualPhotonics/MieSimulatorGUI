@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
         double scaleFactor = qMin(scaleWidth, scaleHeight);
 
         // Define your base design size
-        QSize baseSize(1120, 760);
+        QSize baseSize(1120, 768);
 
         // Apply scale factor
         int newWidth = static_cast<int>(baseSize.width() * scaleFactor);
