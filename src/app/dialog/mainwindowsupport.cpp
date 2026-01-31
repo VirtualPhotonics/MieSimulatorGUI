@@ -447,8 +447,25 @@ void MainWindowSupport::DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow
     ui->lineEdit_NSphere->setDisabled(flag);
     ui->lineEdit_ScatRefReal->setDisabled(flag);
     ui->lineEdit_ScatRefImag->setDisabled(flag);
-    ui->lineEdit_NumDen->setDisabled(flag);
-    ui->lineEdit_VolFrac->setDisabled(flag);
+    if (!flag)
+    {
+        if (ui->radioButton_NumDen->isChecked())
+        {
+            ui->lineEdit_NumDen->setDisabled(flag);
+            ui->lineEdit_VolFrac->setEnabled(flag);
+        }
+
+        if (ui->radioButton_VolFrac->isChecked())
+        {
+            ui->lineEdit_NumDen->setEnabled(flag);
+            ui->lineEdit_VolFrac->setDisabled(flag);
+        }
+    }
+    else
+    {
+        ui->lineEdit_NumDen->setDisabled(flag);
+        ui->lineEdit_VolFrac->setDisabled(flag);
+    }
     ui->label_MeanDiameter->setDisabled(flag);
     ui->label_StdDev->setDisabled(flag);
     ui->label_NSphere->setDisabled(flag);
@@ -608,14 +625,15 @@ void MainWindowSupport::DisplayScatteringRegimeWarning(double clearanceToWavelen
 {
     QString strTienDorlen = (clearanceToWavelength > 0.5) ? "Independent" : "Dependent";
 
+
     QString msg = QString(
                       "<b>Dependent Scattering Warning</b><br>"
                       "The current configuration deviates from the independent scattering regime. "
                       "Since MieSimulatorGUI is best suited for dilute mixtures, results at this "
                       "concentration should be interpreted with caution.<br><br>"
                       "<b>Independent or Dependent:</b><br>"
-                      "• <b>Per Tien and Drolen (1987):</b> %1<br>"
-                      "• <b>Per Galy et al. (2020):</b> %2<br><br>"
+                      "• Per <b>Tien and Drolen (1987):</b> %1<br>"
+                      "• Per <b>Galy et al. (2020):</b> %2<br><br>"
                       "<b>Details:</b><br>"
                       "• <b>Regime:</b> %3<br>"
                       "• <b>Volume Fraction:</b> %4<br>"
@@ -626,10 +644,10 @@ void MainWindowSupport::DisplayScatteringRegimeWarning(double clearanceToWavelen
                       .arg(strTienDorlen)
                       .arg("Dependent")
                       .arg(strRegime)
-                      .arg(volFraction, 0, 'f', 4)
-                      .arg(criticalWavelength, 0, 'f', 2)
-                      .arg(sizeParameter, 0, 'f', 4)
-                      .arg(clearanceToWavelength, 0, 'f', 4);
+                      .arg(volFraction, 0, 'g', 6)
+                      .arg(criticalWavelength, 0, 'g', 6)
+                      .arg(sizeParameter, 0, 'g', 6)
+                      .arg(clearanceToWavelength, 0, 'g', 6);
 
     DisplayWarning(msg);
 }

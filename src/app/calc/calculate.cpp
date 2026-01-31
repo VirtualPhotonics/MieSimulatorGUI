@@ -470,14 +470,14 @@ void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index)
 
 // Determines the scattering regime based on Tien et. al, A.R. Heat Trandfer 1(1987) & Galy et al. JQSRT 246(2020)
 bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceToWavelength, double &sizeParameter,
-                                           double &volFraction, double &criticalWavength, QString &strRegime)
+                                           double &volFraction, double &criticalWavelength, QString &strRegime)
 {
     double const volumeConstant = (4.0/3.0) * M_PI ;
     double effectiveRadius = 0.0;
     double interParticleDistance;
 
     // Calculate wavelengths in microns
-    double criticalWavelength = para->endWavel / (para->medRef * 1000.0);
+    criticalWavelength = para->endWavel;
 
     if (para->nRadius == 1)       //monodisperse
     {
@@ -503,8 +503,8 @@ bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceTo
         effectiveRadius = pow(3.0 * averageVolume / (4.0 * M_PI), 1.0/3.0);
     }
 
-    clearanceToWavelength = (interParticleDistance - 2 * effectiveRadius) / criticalWavelength;
-    sizeParameter = 2.0 * M_PI * effectiveRadius / criticalWavelength;
+    clearanceToWavelength = (interParticleDistance - 2 * effectiveRadius) * 1e3 * para->medRef / criticalWavelength;
+    sizeParameter = 2.0 * M_PI * effectiveRadius * 1e3 * para->medRef / criticalWavelength;
 
     // Determine the threshold for clearance based on the size parameter (Galy 2020)
     double requiredClearance = (sizeParameter <= 2.0) ? 2.0 : 5.0;
