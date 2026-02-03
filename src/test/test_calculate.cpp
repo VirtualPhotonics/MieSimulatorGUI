@@ -484,6 +484,7 @@ void TestCalculate::test_CheckIndependentScattering_HighConcentration()
 {
     double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
     QString strRegime;
+    bool flagVolFrac = false;
 
     mPara->nRadius = 1;
     mPara->meanRadius = 1.0;
@@ -492,7 +493,8 @@ void TestCalculate::test_CheckIndependentScattering_HighConcentration()
     mPara->medRef = 1.0;
 
     bool isDependent = mCalc->CheckIndependentScattering(mPara, clearanceToWavelength, sizeParameter,
-                                                         volFraction, criticalWavelength, strRegime);
+                                                         volFraction, criticalWavelength, strRegime,
+                                                         flagVolFrac);
     QVERIFY(isDependent == true);
 }
 
@@ -501,6 +503,7 @@ void TestCalculate::test_CheckIndependentScattering_LowConcSmallSize()
 {
     double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
     QString strRegime;
+    bool flagVolFrac = false;
 
     mPara->nRadius = 1;
     mPara->meanRadius = 0.01;
@@ -509,7 +512,8 @@ void TestCalculate::test_CheckIndependentScattering_LowConcSmallSize()
     mPara->medRef = 1.0;
 
     bool isDependent = mCalc->CheckIndependentScattering(mPara, clearanceToWavelength, sizeParameter,
-                                                         volFraction, criticalWavelength, strRegime);
+                                                         volFraction, criticalWavelength, strRegime,
+                                                         flagVolFrac);
     QVERIFY(isDependent == false);
 }
 
@@ -518,6 +522,7 @@ void TestCalculate::test_CheckIndependentScattering_TransitionalDependent()
 {
     double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
     QString strRegime;
+    bool flagVolFrac = false;
 
     mPara->nRadius = 1;
     mPara->meanRadius = 1.0;
@@ -529,7 +534,8 @@ void TestCalculate::test_CheckIndependentScattering_TransitionalDependent()
     // clearanceToWavelength = (5.84 - 2*1.0) / 1.0 = 3.84
     // 3.84 <= 5.0 (required clearance)
     bool isDependent = mCalc->CheckIndependentScattering(mPara, clearanceToWavelength, sizeParameter,
-                                                         volFraction, criticalWavelength, strRegime);
+                                                         volFraction, criticalWavelength, strRegime,
+                                                         flagVolFrac);
     QVERIFY(isDependent == true);
 }
 
@@ -538,6 +544,7 @@ void TestCalculate::test_CheckIndependentScattering_LowConcLargeSizeIndependent(
 {
     double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
     QString strRegime;
+    bool flagVolFrac = false;
 
     mPara->nRadius = 1;
     mPara->meanRadius = 1.0;
@@ -549,7 +556,8 @@ void TestCalculate::test_CheckIndependentScattering_LowConcLargeSizeIndependent(
     // clearanceToWavelength = (46.4 - 2) / 0.5 = 88.8
     // 88.8 > 5.0, should be independent (false)
     bool isDependent = mCalc->CheckIndependentScattering(mPara, clearanceToWavelength, sizeParameter,
-                                                         volFraction, criticalWavelength, strRegime);
+                                                         volFraction, criticalWavelength, strRegime,
+                                                         flagVolFrac);
     QVERIFY(isDependent == false);
 }
 
@@ -558,6 +566,7 @@ void TestCalculate::test_CheckIndependentScattering_Polydisperse()
 {
     double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
     QString strRegime;
+    bool flagVolFrac = false;
 
     mPara->nRadius = 2;
     mPara->radArray[0] = 0.5;
@@ -568,6 +577,7 @@ void TestCalculate::test_CheckIndependentScattering_Polydisperse()
     mPara->medRef = 1.0;
 
     bool isDependent = mCalc->CheckIndependentScattering(mPara, clearanceToWavelength, sizeParameter,
-                                                         volFraction, criticalWavelength, strRegime);
+                                                         volFraction, criticalWavelength, strRegime,
+                                                         flagVolFrac);
     QVERIFY(isDependent == false);
 }

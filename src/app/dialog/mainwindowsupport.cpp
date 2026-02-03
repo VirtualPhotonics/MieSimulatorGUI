@@ -329,7 +329,9 @@ void MainWindowSupport::ProcessMonoDisperse(Ui_MainWindow *ui, Parameters *para)
     //Check independent/dependent scattering
     double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
     QString strRegime;
-    if(mCalc->CheckIndependentScattering(para, clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime))
+    bool flagVolFrac = ui->radioButton_VolFrac->isChecked();
+    if(mCalc->CheckIndependentScattering(para, clearanceToWavelength, sizeParameter, volFraction,
+                                          criticalWavelength, strRegime, flagVolFrac))
     {
         DisplayScatteringRegimeWarning(clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime);
     }
@@ -357,7 +359,9 @@ void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, Parameters *para)
     //Check independent/dependent scattering
     double clearanceToWavelength, sizeParameter, volFraction, criticalWavelength;
     QString strRegime;
-    if(mCalc->CheckIndependentScattering(para, clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime))
+    bool flagVolFrac = ui->radioButton_VolFrac->isChecked();
+    if(mCalc->CheckIndependentScattering(para, clearanceToWavelength, sizeParameter, volFraction,
+                                          criticalWavelength, strRegime, flagVolFrac))
     {
         DisplayScatteringRegimeWarning(clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime);
     }
