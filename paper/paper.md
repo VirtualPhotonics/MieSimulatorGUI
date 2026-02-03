@@ -15,7 +15,7 @@ authors:
   - name: Carole K. Hayakawa
     orcid: 0000-0001-5696-160X
     affiliation: '1, 2'
-  - name: Lisa Glover
+  - name: Lisa M. Glover
     orcid: 0009-0009-0291-5099
     affiliation: 2
   - name: Vasan Venugopalan
@@ -32,7 +32,7 @@ affiliations:
       Beckman Laser Institute and Medical Clinic, University of California,
       Irvine, California 92697, United States
     index: 2
-date: 11 December 2025
+date: 2 February 2026
 bibliography: paper.bib
 
 ---
@@ -67,7 +67,7 @@ The tool is distributed as portable binaries for Windows, macOS, and Linux. For 
 
 ## Input Selection Panel
 
-This panel enables the user to define inputs for Mie simulations at either a single wavelength or across a spectral range. The distribution of spheres is described using sphere concentration (`Conc`) ($\text{spheres/mm}^3$) or volume fraction (`Vol Frac`). The volume fraction represents the ratio of total sphere volume to the total container volume. For polydisperse systems, it is calculated by summing the products of each sphere size's volume and its respective concentration per unit volume. `MieSimulatorGUI` utilizes the independent scattering approximation, a framework valid for dilute suspensions where particles are sufficiently separated to ignore coherent interactions [@VandeHulst1957; @Schmitt1998]. Since the validity of this approximation depends on the inter-particle spacing, size parameter, and relative refractive index [@Tien1987; @Ivezic1996; @Galy2020; @Yalcin2022], its accuracy diminishes as the volume fraction increases. Consequently, the tool is best suited for dilute systems and the results obtained for concentrated regimes may deviate from physical reality and should be interpreted with caution. `MieSimulatorGUI` triggers a warning when parameters violate dependent scattering conditions.
+This panel enables the user to define inputs for Mie simulations at either a single wavelength or across a spectral range. The distribution of spheres is described using sphere concentration (`Conc`) ($\text{spheres/mm}^3$) or volume fraction (`Vol Frac`). The volume fraction represents the ratio of total sphere volume to the total container volume. For polydisperse systems, it is calculated by summing the products of each sphere size's volume and its respective concentration per unit volume. `MieSimulatorGUI` utilizes the independent scattering approximation, a framework valid for dilute suspensions where particles are sufficiently separated to ignore coherent interactions [@VandeHulst1957; @Schmitt1998]. Since the validity of this approximation depends on the inter-particle spacing, size parameter, and relative refractive index [@Tien1987; @Ivezic1996; @Galy2020; @Yalcin2022], its accuracy diminishes as the volume fraction increases. Consequently, the tool is best suited for dilute systems and the results obtained for concentrated regimes may deviate from physical reality and should be interpreted with caution. `MieSimulatorGUI` v2.0 triggers a warning when parameters violate dependent scattering conditions.
 
 To maintain numerical stability in the BHMIE algorithm and ensure UI responsiveness, sphere diameters are restricted to a range of 0.1 $\text{nm}$ to 300 $\text{µm}$ and wavelengths are limited to $50\text{ nm}$ – $3000\text{ nm}$. These ranges cover the primary biomedical and atmospheric spectral windows. For absorbing spheres, the complex refractive index ($m_{sphere}$) is defined as $m_{real}$ – j $m_{imag}$, where $m_{real}$ and $m_{imag}$ represent real and imaginary components, respectively [@VandeHulst1957; @Wiscombe1979]. 
 
@@ -96,10 +96,10 @@ This panel shows the [reduced scattering coefficient](https://omlc.org/classroom
 
 ## Example Application: Scattering of Intralipid Phantoms
 
-To demonstrate the tool's scientific utility, consider the characterization of Intralipid 20%, a common tissue phantom in biomedical optics [@DiNinni2011]. Users can define the medium by inputting polydisperse particle distribution parameters using a `Log Normal` distribution. For Intralipid 20% (w/w), which corresponds to a volume fraction (`Vol Frac`) of 0.227 [@Aernouts2013], users may assume a mean particle diameter of 0.22 $\text{µm}$ and a standard deviation of 0.36 $\text{µm}$, following Raju (2017) [@Raju2017]. After setting the `Num. sph. sizes` field to 101, users can specify the refractive index of the soybean oil droplets as 1.47 and the surrounding medium as 1.33. Upon executing the simulation across the 600–1000 $\text{nm}$ spectral range, `MieSimulatorGUI` calculates $\text{µ}_s$, $\text{µ}_s'$ and g. Although these inputs may deviate from the independent scattering regime, these results are comparable to the bulk scattering properties shown in Figure 14 of Aernouts et al. [@Aernouts2013]. Consequently, the generated data can be exported as text files for further analysis.
+To demonstrate the tool's scientific utility, we considered the characterization of Intralipid, a standard tissue phantom in biomedical optics [@vanStaveren1991; @DiNinni2011]. Based on Intralipid particle distribution profiles in the literature [@Kodach2011; @Raju2017], we assumed a polydisperse `Log Normal` particle distribution with a mean diameter of $0.22 \mu\text{m}$ and a standard deviation of $0.37 \mu\text{m}$. We set the refractive indices to 1.47 for the soybean oil and 1.33 for the surrounding medium, while assigning a value of 101 to the `Num. sph. sizes` field. To analyze different concentrations ranging from 0.2% to 20% [@Aernouts2013; @vanStaveren1991], volume fractions were scaled using a baseline value of 0.227 for a 20% (w/w) Intralipid concentration [@Aernouts2013]. Upon executing the simulation across the 400–2250 $\text{nm}$ spectral range, `MieSimulatorGUI` calculates $\text{µ}_s$, $\text{µ}_s'$ and g. While the selected volume fractions may exceed independent scattering limits  in the literature [@Tien1987; @Galy2020; @Yalcin2022], the results remain comparable with previously reported bulk scattering properties [@vanStaveren1991; @Aernouts2013] of Intralipid. Alternatively, users may utilize the `Custom` option to upload specific sphere profiles such as those from Raju et al. [@Raju2017], and export the resulting data as a text file for further analysis.
 
 # Acknowledgments
 
-We acknowledge support from the Laser Microbeam and Medical Program (LAMMP), a NIH Biomedical Technology Resource (P41-EB015890). JCR and VV acknowledge the support from the NIH (R21-GM128135) and the NSF (CBET-1805082). JCR was the primary contributor, handling the core software development, UI design, validation, GitHub upload, and drafting the original manuscript. VV provided overall supervision and critically reviewed and edited the final manuscript. CKH developed the initial Mie scattering code, and LG assisted with the GitHub upload.
+We acknowledge support from the Laser Microbeam and Medical Program (LAMMP), a NIH Biomedical Technology Resource (P41-EB015890). JCR and VV acknowledge the support from the NIH (R21-GM128135) and the NSF (CBET-1805082). JCR was the primary contributor, handling the core software development, UI design, validation, GitHub upload, and drafting the original manuscript. VV provided overall supervision and critically reviewed and edited the final manuscript. CKH developed the initial Mie scattering code, and LMG assisted with the GitHub and Zenodo uploads.
 
 # References
