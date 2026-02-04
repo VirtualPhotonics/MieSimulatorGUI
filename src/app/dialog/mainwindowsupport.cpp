@@ -333,7 +333,7 @@ void MainWindowSupport::ProcessMonoDisperse(Ui_MainWindow *ui, Parameters *para)
     if(mCalc->CheckIndependentScattering(para, clearanceToWavelength, sizeParameter, volFraction,
                                           criticalWavelength, strRegime, flagVolFrac))
     {
-        DisplayScatteringRegimeWarning(clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime);
+        PrepareScatteringRegimeWarning(clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime);
     }
 }
 
@@ -363,7 +363,7 @@ void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, Parameters *para)
     if(mCalc->CheckIndependentScattering(para, clearanceToWavelength, sizeParameter, volFraction,
                                           criticalWavelength, strRegime, flagVolFrac))
     {
-        DisplayScatteringRegimeWarning(clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime);
+        PrepareScatteringRegimeWarning(clearanceToWavelength, sizeParameter, volFraction, criticalWavelength, strRegime);
     }
 }
 
@@ -623,41 +623,108 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
     }
 }
 
-void MainWindowSupport::DisplayScatteringRegimeWarning(double clearanceToWavelength, double sizeParameter,
+//Prepare Scattering Regime Warning
+void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelength, double sizeParameter,
                                                        double volFraction, double criticalWavelength,
                                                        QString strRegime)
 {
-    QString strTienDorlen = (clearanceToWavelength > 0.5)
-                                ? "<font color='green'>Independent</font>"
-                                : "<font color='red'>Dependent</font>";
+    QString strClearance = QString::number(clearanceToWavelength, 'f', 3);
 
-    QString strGaly = "<font color='red'>Dependent</font>";
+    // Logic, Threshold Strings and Hyperlink for Tien and Drolen
+    bool isIndependentTien = (clearanceToWavelength > 0.5);
+    QString strTienResult = isIndependentTien ?
+                                QString("<font color='green'>Independent</font> (c/&lambda;=%1)").arg(strClearance) :
+                                QString("<font color='red'>Dependent</font> (c/&lambda;=%1)").arg(strClearance);
+    QString strTienCriteria = "c/&lambda; > 0.5";
+    QString strTienDorlenLink = "<a href='https://doi.org/10.1615/AnnualRevHeatTransfer.v1.30' style='color: #0000EE;'>Tien and Drolen (1987)</a>";
 
+    // Logic, Threshold Strings and Hyperlink for Galy et al.
+    bool isIndependentGaly = false;
+    QString strGalyCriteria;
+    QString strGalyLink = "<a href='https://doi.org/10.1016/j.jqsrt.2020.106924' style='color: #0000EE;'>Galy et al. (2020)</a>";
+
+    if (volFraction <= 0.006)
+    {
+        if (sizeParameter > 0.388)
+        {
+            if (sizeParameter <= 2.0)
+            {
+                isIndependentGaly = (clearanceToWavelength > 2.0);
+                strGalyCriteria = "c/&lambda; > 2.0 (0.388 &le; &chi; &le; 2)";
+            }
+            else
+            {
+                isIndependentGaly = (clearanceToWavelength > 5.0);
+                strGalyCriteria = "c/&lambda; > 5.0 (&chi; > 2)";
+            }
+        }
+        else
+        {
+            isIndependentGaly = true;
+            strGalyCriteria = "Independent (&chi; &le; 0.388)";
+        }
+    }
+    else
+    {
+        if (sizeParameter <= 2.0)
+        {
+            isIndependentGaly = (clearanceToWavelength > 2.0);
+            strGalyCriteria = "c/&lambda; > 2.0 (&chi; &le; 2)";
+        }
+        else
+        {
+            isIndependentGaly = (clearanceToWavelength > 5.0);
+            strGalyCriteria = "c/&lambda; > 5.0 (&chi; > 2)";
+        }
+    }
+    QString strGalyResult = isIndependentGaly ?
+                                QString("<font color='green'>Independent</font> (c/&lambda;=%1)").arg(strClearance) :
+                                QString("<font color='red'>Dependent</font> (c/&lambda;=%1)").arg(strClearance);
+
+    // --- Detailed Context Section ---
+    QString strRegimeContext =
+        "<b>Regime Definitions:</b><br>"
+        "• Low Concentration Regime:<b> f<sub>v</sub> &le; 0.006</b><br>"
+        "• Transitional Regime:<b> 0.006 &lt; f<sub>v</sub> &le; 0.1</b><br>"
+        "• High Concentration Regime:<b> f<sub>v</sub> &gt; 0.1</b>";
+
+
+    // --- Constructing the Message ---
     QString msg = QString(
-                      "<b>Dependent Scattering Warning</b><br>"
-                      "The current configuration deviates from the independent scattering regime. "
-                      "Since MieSimulatorGUI is best suited for dilute mixtures, results at this "
-                      "concentration should be interpreted with caution.<br><br>"
-                      "<b>Independent or Dependent:</b><br>"
-                      "• Per <b>Tien and Drolen (1987):</b> %1<br>"
-                      "• Per <b>Galy et al. (2020):</b> %2<br><br>"
-                      "<b>Details:</b><br>"
-                      "• <b>Regime:</b> %3<br>"
-                      "• <b>Volume Fraction:</b> %4<br>"
-                      "• <b>Critical Wavelength:</b> %5<br>"
-                      "• <b>Size Parameter:</b> %6<br>"
-                      "• <b>Clearance/Wavelength Ratio:</b> %7"
+                      "<h3>Dependent Scattering Warning</h3>"
+                      "The current parameters suggest <b>dependent</b> scattering effects in the <b>%1</b>. "
+                      "Results should be interpreted with caution.<br><br>"
+
+                      "<b>Current Parameters:</b><br>"
+                      "• Volume Fraction (<b>f<sub>v</sub></b>) = <b>%8</b><br>"
+                      "• Size Parameter (<b>&chi;</b>) = <b>%9</b> at Wavelength (<b>&lambda;</b>) = <b>%11 nm</b><br>"
+                      "• Clearance to Wavelength Ratio (<b>c/&lambda;</b>) = <b>%10</b><br>"
+
+                      "<table border='1' cellspacing='0' cellpadding='4' style='border-collapse: collapse; width: 100%;'>"
+                      "  <tr bgcolor='#f2f2f2'>"
+                      "    <td><b>Source</b></td>"
+                      "    <td><b>Independence Rules</b></td>"
+                      "    <td><b>Assessment</b></td>"
+                      "  </tr>"
+                      "  <tr><td>%2</td><td>%3</td><td>%4</td></tr>"
+                      "  <tr><td>%5</td><td>%6</td><td>%7</td></tr>"
+                      "</table><br><br>"
+
+                      "%12"
                       )
-                      .arg(strTienDorlen)
-                      .arg(strGaly)
                       .arg(strRegime)
-                      .arg(volFraction, 0, 'g', 6)
-                      .arg(criticalWavelength, 0, 'g', 6)
-                      .arg(sizeParameter, 0, 'g', 6)
-                      .arg(clearanceToWavelength, 0, 'g', 6);
+                      .arg(strTienDorlenLink).arg(strTienCriteria).arg(strTienResult)
+                      .arg(strGalyLink).arg(strGalyCriteria).arg(strGalyResult)
+                      .arg(volFraction, 0, 'g', 4)
+                      .arg(sizeParameter, 0, 'g', 3)
+                      .arg(clearanceToWavelength, 0, 'f', 3)
+                      .arg(criticalWavelength, 0, 'g', 5)
+                      .arg(strRegimeContext);
 
     DisplayWarning(msg);
 }
+
+
 
 // Display warning message
 void MainWindowSupport::DisplayWarning(QString warningMessage)
