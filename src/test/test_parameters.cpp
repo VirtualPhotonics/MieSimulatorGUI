@@ -153,7 +153,7 @@ void TestParameters::test_CheckValidityCommonParameters_invalidVolFractionUpperL
     mPara->volFraction = 1.1;
     ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Volume Fraction must not exceed the maximum packing factor."));
+    QCOMPARE(result.errorMessage, QString("Volume Fraction must not exceed the maximum packing factor (~0.74)."));
 }
 
 // Test case: Mean radius is too large
@@ -191,7 +191,7 @@ void TestParameters::test_CheckValidityCommonParameters_volFractionAtLimit()
     mPara->volFraction = 0.74048;
     ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Volume Fraction must not exceed the maximum packing factor."));
+    QCOMPARE(result.errorMessage, QString("Volume Fraction must not exceed the maximum packing factor (~0.74)."));
 }
 
 // Test case: Mean radius is too small (Distribution Parameters)

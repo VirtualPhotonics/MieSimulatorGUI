@@ -142,7 +142,7 @@ ParameterValidationResult Parameters::CheckValidityCommonParameters(
         if (volFraction >= 0.74048)  //Maximum packing factor = PI/(3*sqrt(2))
         {
             result.isValid = false;
-            result.errorMessage = "Volume Fraction must not exceed the maximum packing factor.";
+            result.errorMessage = "Volume Fraction must not exceed the maximum packing factor (~0.74).";
             return result;
         }
     }
