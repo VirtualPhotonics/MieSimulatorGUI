@@ -725,8 +725,8 @@ void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelen
                       "<table border='1' cellspacing='0' cellpadding='4' style='border-collapse: collapse; width: 100%;'>"
                       "  <tr bgcolor='#f2f2f2'>"
                       "    <td><b>Source</b></td>"
-                      "    <td><b>Independence Rules</b></td>"
                       "    <td><b>Assessment</b></td>"
+                      "    <td><b>Independence Rules</b></td>"
                       "  </tr>"
                       "  <tr><td>%2</td><td>%3</td><td>%4</td></tr>"
                       "  <tr><td>%5</td><td>%6</td><td>%7</td></tr>"
@@ -735,19 +735,19 @@ void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelen
                       "<b>Current Parameters:</b><br>"
                       "• Volume Fraction (<b>f<sub>v</sub></b>) = <b>%8</b><br>"
                       "• Size Parameter (<b>&chi;</b>) = <b>%9</b><br>"
-                      "• Clearance (<b>c</b>) = Interparticle Distance - 2 &times; Radius = <b>%12 &mu;m </b><br>"
+                      "• Clearance (<b>c</b>) = Interparticle Distance - 2 &times; Radius = <b>%10 &mu;m </b><br>"
                       "• Medium Wavelength (<b>&lambda;</b>) = <b>%11 &mu;m</b><br>"
-                      "• Clearance to Wavelength Ratio (<b>c/&lambda;</b>) = <b>%10</b><br><br>"
+                      "• Clearance to Wavelength Ratio (<b>c/&lambda;</b>) = <b>%12</b><br><br>"
                       "%13"
                       )
                       .arg(strRegimeLink)
-                      .arg(strTienDorlenLink).arg(strTienCriteria).arg(strTienResult)
-                      .arg(strGalyLink).arg(strGalyCriteria).arg(strGalyResult)
+                      .arg(strTienDorlenLink).arg(strTienResult).arg(strTienCriteria)
+                      .arg(strGalyLink).arg(strGalyResult).arg(strGalyCriteria)
                       .arg(volFraction, 0, 'g', 4)
                       .arg(sizeParameter, 0, 'g', 3)
-                      .arg(clearanceToWavelength, 0, 'f', 3)
-                      .arg(wavelength, 0, 'g', 5)
                       .arg(clearance, 0, 'g', 5)
+                      .arg(wavelength, 0, 'g', 5)
+                      .arg(clearanceToWavelength, 0, 'f', 3)
                       .arg(strRegimeContext);
 
     DisplayWarning(msg);
