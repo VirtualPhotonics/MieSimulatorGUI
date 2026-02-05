@@ -632,6 +632,7 @@ void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelen
 
     QString strTienDorlenLink = "<a href='https://doi.org/10.1615/AnnualRevHeatTransfer.v1.30' style='color: #0000EE;'>Tien and Drolen (1987)</a>";
     QString strGalyLink = "<a href='https://doi.org/10.1016/j.jqsrt.2020.106924' style='color: #0000EE;'>Galy et al. (2020)</a>";
+    QString strRegimeLink = QString("<a href='https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Scattering-Regime-Analysis' style='color: #0000EE;'>%1</a>").arg(strRegime);
 
     // Low Concentration Regime
     if (volFraction <= 0.006)
@@ -739,7 +740,7 @@ void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelen
                       "• Clearance to Wavelength Ratio (<b>c/&lambda;</b>) = <b>%10</b><br><br>"
                       "%13"
                       )
-                      .arg(strRegime)
+                      .arg(strRegimeLink)
                       .arg(strTienDorlenLink).arg(strTienCriteria).arg(strTienResult)
                       .arg(strGalyLink).arg(strGalyCriteria).arg(strGalyResult)
                       .arg(volFraction, 0, 'g', 4)
