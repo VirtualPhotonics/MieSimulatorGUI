@@ -170,6 +170,9 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
 
                 //Enable widgets
                 support.DisableWidgetsDuringSimulation(ui, mPara, false);
+
+                //Check dependent scattering
+                support.CheckIndependentScattering(ui, mPara);
             }
 
             //Poly disperse
@@ -195,6 +198,9 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
                     support.DisableWidgetsDuringCustomPolyDisperseData(ui, true);
                 else
                     support.DisableWidgetsDuringCustomPolyDisperseData(ui, false);
+
+                //Check dependent scattering
+                support.CheckIndependentScattering(ui, mPara);
             }
         }
     }

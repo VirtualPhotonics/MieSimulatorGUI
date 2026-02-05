@@ -33,8 +33,8 @@ public:
     double CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para);
     bool CheckIndependentScattering(Parameters *para, double &clearanceToWavelength,
                                     double &sizeParameter, double &volFraction,
-                                    double &criticalWavelength, QString &strRegime,
-                                    bool flagVolFlag);
+                                    double &wavelength, double &clearance,
+                                    QString &strRegime, bool flagVolFlag);
 };
 
 #endif // CALCULATE_H

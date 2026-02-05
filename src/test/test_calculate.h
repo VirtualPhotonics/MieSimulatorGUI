@@ -38,6 +38,9 @@ private slots:
     void test_CheckIndependentScattering_TransitionalDependent();
     void test_CheckIndependentScattering_LowConcLargeSizeIndependent();
     void test_CheckIndependentScattering_Polydisperse();
+    void test_CheckIndependentScattering_FlagVolFracOverride();
+    void test_CheckIndependentScattering_SmallSizeThreshold();
+    void test_CheckIndependentScattering_LowConcLargeSizeDependent();
 
 private:
     Parameters *mPara;

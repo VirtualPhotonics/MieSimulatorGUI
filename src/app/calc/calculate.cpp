@@ -470,15 +470,15 @@ void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index)
 
 // Determines the scattering regime based on Tien et. al, A.R. Heat Trandfer 1(1987) & Galy et al. JQSRT 246(2020)
 bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceToWavelength, double &sizeParameter,
-                                           double &volFraction, double &criticalWavelength, QString &strRegime,
-                                           bool flagVolFlag)
+                                           double &volFraction, double &wavelength, double &clearance,
+                                           QString &strRegime, bool flagVolFlag)
 {
     double const volumeConstant = (4.0/3.0) * M_PI ;
     double effectiveRadius = 0.0;
-    double interParticleDistance;
+    double interparticleDistance;
 
-    // Calculate wavelengths in microns
-    criticalWavelength = para->endWavel;
+    // Calculate wavelength in the medium in microns
+    wavelength = 1e-3 * para->endWavel / para->medRef;
 
     if (para->nRadius == 1)       //monodisperse
     {
@@ -492,7 +492,7 @@ bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceTo
         {
             volFraction = singleSphVolume * para->numDensityArray[0] / 1e9;
         }
-        interParticleDistance = 1e3 / pow(para->numDensityArray[0], 1.0 / 3.0);
+        interparticleDistance = 1e3 / pow(para->numDensityArray[0], 1.0 / 3.0);
     }
     else                         //polydisperse
     {
@@ -512,14 +512,15 @@ bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceTo
         {
             volFraction = totalVolume / 1e9;
         }
-        interParticleDistance = 1e3 / pow(totalNumDensity, 1.0 / 3.0);
+        interparticleDistance = 1e3 / pow(totalNumDensity, 1.0 / 3.0);
 
         double averageVolume = totalVolume / totalNumDensity;
         effectiveRadius = pow(3.0 * averageVolume / (4.0 * M_PI), 1.0/3.0);
     }
 
-    clearanceToWavelength = (interParticleDistance - 2 * effectiveRadius) * 1e3 * para->medRef / criticalWavelength;
-    sizeParameter = 2.0 * M_PI * effectiveRadius * 1e3 * para->medRef / criticalWavelength;
+    clearance = interparticleDistance - 2 * effectiveRadius;
+    clearanceToWavelength = clearance / wavelength;
+    sizeParameter = 2.0 * M_PI * effectiveRadius / wavelength;
 
     // Determine the threshold for clearance based on the size parameter (Galy 2020)
     double requiredClearance = (sizeParameter <= 2.0) ? 2.0 : 5.0;
