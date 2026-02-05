@@ -630,9 +630,9 @@ void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelen
     QString strTienCriteria;
     QString strGalyCriteria;
 
-    QString strTienDorlenLink = "<a href='https://doi.org/10.1615/AnnualRevHeatTransfer.v1.30' style='color: #0000EE;'>Tien and Drolen (1987)</a>";
-    QString strGalyLink = "<a href='https://doi.org/10.1016/j.jqsrt.2020.106924' style='color: #0000EE;'>Galy et al. (2020)</a>";
-    QString strRegimeLink = QString("<a href='https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Scattering-Regime-Analysis' style='color: #0000EE;'>%1</a>").arg(strRegime);
+    QString strTienDorlenLink = "<a href='https://doi.org/10.1615/AnnualRevHeatTransfer.v1.30' style='color: #0087EE;'>Tien and Drolen (1987)</a>";
+    QString strGalyLink = "<a href='https://doi.org/10.1016/j.jqsrt.2020.106924' style='color: #0087EE;'>Galy et al. (2020)</a>";
+    QString strRegimeLink = QString("<a href='https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Scattering-Regime-Analysis' style='color: #0087EE;'>%1</a>").arg(strRegime);
 
     // Low Concentration Regime
     if (volFraction <= 0.006)
@@ -723,7 +723,7 @@ void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelen
                       "Results should be interpreted with caution.<br>"
 
                       "<table border='1' cellspacing='0' cellpadding='4' style='border-collapse: collapse; width: 100%;'>"
-                      "  <tr bgcolor='#f2f2f2'>"
+                      "  <tr bgcolor='#a0a0a0'>"
                       "    <td><b>Source</b></td>"
                       "    <td><b>Assessment</b></td>"
                       "    <td><b>Independence Rules</b></td>"
