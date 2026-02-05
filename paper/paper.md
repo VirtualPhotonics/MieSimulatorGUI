@@ -70,7 +70,7 @@ The tool provides options for either monodisperse (uniform-sized) or polydispers
 
 ## Number Density Panel
 
-This panel graphically presents the number density of spheres $N_s$ [\#/ $\text{mm}^3$] used in the simulation.  The subsequent tab displays the `Size Parameter` defined as 2$\pi R n_{med} / \lambda_{vacuum}$ [@Bohren1983], where $R$ [ $\text{µm}$ ] denotes the particle radius, $n_{med}$  the medium's refractive index, and $\lambda_{vacuum}$ [ $\text{µm}$ ] is the wavelength in vacuum. 
+This panel graphically presents the number density of spheres $N_s$ [\#/ $\text{mm}^3$] used in the simulation.  The subsequent tab displays the `Size Parameter` defined as 2$\pi Rn_{med} / \lambda_{vacuum}$ [@Bohren1983], where $R$ [ $\text{µm}$ ] denotes the particle radius, $n_{med}$  the medium's refractive index, and $\lambda_{vacuum}$ [ $\text{µm}$ ] is the wavelength in vacuum. 
 
 ## Scattering Coefficient Panel
 
