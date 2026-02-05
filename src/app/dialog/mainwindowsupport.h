@@ -23,9 +23,10 @@ public:
     void DisableWidgetsDuringSimulation(Ui_MainWindow *ui, Parameters *para, bool flag);
     void DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow *ui, bool flag);
     void ReadCustomData(Parameters * para, QString fileName, bool * dataValidFlag);
+    void CheckIndependentScattering(Ui_MainWindow *ui, Parameters *para);
     void PrepareScatteringRegimeWarning(double clearanceToWavelength, double sizeParameter,
-                                        double volFraction, double criticalWavelength,
-                                        QString strRegime);
+                                        double volFraction, double wavelength,
+                                        double clearance, QString strRegime);
     void DisplayWarning(QString warningMessage);
 
 private:
