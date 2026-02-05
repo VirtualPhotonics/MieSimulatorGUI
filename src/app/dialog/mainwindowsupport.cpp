@@ -630,8 +630,9 @@ void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelen
     QString strTienCriteria;
     QString strGalyCriteria;
 
-    QString strTienDorlenLink = "<a href='https://doi.org/10.1615/AnnualRevHeatTransfer.v1.30' style='color: #0000EE;'>Tien and Drolen (1987)</a>";
-    QString strGalyLink = "<a href='https://doi.org/10.1016/j.jqsrt.2020.106924' style='color: #0000EE;'>Galy et al. (2020)</a>";
+    QString strTienDorlenLink = "<a href='https://doi.org/10.1615/AnnualRevHeatTransfer.v1.30' style='color: #0087EE;'>Tien and Drolen (1987)</a>";
+    QString strGalyLink = "<a href='https://doi.org/10.1016/j.jqsrt.2020.106924' style='color: #0087EE;'>Galy et al. (2020)</a>";
+    QString strRegimeLink = QString("<a href='https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Scattering-Regime-Analysis' style='color: #0087EE;'>%1</a>").arg(strRegime);
 
     // Low Concentration Regime
     if (volFraction <= 0.006)
@@ -722,10 +723,10 @@ void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelen
                       "Results should be interpreted with caution.<br>"
 
                       "<table border='1' cellspacing='0' cellpadding='4' style='border-collapse: collapse; width: 100%;'>"
-                      "  <tr bgcolor='#f2f2f2'>"
+                      "  <tr bgcolor='#a0a0a0'>"
                       "    <td><b>Source</b></td>"
-                      "    <td><b>Independence Rules</b></td>"
                       "    <td><b>Assessment</b></td>"
+                      "    <td><b>Independence Rules</b></td>"
                       "  </tr>"
                       "  <tr><td>%2</td><td>%3</td><td>%4</td></tr>"
                       "  <tr><td>%5</td><td>%6</td><td>%7</td></tr>"
@@ -734,19 +735,19 @@ void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelen
                       "<b>Current Parameters:</b><br>"
                       "• Volume Fraction (<b>f<sub>v</sub></b>) = <b>%8</b><br>"
                       "• Size Parameter (<b>&chi;</b>) = <b>%9</b><br>"
-                      "• Clearance (<b>c</b>) = Interparticle Distance - 2 &times; Radius = <b>%12 &mu;m </b><br>"
+                      "• Clearance (<b>c</b>) = Interparticle Distance - 2 &times; Radius = <b>%10 &mu;m </b><br>"
                       "• Medium Wavelength (<b>&lambda;</b>) = <b>%11 &mu;m</b><br>"
-                      "• Clearance to Wavelength Ratio (<b>c/&lambda;</b>) = <b>%10</b><br><br>"
+                      "• Clearance to Wavelength Ratio (<b>c/&lambda;</b>) = <b>%12</b><br><br>"
                       "%13"
                       )
-                      .arg(strRegime)
-                      .arg(strTienDorlenLink).arg(strTienCriteria).arg(strTienResult)
-                      .arg(strGalyLink).arg(strGalyCriteria).arg(strGalyResult)
+                      .arg(strRegimeLink)
+                      .arg(strTienDorlenLink).arg(strTienResult).arg(strTienCriteria)
+                      .arg(strGalyLink).arg(strGalyResult).arg(strGalyCriteria)
                       .arg(volFraction, 0, 'g', 4)
                       .arg(sizeParameter, 0, 'g', 3)
-                      .arg(clearanceToWavelength, 0, 'f', 3)
-                      .arg(wavelength, 0, 'g', 5)
                       .arg(clearance, 0, 'g', 5)
+                      .arg(wavelength, 0, 'g', 5)
+                      .arg(clearanceToWavelength, 0, 'f', 3)
                       .arg(strRegimeContext);
 
     DisplayWarning(msg);
