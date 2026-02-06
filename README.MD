@@ -27,9 +27,13 @@ To access all releases and source codes, click [here](https://github.com/Virtual
     - For an example demonstrating the comparison between MieSimulatorGUI and Scott Prahl's [Mie Scattering Calculator](https://omlc.org/calc/mie_calc.html), click [here](https://github.com/VirtualPhotonics/MieSimulatorGUI/wiki/Examples).
  
 ## Acknowledgement
-Use the following acknowledgement in publications or applications that make use of this open source software or underlying technology and research:
+Use the following citation or acknowledgement in publications or applications that make use of this open source software or underlying technology and research:
 
-"__We acknowledge open-source software resources offered by the Virtual Photonics Technology Initiative, at the Beckman Laser Institute, University of California, Irvine.__"
+"__We acknowledge open-source software resources offered by the Virtual Photonics Technology Initiative ([https://virtualphotonics.org](https://virtualphotonics.org)), at the Beckman Laser Institute, University of California, Irvine.__"
+
+In addition, for any work that utilizes the Virtual Photonics Monte Carlo software, cite the following publication"
+
+__Janaka C. Ranasinghesagara, Carole K. Hayakawa, Lisa Malenfant, Vasan Venugopalan, "MieSimulatorGUI: A user-friendly tool to compute and visualize light scattering by spherical dielectric particles," Journal of Open Source Software 11(118), 9551(1-6) (06 Feb 2026) https://doi.org/10.21105/joss.09551__
 
 ## Software
 _Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:_
@@ -42,4 +46,5 @@ _THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPL
 Virtual Tissue Simulator (VTS) Project.
 
 Copyright ©2026 [Virtual Photonics Technology Initiative](https://virtualphotonics.org/).
+
 
