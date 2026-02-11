@@ -1,0 +1,53 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Ranasinghesagara
+  given-names: Janaka C.
+  orcid: "https://orcid.org/0000-0002-6069-6527"
+- family-names: Hayakawa
+  given-names: Carole K.
+  orcid: "https://orcid.org/0000-0001-5696-160X"
+- family-names: Glover
+  given-names: Lisa M.
+  orcid: "https://orcid.org/0009-0009-0291-5099"
+- email: vvenugop@uci.edu
+  family-names: Venugopalan
+  given-names: Vasan
+  orcid: "https://orcid.org/0000-0003-4781-1049"
+contact:
+- email: vvenugop@uci.edu
+  family-names: Venugopalan
+  given-names: Vasan
+  orcid: "https://orcid.org/0000-0003-4781-1049"
+doi: 10.5281/zenodo.18462320
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Ranasinghesagara
+    given-names: Janaka C.
+    orcid: "https://orcid.org/0000-0002-6069-6527"
+  - family-names: Hayakawa
+    given-names: Carole K.
+    orcid: "https://orcid.org/0000-0001-5696-160X"
+  - family-names: Glover
+    given-names: Lisa M.
+    orcid: "https://orcid.org/0009-0009-0291-5099"
+  - email: vvenugop@uci.edu
+    family-names: Venugopalan
+    given-names: Vasan
+    orcid: "https://orcid.org/0000-0003-4781-1049"
+  date-published: 2026-02-11
+  doi: 10.21105/joss.09551
+  issn: 2475-9066
+  issue: 118
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 9551
+  title: "MieSimulatorGUI: A user-friendly tool to compute and visualize
+    light scattering by spherical dielectric particles"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.09551"
+  volume: 11
+title: "MieSimulatorGUI: A user-friendly tool to compute and visualize
+  light scattering by spherical dielectric particles"
