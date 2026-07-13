@@ -6,6 +6,10 @@
 #include "calc/utilities.h"
 #include "lib/qcustomplot.h"
 
+//Static members
+double PlotData::mPolarMinRadius = 0.0;
+double PlotData::mPolarMaxRadius = 1.0;
+
 PlotData::PlotData(void)
 {
 }
@@ -130,6 +134,7 @@ void PlotData::SetupPolarPlotForData(Ui_MainWindow *ui, Parameters *para )
     // Set initial boundaries.
     double maxPolarRadial = -1e100;
     double minPolarRadial = 1e100;
+    double tiny = 1e-100;
     int nTheta = static_cast<int>(para->nTheta);
     int nWavel = static_cast<int>(para->nWavel);
 
@@ -143,9 +148,9 @@ void PlotData::SetupPolarPlotForData(Ui_MainWindow *ui, Parameters *para )
 
             if (ui->radioButton_PhaseLog->isChecked())
             {
-                currentPara = log10(currentPara);
-                currentPerp = log10(currentPerp);
-                currentAve = log10(currentAve);
+                currentPara = log10(currentPara + tiny);
+                currentPerp = log10(currentPerp + tiny);
+                currentAve = log10(currentAve + tiny);
             }
 
             maxPolarRadial = std::max({maxPolarRadial, currentPara, currentPerp, currentAve});
@@ -417,6 +422,7 @@ double PlotData::FindMinLogPolarPlot(Parameters *para)
     Utilities util;
 
     double minPolarRadial = 1e100;
+    double tiny = 1e-100;
     int nTheta = static_cast<int>(para->nTheta);
     int nWavel = static_cast<int>(para->nWavel);
 
@@ -426,9 +432,9 @@ double PlotData::FindMinLogPolarPlot(Parameters *para)
 
         for (int j = 0; j < nTheta; j++)
         {
-            yPara.append(log10(para->phaseFunctionPara[i][j]));
-            yPerp.append(log10(para->phaseFunctionPerp[i][j]));
-            yAve.append(log10(para->phaseFunctionAve[i][j]));
+            yPara.append(log10(para->phaseFunctionPara[i][j] + tiny));
+            yPerp.append(log10(para->phaseFunctionPerp[i][j] + tiny));
+            yAve.append(log10(para->phaseFunctionAve[i][j] + tiny));
         }
 
         double currentMin = util.FindMinMax(yPara, yPerp, yAve, true);  //true for Min
