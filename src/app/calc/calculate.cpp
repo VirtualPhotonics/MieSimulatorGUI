@@ -29,7 +29,9 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
     double refRelRe = 1.0;
     double refRelIm = 0.0;
     double xPara = 0.0;
-    double stepTheta = (mMaxTheta - mMinTheta)/static_cast<double>(para->nTheta - 1);
+
+    ThetaGrid grid;
+    BuildThetaGrid(para, grid);
 
     std::complex<double> *curS1 = new std::complex<double> [para->nTheta];
     std::complex<double> *curS2 = new std::complex<double> [para->nTheta];
@@ -88,7 +90,7 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
             mQBack = mieCoeff.qBack;
             for (unsigned int t = 0; t < para->nTheta; t++)
             {
-                mMu = cos(mMinTheta + t * stepTheta);
+                mMu = grid.cosTheta[t];
                 mieSim.ComputeAngularS1S2(&mCS1, &mCS2, mieCoeff, mMu);
                 curS1[t] = mCS1;
                 curS2[t] = mCS2;
@@ -98,11 +100,11 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
             curMus = piRadiusSquared * mQSca * para->numDensityArray[r];
             sumMus += curMus;          //Σμs
             //G calculation
-            sumMusG += CalculateG(curS1, curS2, para) * curMus;
+            sumMusG += CalculateG(curS1, curS2, para, grid) * curMus;
             //Forward Scattering
-            sumForward += CalculateForwardBackward(curS1, curS2, para, 0, ((para->nTheta-1)/2)+1)* curMus;  //0-90 deg
+            sumForward += CalculateForwardBackward(curS1, curS2, 0, ((para->nTheta-1)/2)+1, grid, grid.weightForward)* curMus;  //0-90 deg
             //Backward Scattering
-            sumBackward += CalculateForwardBackward(curS1, curS2, para, ((para->nTheta-1)/2), para->nTheta)* curMus; //90-180 deg
+            sumBackward += CalculateForwardBackward(curS1, curS2, ((para->nTheta-1)/2), para->nTheta, grid, grid.weightBackward)* curMus; //90-180 deg
 
             //Coefficients
             sumCsca += piRadiusSquared * mQSca * para->numDensityArray[r];
@@ -164,7 +166,9 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
     double refRelRe = 1.0;
     double refRelIm = 0.0;
     double xPara = 0.0;
-    double stepTheta = (mMaxTheta - mMinTheta)/static_cast<double>(para->nTheta - 1);
+
+    ThetaGrid grid;
+    BuildThetaGrid(para, grid);
 
     std::complex<double> *curS1 = new std::complex<double> [para->nTheta];
     std::complex<double> *curS2 = new std::complex<double> [para->nTheta];
@@ -202,7 +206,7 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
             mQBack = mieCoeff.qBack;
             for (unsigned int t = 0; t < para->nTheta; t++)
             {
-                mMu = cos(mMinTheta + t * stepTheta);
+                mMu = grid.cosTheta[t];
                 mieSim.ComputeAngularS1S2(&mCS1, &mCS2, mieCoeff, mMu);
                 curS1[t] = mCS1;
                 curS2[t] = mCS2;
@@ -211,7 +215,7 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
             curMus = piRadiusSquared * mQSca * para->numDensityArray[r] * 1e-6;  //1e-6--> 1micron2 to 1mm2
             sumMus += curMus;          //Σμs
             //G calculation
-            sumMusG += CalculateG(curS1, curS2, para)*curMus;
+            sumMusG += CalculateG(curS1, curS2, para, grid)*curMus;
         }
         para->muspAtRefWavel[i]= sumMus*(1-(sumMusG /sumMus));
     }
@@ -297,48 +301,92 @@ void Calculate::CalculatePowerLawAutoFitComplex(Parameters *para)
     para->bMie = curB;
 }
 
+//Builds the angle grid (cos, sin, Simpson weights) for the current nTheta.
+void Calculate::BuildThetaGrid(Parameters *para, ThetaGrid &grid)
+{
+    Utilities util;
+    unsigned int nTheta = para->nTheta;
+    double stepTheta = (mMaxTheta - mMinTheta) / static_cast<double>(nTheta - 1);
+
+    unsigned int fwdEnd = ((nTheta - 1) / 2) + 1;  //forward segment: [0, fwdEnd)      -- 0-90 deg
+    unsigned int bwdStart = (nTheta - 1) / 2;      //backward segment: [bwdStart, nTheta) -- 90-180 deg
+    unsigned int fwdLen = fwdEnd;
+    unsigned int bwdLen = nTheta - bwdStart;
+
+    grid.cosTheta.resize(nTheta);
+    grid.twoPiSinTheta.resize(nTheta);
+    grid.weightFull.resize(nTheta);
+    grid.weightForward.resize(fwdLen);
+    grid.weightBackward.resize(bwdLen);
+
+    for (unsigned int t = 0; t < nTheta; t++)
+    {
+        double theta = mMinTheta + t * stepTheta;
+        grid.cosTheta[t] = cos(theta);
+        grid.twoPiSinTheta[t] = 2.0 * M_PI * sin(theta);
+        grid.weightFull[t] = util.SimpsonsWeight(t, nTheta);
+    }
+    for (unsigned int i = 0; i < fwdLen; i++)
+        grid.weightForward[i] = util.SimpsonsWeight(i, fwdLen);
+    for (unsigned int i = 0; i < bwdLen; i++)
+        grid.weightBackward[i] = util.SimpsonsWeight(i, bwdLen);
+}
+
 //Calculate forward and backward scattering percentage
+double Calculate::CalculateForwardBackward(std::complex<double> *S1,
+                                           std::complex<double> *S2,
+                                           unsigned int start,
+                                           unsigned int end,
+                                           const ThetaGrid &grid,
+                                           const std::vector<double> &weight)
+{
+    double sum = 0.0;
+    Utilities util;
+    for (unsigned int i = start; i < end; i++)
+    {
+        double S = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i])) / 2.0;
+        sum += S * grid.twoPiSinTheta[i] * weight[i - start];
+    }
+    return sum;
+}
+
+//Builds a ThetaGrid internally on every call
 double Calculate::CalculateForwardBackward(std::complex<double> *S1,
                                            std::complex<double> *S2,
                                            Parameters *para,
                                            unsigned int start,
                                            unsigned int end)
 {
-    double S;
-    double theta, twoPiSinTheta;
-    double sum = 0.0;
-    double stepTheta = (mMaxTheta - mMinTheta)/static_cast<double>(para->nTheta - 1);
-
-    Utilities util;
-    for (unsigned int i = start; i <end; i++)
-    {
-        S = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i]))/2.0;
-        theta = mMinTheta + i * stepTheta;
-        twoPiSinTheta = 2.0 * M_PI * sin(theta);
-        sum += S * twoPiSinTheta * util.SimpsonsWeight (i-start, end-start);
-    }
-    return sum;
+    ThetaGrid grid;
+    BuildThetaGrid(para, grid);
+    const std::vector<double> &weight = (start == 0) ? grid.weightForward : grid.weightBackward;
+    return CalculateForwardBackward(S1, S2, start, end, grid, weight);
 }
 
 //Calculate average cosine of phase function
-double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para)
+double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
+                             Parameters *para, const ThetaGrid &grid)
 {
-    double sVal;
-    double theta, twoPiSinTheta;
     double num = 0.0;
     double den = 0.0;
-    double stepTheta = (mMaxTheta - mMinTheta)/static_cast<double>(para->nTheta - 1);
-
     Utilities util;
     for (unsigned int i = 0; i < para->nTheta; i++)
     {
-        sVal = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i]))/2.0;
-        theta = mMinTheta + i * stepTheta;
-        twoPiSinTheta = 2.0 * M_PI * sin(theta);
-        num += sVal * cos(theta) * twoPiSinTheta * util.SimpsonsWeight (i, para->nTheta);
-        den += sVal * twoPiSinTheta * util.SimpsonsWeight (i, para->nTheta);
+        double sVal = (util.ComplexAbsSquared(S1[i]) + util.ComplexAbsSquared(S2[i])) / 2.0;
+        num += sVal * grid.cosTheta[i] * grid.twoPiSinTheta[i] * grid.weightFull[i];
+        den += sVal * grid.twoPiSinTheta[i] * grid.weightFull[i];
     }
     return num/den;
+}
+
+//Builds a ThetaGrid internally on every call
+double Calculate::CalculateG(std::complex<double> *S1,
+                             std::complex<double> *S2,
+                             Parameters *para)
+{
+    ThetaGrid grid;
+    BuildThetaGrid(para, grid);
+    return CalculateG(S1, S2, para, grid);
 }
 
 //Set sphere parameters
