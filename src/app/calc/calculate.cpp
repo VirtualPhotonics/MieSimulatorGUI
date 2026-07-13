@@ -19,6 +19,7 @@ Calculate::~Calculate()
 void Calculate::DoSimulation(QLabel *progress, Parameters *para)
 {
     MieSimulation mieSim;
+    MieCoefficients mieCoeff;
     double curMus;
     double sumMus, sumMusG;
     double sumForward, sumBackward;
@@ -48,7 +49,7 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
     {
         mWavel = para->wavelArray[w] / 1000.0;   //in microns
         progress->setText("<font color=\"red\">WL: <font>"+QString::number(1000 * mWavel)+"nm</font>");
-        util.Delay();        
+        util.Delay();
         sumMus = 0.0;
         sumMusG = 0.0;
         sumForward = 0.0;
@@ -73,26 +74,24 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
             refRelRe = para->scatRefRealArray[r] / para->medRefArray[r];
             refRelIm = para->scatRefImagArray[r] / para->medRefArray[r];
 
-            if (refRelIm == 0.0)  //FarFieldSolutionForRealRefIndex is ~2x faster than FarFieldSolutionForComplexRefIndex
+            if (refRelIm == 0.0)  //Real ref index path is ~2x faster than the complex path
             {
-                for (unsigned int t = 0; t < para->nTheta; t++)
-                {
-                    mMu = cos(mMinTheta + t * stepTheta);
-                    mieSim.FarFieldSolutionForRealRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara, refRelRe, mMu);
-                    curS1[t] = mCS1;
-                    curS2[t] = mCS2;
-                }
+                mieSim.ComputeCoefficientsForRealRefIndex(mieCoeff, xPara, refRelRe);
             }
             else
             {
-                for (unsigned int t = 0; t < para->nTheta; t++)
-                {
-                    mMu = cos(mMinTheta + t * stepTheta);
-                    mieSim.FarFieldSolutionForComplexRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara,
-                                                           std::complex<double>(refRelRe,-refRelIm), mMu);  //multiply by -1 to use "n-ik" convention
-                    curS1[t] = mCS1;
-                    curS2[t] = mCS2;
-                }
+                mieSim.ComputeCoefficientsForComplexRefIndex(mieCoeff, xPara,
+                                                             std::complex<double>(refRelRe,-refRelIm));  //multiply by -1 to use "n-ik" convention
+            }
+            mQSca = mieCoeff.qSca;
+            mQExt = mieCoeff.qExt;
+            mQBack = mieCoeff.qBack;
+            for (unsigned int t = 0; t < para->nTheta; t++)
+            {
+                mMu = cos(mMinTheta + t * stepTheta);
+                mieSim.ComputeAngularS1S2(&mCS1, &mCS2, mieCoeff, mMu);
+                curS1[t] = mCS1;
+                curS2[t] = mCS2;
             }
             //Ref: Schmitt and Kumar, Applied Optics 37(13) 1998
             //Mus calculation
@@ -158,6 +157,7 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
 void Calculate::ComputeMuspAtRefWavel(Parameters *para)
 {
     MieSimulation mieSim;
+    MieCoefficients mieCoeff;
     double curMus;
     double sumMus, sumMusG;
     double piRadiusSquared;
@@ -188,26 +188,24 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
             refRelRe = para->scatRefRealArray[r] / para->medRefArray[r];
             refRelIm = para->scatRefImagArray[r] / para->medRefArray[r];
 
-            if (refRelIm == 0.0)  //FarFieldSolutionForRealRefIndex is ~2x faster than FarFieldSolutionForComplexRefIndex
+            if (refRelIm == 0.0)  //Real ref index path is ~2x faster than the complex path
             {
-                for (unsigned int t = 0; t < para->nTheta; t++)
-                {
-                    mMu = cos(mMinTheta + t * stepTheta);
-                    mieSim.FarFieldSolutionForRealRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara, refRelRe, mMu);
-                    curS1[t] = mCS1;
-                    curS2[t] = mCS2;
-                }
+                mieSim.ComputeCoefficientsForRealRefIndex(mieCoeff, xPara, refRelRe);
             }
             else
             {
-                for (unsigned int t = 0; t < para->nTheta; t++)
-                {
-                    mMu = cos(mMinTheta + t * stepTheta);
-                    mieSim.FarFieldSolutionForComplexRefIndex(&mCS1, &mCS2, &mQSca, &mQExt, &mQBack, xPara,
-                                                           std::complex<double>(refRelRe,-refRelIm), mMu);  //multiply by -1 to use "n-ik" convention
-                    curS1[t] = mCS1;
-                    curS2[t] = mCS2;
-                }
+                mieSim.ComputeCoefficientsForComplexRefIndex(mieCoeff, xPara,
+                                                             std::complex<double>(refRelRe,-refRelIm));  //multiply by -1 to use "n-ik" convention
+            }
+            mQSca = mieCoeff.qSca;
+            mQExt = mieCoeff.qExt;
+            mQBack = mieCoeff.qBack;
+            for (unsigned int t = 0; t < para->nTheta; t++)
+            {
+                mMu = cos(mMinTheta + t * stepTheta);
+                mieSim.ComputeAngularS1S2(&mCS1, &mCS2, mieCoeff, mMu);
+                curS1[t] = mCS1;
+                curS2[t] = mCS2;
             }
             //Mus calculation
             curMus = piRadiusSquared * mQSca * para->numDensityArray[r] * 1e-6;  //1e-6--> 1micron2 to 1mm2
@@ -232,27 +230,26 @@ void Calculate::CalculatePowerLawAutoFitSimple(Parameters *para)
     double curB = 0.0;
     double x, y;
 
-   for (int j=0; j<=400; j++)
-   {
-       bMie = j*0.01;   //Range: [0, 4]
-       sumError = 0.0;
-       for (unsigned int k=0; k<para->nWavel; k++)
-       {
-           //Steve L Jacques,"Optical properties of biological tissues: a review" Phys. Med & Bio. 58(2013) R37-R61.
-           //wavelength λ is normalized by a reference wavelength
-           x = para->wavelArray[k];
-           yFit = ( para->muspAtRefWavel[para->refWavelIdx]*pow(x/para->refWavel, -bMie));
+    for (int j=0; j<=400; j++)
+    {
+        bMie = j*0.01;   //Range: [0, 4]
+        sumError = 0.0;
+        for (unsigned int k=0; k<para->nWavel; k++)
+        {
+            //Steve L Jacques,"Optical properties of biological tissues: a review" Phys. Med & Bio. 58(2013) R37-R61.
+            x = para->wavelArray[k];
+            yFit = ( para->muspAtRefWavel[para->refWavelIdx]*pow(x/para->refWavel, -bMie));
 
-           y = para->mus[k] * (1.0 - para->g[k]);
-           error = yFit - y;
-           sumError += error*error;
-       }
-       if (sumError < minError)
-       {
-           minError = sumError;
-           curB = bMie;
-       }
-   }
+            y = para->mus[k] * (1.0 - para->g[k]);
+            error = yFit - y;
+            sumError += error*error;
+        }
+        if (sumError < minError)
+        {
+            minError = sumError;
+            curB = bMie;
+        }
+    }
     para->bMie = curB;
 }
 
@@ -267,35 +264,34 @@ void Calculate::CalculatePowerLawAutoFitComplex(Parameters *para)
 
     for (int i=0; i<=100; i++)
     {
-       fRay = i*0.01;       //Range: [0, 1]
-       for (int j=0; j<=400; j++)
-       {
-           bMie = j*0.01;   //Range: [0, 4]
-           sumError = 0.0;
-           for (unsigned int k=0; k<para->nWavel; k++)
-           {
-               //Steve L Jacques,"Optical properties of biological tissues: a review" Phys. Med & Bio. 58(2013) R37-R61.
-               //wavelength λ is normalized by a reference wavelength, 1000 nm
-               x = para->wavelArray[k];
-               yFit = ( para->muspAtRefWavel[para->refWavelIdx] *(fRay*pow(x/para->refWavel, -4.0) + (1.0-fRay)*pow(x/para->refWavel, -bMie)));
+        fRay = i*0.01;       //Range: [0, 1]
+        for (int j=0; j<=400; j++)
+        {
+            bMie = j*0.01;   //Range: [0, 4]
+            sumError = 0.0;
+            for (unsigned int k=0; k<para->nWavel; k++)
+            {
+                //Steve L Jacques,"Optical properties of biological tissues: a review" Phys. Med & Bio. 58(2013) R37-R61.
+                x = para->wavelArray[k];
+                yFit = ( para->muspAtRefWavel[para->refWavelIdx] *(fRay*pow(x/para->refWavel, -4.0) + (1.0-fRay)*pow(x/para->refWavel, -bMie)));
 
-               y = para->mus[k] * (1.0 - para->g[k]);
-               error = yFit - y;
-               sumError += error*error;
-           }
-           if (sumError < minError)
-           {
-               minError = sumError;
-               curB = bMie;
-               curF = fRay;
-           }
-       }
+                y = para->mus[k] * (1.0 - para->g[k]);
+                error = yFit - y;
+                sumError += error*error;
+            }
+            if (sumError < minError)
+            {
+                minError = sumError;
+                curB = bMie;
+                curF = fRay;
+            }
+        }
     }
     //When b=4, fRay can take any value between 0 and 1. This condition sets fRay to unity.
     if (curB == 4.0)
     {
-       curF = 1.0;
-       curB = 0.0;
+        curF = 1.0;
+        curB = 0.0;
     }
     para->fRay = curF;
     para->bMie = curB;
@@ -360,7 +356,7 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
         {
             double singleSphereVolume = volumeConst * pow(para->meanRadius, 3);
             para->sphNumDensity = std::round(1e9 * para->volFraction / singleSphereVolume);
-        }        
+        }
 
         para->numDensityArray[0] = para->sphNumDensity;
         para->scatRefRealArray[0] = para->scatRefReal;
@@ -368,7 +364,7 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
         para->medRefArray[0] = para->medRef;
     }
     else                    //Poly Disperse
-    {        
+    {
         double totalSphereVolume = 0.0;
         double totalFuncSum = 0.0;
         std::vector<double> funcArray(para->nRadius, 0.0);
@@ -413,7 +409,7 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
             para->scatRefRealArray[i] = para->scatRefReal;
             para->scatRefImagArray[i] = para->scatRefImag;
             para->medRefArray[i] = para->medRef;
-        }        
+        }
     }
 }
 
@@ -439,32 +435,32 @@ void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index)
 
     switch (index)
     {
-        case 0: // Log-normal Distribution
-        {
-            // If para->meanRadius is the Arithmetic Mean (E[X]),
-            // convert it to the underlying Normal mu.
-            // E[X] = exp(mu + sigma^2 / 2)
-            mu = std::log(para->meanRadius) - (sigma * sigma / 2.0);
+    case 0: // Log-normal Distribution
+    {
+        // If para->meanRadius is the Arithmetic Mean (E[X]),
+        // convert it to the underlying Normal mu.
+        // E[X] = exp(mu + sigma^2 / 2)
+        mu = std::log(para->meanRadius) - (sigma * sigma / 2.0);
 
-            para->minRadius = std::exp(mu - zScore * sigma);
-            para->maxRadius = std::exp(mu + zScore * sigma);
+        para->minRadius = std::exp(mu - zScore * sigma);
+        para->maxRadius = std::exp(mu + zScore * sigma);
 
-            // Safety floor
-            if (para->minRadius < 1e-10) para->minRadius = 1e-10;
-            break;
-        }
+        // Safety floor
+        if (para->minRadius < 1e-10) para->minRadius = 1e-10;
+        break;
+    }
 
-        case 1: // Gaussian (Normal) Distribution
-        {
-            mu = para->meanRadius;
+    case 1: // Gaussian (Normal) Distribution
+    {
+        mu = para->meanRadius;
 
-            para->minRadius = mu - zScore * sigma;
-            para->maxRadius = mu + zScore * sigma;
+        para->minRadius = mu - zScore * sigma;
+        para->maxRadius = mu + zScore * sigma;
 
-            // Physical constraint: Radius cannot be negative
-            if (para->minRadius < 1e-10) para->minRadius = 1e-10;
-            break;
-        }
+        // Physical constraint: Radius cannot be negative
+        if (para->minRadius < 1e-10) para->minRadius = 1e-10;
+        break;
+    }
     }
 }
 

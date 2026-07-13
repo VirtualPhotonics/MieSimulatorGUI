@@ -18,18 +18,8 @@ MieSimulation::~MieSimulation()
 {
 }
 
-//This function provides S1,S2, qSca, qExt and qBack for given xParameter, relativeRefIndex and mu(cos(angle))
-//cS1 - complex S1
-//cS2 - complex S2
-//qSca - scattering effieicncy
-//qSca - extinction effieicncy
-//qBack - backscattering effieicncy
-//xPara - x Parameter (2*pi*rad*refmed/wavel)
-//refRel - relative refractive index
-//mu - cos(angle)
-void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, std::complex<double> *cS2,
-                                                    double *qSca, double *qExt, double *qBack,
-                                                    double xPara, double relRef, double mu)
+//Computes the Mie coefficients (an, bn) for a real relative refractive index.
+void MieSimulation::ComputeCoefficientsForRealRefIndex(MieCoefficients &coeff, double xPara, double relRef)
 {
     Utilities util;
 
@@ -45,16 +35,13 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
     unsigned int arraySize = nStop + 1;
     double x2 = x * x;
 
-    double *dnMx = new double [nMx];
+    std::vector<double> dnMx(nMx);
     dnMx[nMx-1] = 0;
 
     for (unsigned int n = nMx - 1; n>0; n--)
     {
         dnMx[n-1] = (double(n)/mx)-(1.0/(dnMx[n]+double(n)/mx));
     }
-    // Legendre Polynomials
-    double dPCost0 = 0.0;  //pi0
-    double dPCost1 = 1.0;  //pi1
 
     // at the sphere boundary
     double jX0 = cos(x);  // phi(-1)
@@ -62,22 +49,21 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
     double jX1 = sin(x);  // phi(0)
     double yX1 = cos(x);  // kai(0)
 
-    double *jX = new double [arraySize];
-    double *yX = new double [arraySize];
-    std::complex<double> *xi_x = new std::complex<double>  [arraySize];
+    std::vector<double> jX(arraySize);
+    std::vector<double> yX(arraySize);
+    std::vector<std::complex<double>> xi_x(arraySize);
     jX[0] = jX1;
     yX[0] = yX1;
     xi_x[0]=std::complex<double> (jX1,-yX1); // xi(1)
 
     //Initialize temp holders
-    std::complex<double> tempS1 = std::complex<double>  (0.0, 0.0);
-    std::complex<double> tempS2 = std::complex<double>  (0.0, 0.0);
     std::complex<double> tempQback = 0.0;
     double tempQsca = 0.0;
     double tempQext = 0.0;
+    double sign = -1.0;   // tracks (-1)^(n-1), toggled each iteration instead of calling pow()
 
-    double *piCost = new double [arraySize];
-    double *tauCost = new double [arraySize];
+    coeff.an.assign(arraySize, std::complex<double>(0.0, 0.0));
+    coeff.bn.assign(arraySize, std::complex<double>(0.0, 0.0));
 
     unsigned int n=1;
     while (static_cast<int>(n - 1 - nStop) < 0)
@@ -86,14 +72,6 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
         double fac1 = fac0 + 1.0;            // n+1
         double fac2 = 2.0 * fac1 - 1.0;	     // 2n+1
         double fac3 = fac2 - 2.0;            // 2n-1
-        double fac4 = fac2 / (fac0 * fac1);  // (2n+1)/(n*(n+1))
-
-        //Update Legrendre polynomials (Array indices = n)
-        piCost[n-1] = dPCost1;
-        tauCost[n-1] = (fac0 * mu * dPCost1) - (fac1 * dPCost0);
-
-        dPCost1 = (fac2 * mu * dPCost1 / fac0) - (fac1 * dPCost0 / fac0);
-        dPCost0 = piCost[n-1];
 
         //Update riccati Bessel functions  for x (Array indices = n+1)
         jX[n] = fac3 * jX1 / x - jX0;		// phi recurrence
@@ -112,42 +90,24 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
 
         std::complex<double> an = (dervDn1*jX[n] - jX[n-1])/ (dervDn1*xi_x[n] - xi_x[n-1]);
         std::complex<double> bn = (dervDn2*jX[n] - jX[n-1])/ (dervDn2*xi_x[n] - xi_x[n-1]);
-        tempQback += fac2 * pow(-1.0,(n - 1.0)) * (an-bn);
+        coeff.an[n-1] = an;
+        coeff.bn[n-1] = bn;
+
+        sign = -sign;   // (-1)^(n-1)
+        tempQback += fac2 * sign * (an-bn);
         tempQsca += fac2 * (util.ComplexAbs(an) * util.ComplexAbs(an) + util.ComplexAbs(bn) * util.ComplexAbs(bn));
         tempQext += fac2 * (an + bn).real();
 
-        // Calculate cS1 and cS2
-        tempS1 += fac4 * (an * piCost[n-1] + bn * tauCost[n-1]);
-        tempS2 += fac4 * (an * tauCost[n-1] + bn * piCost[n-1]);
-
         n = n+1;
-    }    
-    *qBack = util.ComplexAbsSquared(tempQback)/x2;  //back scattering efficiency
-    *qSca = 2.0 * tempQsca / x2;                      //scattering efficiency
-    *qExt= 2.0 * tempQext / x2;                       //extinction efficiency
-    *cS1 = tempS1;
-    *cS2 = tempS2;
-
-    delete[] dnMx;
-    delete[] tauCost;
-    delete[] piCost;
-    delete[] yX;
-    delete[] jX;
-    delete[] xi_x;
+    }
+    coeff.nStop = nStop;
+    coeff.qBack = util.ComplexAbsSquared(tempQback)/x2;  //back scattering efficiency
+    coeff.qSca = 2.0 * tempQsca / x2;                     //scattering efficiency
+    coeff.qExt = 2.0 * tempQext / x2;                     //extinction efficiency
 }
 
-//This function provides S1,S2, qSca, qExt and qBack for given xParameter, complex relativeRefIndex and mu(cos(angle))
-//cS1 - complex S1
-//cS2 - complex S2
-//qSca - scattering effieicncy
-//qSca - extinction effieicncy
-//qBack - backscattering effieicncy
-//xPara - x Parameter (2*pi*rad*refmed/wavel)
-//cRefRel - complex relative refractive index
-//mu - cos(angle)
-void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1, std::complex<double> *cS2,
-                                                       double *qSca, double *qExt, double *qBack,
-                                                       double xPara, std::complex<double> cRelRef, double mu)
+//Computes the Mie coefficients (an, bn) and qSca/qExt/qBack for a complex relative refractive index.
+void MieSimulation::ComputeCoefficientsForComplexRefIndex(MieCoefficients &coeff, double xPara, std::complex<double> cRelRef)
 {
     Utilities util;
 
@@ -162,7 +122,7 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
     unsigned int arraySize = nStop+1;
     double x2 = x*x;
 
-    std::complex<double> *dnMx = new std::complex<double> [nMx];
+    std::vector<std::complex<double>> dnMx(nMx);
     dnMx[nMx-1] = 0;
 
     for (unsigned int n = nMx - 1; n>0; n--)
@@ -170,31 +130,26 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
         dnMx[n-1] = (double(n)/mx)-(1.0 / (dnMx[n] + double(n) / mx));
     }
 
-    // Legendre Polynomials
-    double dPCost0 = 0.0;  //pi0
-    double dPCost1 = 1.0;  //pi1
-
     // at the sphere boundary
     double jX0 = cos(x);  // phi(-1)
     double yX0 = -sin(x); // kai(-1)
     double jX1 = sin(x);  // phi(0)
     double yX1 = cos(x);  // kai(0)
 
-    double *jX = new double [arraySize];
-    double *yX = new double [arraySize];
-    std::complex<double> *xi_x = new std::complex<double>  [arraySize];
+    std::vector<double> jX(arraySize);
+    std::vector<double> yX(arraySize);
+    std::vector<std::complex<double>> xi_x(arraySize);
     jX[0] = jX1;
     yX[0] = yX1;
     xi_x[0]=std::complex<double> (jX1,-yX1); // xi(1)
 
-    std::complex<double> tempS1 = std::complex<double>  (0.0, 0.0);
-    std::complex<double> tempS2 = std::complex<double>  (0.0, 0.0);
     std::complex<double> tempQback = 0.0;
     double tempQsca = 0.0;
     double tempQext = 0.0;
+    double sign = -1.0;
 
-    double *piCost = new double [arraySize];
-    double *tauCost = new double [arraySize];
+    coeff.an.assign(arraySize, std::complex<double>(0.0, 0.0));
+    coeff.bn.assign(arraySize, std::complex<double>(0.0, 0.0));
 
     unsigned int n=1;
     while (static_cast<int>(n - 1 - nStop) < 0)
@@ -203,14 +158,6 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
         double fac1 = fac0 + 1.0;		     // n+1
         double fac2 = 2.0 * fac1 -1.0;	     // 2n+1
         double fac3 = fac2 - 2.0;		     // 2n-1
-        double fac4 = fac2 / (fac0 * fac1);  // (2n+1)/(n*(n+1))
-
-        //Update Legrendre polynomials (Array indices = n)
-        piCost[n-1] = dPCost1;
-        tauCost[n-1] = (fac0 * mu * dPCost1) - (fac1 * dPCost0);
-
-        dPCost1 = (fac2 * mu * dPCost1 / fac0) - (fac1* dPCost0 / fac0);
-        dPCost0 = piCost[n-1];
 
         //Update riccati Bessel functions  for x (Array indices = n+1)
         jX[n] = fac3*jX1/x-jX0;		// phi recurrence
@@ -229,26 +176,96 @@ void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1
 
         std::complex<double> an = (dervDn1*jX[n]-jX[n-1])/ (dervDn1*xi_x[n]-xi_x[n-1]);
         std::complex<double> bn = (dervDn2*jX[n]-jX[n-1])/ (dervDn2*xi_x[n]-xi_x[n-1]);
-        tempQback += fac2 * pow(-1.0, (n-1.0)) * (an - bn);
+        coeff.an[n-1] = an;
+        coeff.bn[n-1] = bn;
+
+        sign = -sign;   // (-1)^(n-1)
+        tempQback += fac2 * sign * (an - bn);
         tempQsca += fac2 * (util.ComplexAbs(an) * util.ComplexAbs(an) + util.ComplexAbs(bn) * util.ComplexAbs(bn));
         tempQext += fac2 * (an+bn).real();
 
-        // Calculate cS1 and cS2
-        tempS1 += fac4 * (an * piCost[n-1] + bn * tauCost[n-1]);
-        tempS2 += fac4 * (an * tauCost[n-1] +bn * piCost[n-1]);
-
         n = n + 1;
     }
-    *qBack = util.ComplexAbsSquared(tempQback) / x2;  //back scattering efficiency
-    *qSca= 2.0 * tempQsca/x2;                       //scattering efficiency
-    *qExt= 2.0 * tempQext/x2;                       //extinction efficiency
+    coeff.nStop = nStop;
+    coeff.qBack = util.ComplexAbsSquared(tempQback) / x2;  //back scattering efficiency
+    coeff.qSca = 2.0 * tempQsca/x2;                        //scattering efficiency
+    coeff.qExt = 2.0 * tempQext/x2;                        //extinction efficiency
+}
+
+//Computes cS1/cS2 for a given scattering angle (mu = cos(theta))
+void MieSimulation::ComputeAngularS1S2(std::complex<double> *cS1, std::complex<double> *cS2,
+                                       const MieCoefficients &coeff, double mu)
+{
+    // Legendre Polynomials
+    double dPCost0 = 0.0;  //pi0
+    double dPCost1 = 1.0;  //pi1
+
+    std::complex<double> tempS1 = std::complex<double> (0.0, 0.0);
+    std::complex<double> tempS2 = std::complex<double> (0.0, 0.0);
+
+    for (unsigned int n = 1; n <= coeff.nStop; n++)
+    {
+        double fac0 = double(n);             // n
+        double fac1 = fac0 + 1.0;            // n+1
+        double fac2 = 2.0 * fac1 - 1.0;       // 2n+1
+        double fac4 = fac2 / (fac0 * fac1);  // (2n+1)/(n*(n+1))
+
+        //Update Legendre polynomials (Array indices = n)
+        double piCost = dPCost1;
+        double tauCost = (fac0 * mu * dPCost1) - (fac1 * dPCost0);
+
+        dPCost1 = (fac2 * mu * dPCost1 / fac0) - (fac1 * dPCost0 / fac0);
+        dPCost0 = piCost;
+
+        const std::complex<double> &an = coeff.an[n-1];
+        const std::complex<double> &bn = coeff.bn[n-1];
+
+        // Calculate cS1 and cS2
+        tempS1 += fac4 * (an * piCost + bn * tauCost);
+        tempS2 += fac4 * (an * tauCost + bn * piCost);
+    }
     *cS1 = tempS1;
     *cS2 = tempS2;
+}
 
-    delete[] dnMx;
-    delete[] tauCost;
-    delete[] piCost;
-    delete[] yX;
-    delete[] jX;
-    delete[] xi_x;
+//This function provides S1,S2, qSca, qExt and qBack for given xParameter, real relativeRefIndex and mu(cos(angle))
+//cS1 - complex S1
+//cS2 - complex S2
+//qSca - scattering effieicncy
+//qSca - extinction effieicncy
+//qBack - backscattering effieicncy
+//xPara - x Parameter (2*pi*rad*refmed/wavel)
+//refRel - relative refractive index
+//mu - cos(angle)
+void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, std::complex<double> *cS2,
+                                                    double *qSca, double *qExt, double *qBack,
+                                                    double xPara, double relRef, double mu)
+{
+    MieCoefficients coeff;
+    ComputeCoefficientsForRealRefIndex(coeff, xPara, relRef);
+    ComputeAngularS1S2(cS1, cS2, coeff, mu);
+    *qSca = coeff.qSca;
+    *qExt = coeff.qExt;
+    *qBack = coeff.qBack;
+}
+
+//This function provides S1,S2, qSca, qExt and qBack for given xParameter, complex relativeRefIndex and mu(cos(angle))
+//cS1 - complex S1
+//cS2 - complex S2
+//qSca - scattering effieicncy
+//qSca - extinction effieicncy
+//qBack - backscattering effieicncy
+//xPara - x Parameter (2*pi*rad*refmed/wavel)
+//cRefRel - complex relative refractive index
+//mu - cos(angle)
+void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1, std::complex<double> *cS2,
+                                                       double *qSca, double *qExt, double *qBack,
+                                                       double xPara, std::complex<double> cRelRef, double mu)
+{
+    MieCoefficients coeff;
+    ComputeCoefficientsForComplexRefIndex(coeff, xPara, cRelRef);
+    ComputeAngularS1S2(cS1, cS2, coeff, mu);
+    *qSca = coeff.qSca;
+    *qExt = coeff.qExt;
+    *qBack = coeff.qBack;
 }
