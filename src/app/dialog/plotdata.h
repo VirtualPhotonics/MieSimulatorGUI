@@ -63,9 +63,8 @@ private:
                                     QVector<double> &phaseFuncPerp, QVector<double> &phaseFuncAve,
                                     int indexWL, bool flagLinearLog, bool flagThetaNegPosOrPos);
 
-    //Variables to correctly draw the polar plot
-    double mPolarMinRadius = 0;
-    double mPolarMaxRadius = 1.0;
+    static double mPolarMinRadius;
+    static double mPolarMaxRadius;
 };
 
 #endif // PLOTDATA_H
