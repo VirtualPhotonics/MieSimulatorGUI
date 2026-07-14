@@ -232,20 +232,29 @@ void Calculate::CalculatePowerLawAutoFitSimple(Parameters *para)
     double error, sumError;
     double minError = 1e100;
     double curB = 0.0;
-    double x, y;
+
+    const unsigned int nWavel = para->nWavel;
+    const double refWavel = para->refWavel;
+    const double muspRef = para->muspAtRefWavel[para->refWavelIdx];
+
+    //xRatio and y depend only on k, not on bMie
+    std::vector<double> xRatio(nWavel);
+    std::vector<double> y(nWavel);
+    for (unsigned int k = 0; k < nWavel; k++)
+    {
+        xRatio[k] = para->wavelArray[k] / refWavel;
+        y[k] = para->mus[k] * (1.0 - para->g[k]);
+    }
 
     for (int j=0; j<=400; j++)
     {
         bMie = j*0.01;   //Range: [0, 4]
         sumError = 0.0;
-        for (unsigned int k=0; k<para->nWavel; k++)
+        for (unsigned int k=0; k<nWavel; k++)
         {
             //Steve L Jacques,"Optical properties of biological tissues: a review" Phys. Med & Bio. 58(2013) R37-R61.
-            x = para->wavelArray[k];
-            yFit = ( para->muspAtRefWavel[para->refWavelIdx]*pow(x/para->refWavel, -bMie));
-
-            y = para->mus[k] * (1.0 - para->g[k]);
-            error = yFit - y;
+            yFit = muspRef * pow(xRatio[k], -bMie);
+            error = yFit - y[k];
             sumError += error*error;
         }
         if (sumError < minError)
@@ -264,7 +273,30 @@ void Calculate::CalculatePowerLawAutoFitComplex(Parameters *para)
     double error, sumError;
     double minError = 1e100;
     double curB = 0.0, curF = 0.0;
-    double x, y;
+
+    const unsigned int nWavel = para->nWavel;
+    const double refWavel = para->refWavel;
+    const double muspRef = para->muspAtRefWavel[para->refWavelIdx];
+
+    //xRatio, rayTerm and y depend only on k
+    std::vector<double> xRatio(nWavel);
+    std::vector<double> rayTerm(nWavel);   //(x/refWavel)^-4, invariant across fRay and bMie
+    std::vector<double> y(nWavel);
+    for (unsigned int k = 0; k < nWavel; k++)
+    {
+        xRatio[k] = para->wavelArray[k] / refWavel;
+        rayTerm[k] = pow(xRatio[k], -4.0);
+        y[k] = para->mus[k] * (1.0 - para->g[k]);
+    }
+
+    //(x/refWavel)^-bMie depends only on (j, k), not on fRay
+    std::vector<std::vector<double>> powTerm(401, std::vector<double>(nWavel));
+    for (int j = 0; j <= 400; j++)
+    {
+        double bMieCandidate = j * 0.01;
+        for (unsigned int k = 0; k < nWavel; k++)
+            powTerm[j][k] = pow(xRatio[k], -bMieCandidate);
+    }
 
     for (int i=0; i<=100; i++)
     {
@@ -273,14 +305,12 @@ void Calculate::CalculatePowerLawAutoFitComplex(Parameters *para)
         {
             bMie = j*0.01;   //Range: [0, 4]
             sumError = 0.0;
-            for (unsigned int k=0; k<para->nWavel; k++)
+            const std::vector<double> &powTermJ = powTerm[j];
+            for (unsigned int k=0; k<nWavel; k++)
             {
                 //Steve L Jacques,"Optical properties of biological tissues: a review" Phys. Med & Bio. 58(2013) R37-R61.
-                x = para->wavelArray[k];
-                yFit = ( para->muspAtRefWavel[para->refWavelIdx] *(fRay*pow(x/para->refWavel, -4.0) + (1.0-fRay)*pow(x/para->refWavel, -bMie)));
-
-                y = para->mus[k] * (1.0 - para->g[k]);
-                error = yFit - y;
+                yFit = muspRef * (fRay*rayTerm[k] + (1.0-fRay)*powTermJ[k]);
+                error = yFit - y[k];
                 sumError += error*error;
             }
             if (sumError < minError)
@@ -350,7 +380,7 @@ double Calculate::CalculateForwardBackward(std::complex<double> *S1,
     return sum;
 }
 
-//Builds a ThetaGrid internally on every call
+//Back-compat wrapper: builds a ThetaGrid internally on every call
 double Calculate::CalculateForwardBackward(std::complex<double> *S1,
                                            std::complex<double> *S2,
                                            Parameters *para,
@@ -379,10 +409,8 @@ double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
     return num/den;
 }
 
-//Builds a ThetaGrid internally on every call
-double Calculate::CalculateG(std::complex<double> *S1,
-                             std::complex<double> *S2,
-                             Parameters *para)
+//Calculate G
+double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para)
 {
     ThetaGrid grid;
     BuildThetaGrid(para, grid);
