@@ -9,8 +9,8 @@ class TestParameters : public QObject
     Q_OBJECT
 
 public:
-    TestParameters();
-    ~TestParameters();
+    TestParameters() = default;;
+    ~TestParameters() = default;;
 
 private slots:
     void init();

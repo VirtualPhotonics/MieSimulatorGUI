@@ -191,7 +191,7 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
 
 //Fills xRatio (wavelength ratio) and y (musp data) for the power-law fits
 double Calculate::PreparePowerLawFitData(Parameters *para, std::vector<double> &xRatio,
-                                         std::vector<double> &y)
+                                         std::vector<double> &y) const
 {
     const unsigned int nWavel = para->nWavel;
     const double refWavel = para->refWavel;
@@ -207,7 +207,7 @@ double Calculate::PreparePowerLawFitData(Parameters *para, std::vector<double> &
 }
 
 //Calculate bestfit and plot for Simple Algorithm
-void Calculate::CalculatePowerLawAutoFitSimple(Parameters *para)
+void Calculate::CalculatePowerLawAutoFitSimple(Parameters *para) const
 {
     double bMie, yFit;
     double error, sumError;
@@ -242,7 +242,7 @@ void Calculate::CalculatePowerLawAutoFitSimple(Parameters *para)
 }
 
 //Calculate bestfit and plot for Complex algorithm
-void Calculate::CalculatePowerLawAutoFitComplex(Parameters *para)
+void Calculate::CalculatePowerLawAutoFitComplex(Parameters *para) const
 {
     double bMie, fRay, yFit;
     double error, sumError;
@@ -303,7 +303,7 @@ void Calculate::CalculatePowerLawAutoFitComplex(Parameters *para)
 }
 
 //Builds the angle grid (cos, sin, Simpson weights) for the current nTheta.
-void Calculate::BuildThetaGrid(Parameters *para, ThetaGrid &grid)
+void Calculate::BuildThetaGrid(Parameters *para, ThetaGrid &grid) const
 {
     Utilities util;
     unsigned int nTheta = para->nTheta;
@@ -339,7 +339,7 @@ double Calculate::CalculateForwardBackward(std::complex<double> *S1,
                                            unsigned int start,
                                            unsigned int end,
                                            const ThetaGrid &grid,
-                                           const std::vector<double> &weight)
+                                           const std::vector<double> &weight) const
 {
     double sum = 0.0;
     Utilities util;
@@ -356,7 +356,7 @@ double Calculate::CalculateForwardBackward(std::complex<double> *S1,
                                            std::complex<double> *S2,
                                            Parameters *para,
                                            unsigned int start,
-                                           unsigned int end)
+                                           unsigned int end) const
 {
     ThetaGrid grid;
     BuildThetaGrid(para, grid);
@@ -366,7 +366,7 @@ double Calculate::CalculateForwardBackward(std::complex<double> *S1,
 
 //Calculate average cosine of phase function
 double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
-                             Parameters *para, const ThetaGrid &grid)
+                             Parameters *para, const ThetaGrid &grid) const
 {
     double num = 0.0;
     double den = 0.0;
@@ -381,7 +381,7 @@ double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
 }
 
 //Calculate G
-double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para)
+double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para) const
 {
     ThetaGrid grid;
     BuildThetaGrid(para, grid);
@@ -389,7 +389,7 @@ double Calculate::CalculateG(std::complex<double> *S1, std::complex<double> *S2,
 }
 
 //Set sphere parameters
-void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index, bool flagVolOrConc)
+void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index, bool flagVolOrConc) const
 {
     const double volumeConst = 4.0 * M_PI / 3.0;
     const double sqrtTwoPi = sqrt(2.0 * M_PI);
@@ -462,7 +462,7 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
 
 //Selction of discrete sphere sizes for polydisperse distribution
 //This process is used to obtain the best distribution for assigned mean diameter
-void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index)
+void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index) const
 {
     // index: 0 = Log-normal, 1 = Gaussian, 3 = Monodisperse
     if (index == 3)
@@ -514,7 +514,7 @@ void Calculate::DiameterRangeSetting(Parameters *para, unsigned int index)
 // Determines the scattering regime based on Tien et. al, A.R. Heat Trandfer 1(1987) & Galy et al. JQSRT 246(2020)
 bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceToWavelength, double &sizeParameter,
                                            double &volFraction, double &wavelength, double &clearance,
-                                           QString &strRegime, bool flagVolFlag)
+                                           QString &strRegime, bool flagVolFlag) const
 {
     double const volumeConstant = (4.0/3.0) * M_PI ;
     double effectiveRadius = 0.0;

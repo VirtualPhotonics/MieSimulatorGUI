@@ -6,14 +6,6 @@
 #include <QTest>
 #include "test_plotdata.h"
 
-TestPlotData::TestPlotData()
-{
-}
-
-TestPlotData::~TestPlotData()
-{
-}
-
 //Initialize values for tests
 void TestPlotData::init()
 {

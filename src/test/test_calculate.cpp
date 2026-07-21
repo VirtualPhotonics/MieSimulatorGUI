@@ -9,14 +9,6 @@
 #include "test_calculate.h"
 #include "utilities.h"
 
-TestCalculate::TestCalculate()
-{
-}
-
-TestCalculate::~TestCalculate()
-{
-}
-
 //Initialize values for tests
 void TestCalculate::init()
 {

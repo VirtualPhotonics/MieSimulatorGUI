@@ -10,8 +10,8 @@ class TestUtilities : public QObject
     Q_OBJECT
 
 public:
-    TestUtilities();
-    ~TestUtilities();
+    TestUtilities() = default;;
+    ~TestUtilities() = default;;
 
 private slots:
     void init();

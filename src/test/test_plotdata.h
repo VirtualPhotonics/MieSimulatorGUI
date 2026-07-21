@@ -10,8 +10,8 @@ class TestPlotData : public QObject
     Q_OBJECT
 
 public:
-    TestPlotData();
-    ~TestPlotData();
+    TestPlotData() = default;;
+    ~TestPlotData() = default;;
 
 private slots:
     void init();

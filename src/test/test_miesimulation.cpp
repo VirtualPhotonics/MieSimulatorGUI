@@ -8,14 +8,6 @@
 #include "test_miesimulation.h"
 #include "calc/miesimulation.h"
 
-TestMieSimulation::TestMieSimulation()
-{
-}
-
-TestMieSimulation::~TestMieSimulation()
-{
-}
-
 //Initialize values for tests
 void TestMieSimulation::init()
 {

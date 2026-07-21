@@ -10,8 +10,8 @@ class TestMainWindowSupport : public QObject
     Q_OBJECT
 
 public:
-    TestMainWindowSupport();
-    ~TestMainWindowSupport();
+    TestMainWindowSupport() = default;;
+    ~TestMainWindowSupport() = default;;
 
 private slots:
     void init();

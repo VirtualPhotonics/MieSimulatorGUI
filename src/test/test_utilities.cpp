@@ -8,14 +8,6 @@
 #include <QCoreApplication>
 #include "test_utilities.h"
 
-TestUtilities::TestUtilities()
-{
-}
-
-TestUtilities::~TestUtilities()
-{
-}
-
 //Initialize values for tests
 void TestUtilities::init()
 {

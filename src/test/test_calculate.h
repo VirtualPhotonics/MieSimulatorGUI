@@ -10,8 +10,8 @@ class TestCalculate : public QObject
     Q_OBJECT
 
 public:
-    TestCalculate();
-    ~TestCalculate();
+    TestCalculate() = default;
+    ~TestCalculate() = default;
 
 private slots:    
     void init();

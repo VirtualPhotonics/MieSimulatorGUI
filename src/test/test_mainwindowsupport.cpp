@@ -9,14 +9,6 @@
 #include <QTextStream>
 #include "test_mainwindowsupport.h"
 
-TestMainWindowSupport::TestMainWindowSupport()
-{
-}
-
-TestMainWindowSupport::~TestMainWindowSupport()
-{
-}
-
 //Initialize values for tests
 void TestMainWindowSupport::init()
 {

@@ -36,22 +36,22 @@ public:
 
     void DoSimulation(QLabel *progress, Parameters *para);
     void ComputeMuspAtRefWavel(Parameters *para);
-    void CalculatePowerLawAutoFitSimple(Parameters *para);
-    void CalculatePowerLawAutoFitComplex(Parameters *para);
-    void DiameterRangeSetting(Parameters *para, unsigned int distIndex);
-    void SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index, bool flagVolOrConc);
-    void BuildThetaGrid(Parameters *para, ThetaGrid &grid);
+    void CalculatePowerLawAutoFitSimple(Parameters *para) const;
+    void CalculatePowerLawAutoFitComplex(Parameters *para) const;
+    void DiameterRangeSetting(Parameters *para, unsigned int distIndex) const;
+    void SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index, bool flagVolOrConc) const;
+    void BuildThetaGrid(Parameters *para, ThetaGrid &grid) const;
     double CalculateForwardBackward(std::complex<double> *S1, std::complex<double> *S2,
-                                    Parameters *para, unsigned int start, unsigned int end);
+                                    Parameters *para, unsigned int start, unsigned int end) const;
     double CalculateForwardBackward(std::complex<double> *S1, std::complex<double> *S2,
                                     unsigned int start, unsigned int end,
-                                    const ThetaGrid &grid, const std::vector<double> &weight);
-    double CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para);
-    double CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para, const ThetaGrid &grid);
+                                    const ThetaGrid &grid, const std::vector<double> &weight) const;
+    double CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para) const;
+    double CalculateG(std::complex<double> *S1, std::complex<double> *S2, Parameters *para, const ThetaGrid &grid) const;
     bool CheckIndependentScattering(Parameters *para, double &clearanceToWavelength,
                                     double &sizeParameter, double &volFraction,
                                     double &wavelength, double &clearance,
-                                    QString &strRegime, bool flagVolFlag);
+                                    QString &strRegime, bool flagVolFlag) const;
 
 private:
     void ComputeMieForSphere(Parameters *para, unsigned int r, double wavelength,
@@ -61,7 +61,7 @@ private:
                              double &xPara, double &piRadiusSquared);
 
     double PreparePowerLawFitData(Parameters *para, std::vector<double> &xRatio,
-                                  std::vector<double> &y);
+                                  std::vector<double> &y) const;
 };
 
 #endif // CALCULATE_H

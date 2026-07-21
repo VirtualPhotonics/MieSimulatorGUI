@@ -10,8 +10,8 @@ class TestMieSimulation : public QObject
     Q_OBJECT
 
 public:
-    TestMieSimulation();
-    ~TestMieSimulation();
+    TestMieSimulation() = default;;
+    ~TestMieSimulation() = default;;
 
 private slots:
     void init();

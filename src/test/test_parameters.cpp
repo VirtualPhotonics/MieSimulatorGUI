@@ -5,14 +5,6 @@
 #include "test_parameters.h"
 #include <QTest>
 
-TestParameters::TestParameters()
-{
-}
-
-TestParameters::~TestParameters()
-{
-}
-
 //Initialize values for tests
 void TestParameters::init()
 {
