@@ -7,10 +7,6 @@
 #include "dialog/plotdata.h"
 #include <QMessageBox>
 
-MainWindowSupport::MainWindowSupport(void)
-{
-}
-
 // Initialize GUI
 void MainWindowSupport::InitializeGUI(Ui_MainWindow *ui, Parameters *para)
 {

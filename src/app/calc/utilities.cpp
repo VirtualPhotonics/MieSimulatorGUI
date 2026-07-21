@@ -4,14 +4,6 @@
 
 #include "calc/utilities.h"
 
-Utilities::Utilities()
-{
-}
-
-Utilities::~Utilities()
-{
-}
-
 //Delay function for display update
 void Utilities::Delay()
 {

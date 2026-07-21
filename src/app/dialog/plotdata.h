@@ -10,8 +10,8 @@ class PlotData
     friend class TestPlotData;
 
 public:
-    PlotData(void);
-    ~PlotData(void);
+    PlotData() = default;
+    ~PlotData() = default;
 
     void ClearPlots(Ui_MainWindow *ui);
     void InitialSetupDistributionPlot(Ui_MainWindow *ui);

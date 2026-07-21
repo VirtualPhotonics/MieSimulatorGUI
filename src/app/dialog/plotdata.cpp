@@ -10,14 +10,6 @@
 double PlotData::mPolarMinRadius = 0.0;
 double PlotData::mPolarMaxRadius = 1.0;
 
-PlotData::PlotData(void)
-{
-}
-
-PlotData::~PlotData(void)
-{
-}
-
 //Clear and Initialize Plots
 void PlotData::ClearPlots(Ui_MainWindow *ui)
 {

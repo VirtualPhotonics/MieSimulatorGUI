@@ -9,15 +9,6 @@
 
 #define MAX(a,b)    (((a) > (b)) ? (a) : (b))
 
-MieSimulation::MieSimulation()
-{
-}
-
-
-MieSimulation::~MieSimulation()
-{
-}
-
 namespace
 {
     //Shared implementation of the Mie coefficient (an, bn) and qSca/qExt/qBack

@@ -8,14 +8,6 @@
 #include <QRadioButton>
 #include <QMessageBox>
 
-Parameters::Parameters()
-{
-}
-
-Parameters::~Parameters()
-{
-}
-
 //Check the validity of common Parameters
 bool Parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
                                        QRadioButton *radioButton_NumDen,

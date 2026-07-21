@@ -20,8 +20,8 @@ struct ThetaGrid
 class Calculate
 {
 public:
-    Calculate();
-    ~Calculate();
+    Calculate() = default;
+    ~Calculate() = default;
 
     double mWavel;                   // wavel: wavelength of the light in the medium (in microns)
     double mMu;                      // mu: cos angle

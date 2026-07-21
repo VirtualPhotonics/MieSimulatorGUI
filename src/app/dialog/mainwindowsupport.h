@@ -9,7 +9,7 @@
 class MainWindowSupport
 {
 public:
-    MainWindowSupport(void);
+    MainWindowSupport() = default;
     void InitializeGUI(Ui_MainWindow *ui, Parameters *para);
     void SetWidgets(Ui_MainWindow *ui, Parameters *para);
     void LoadInputData(Ui_MainWindow *ui, Parameters *para);

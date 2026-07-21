@@ -17,8 +17,8 @@ struct MieCoefficients
 class MieSimulation
 {
 public:
-    MieSimulation();
-    ~MieSimulation();
+    MieSimulation() = default;
+    ~MieSimulation() = default;
 
     // Angle-independent stage
     void ComputeCoefficientsForRealRefIndex(MieCoefficients &coeff, double xPara, double relRef);

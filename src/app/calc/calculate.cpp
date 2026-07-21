@@ -7,14 +7,6 @@
 #include "calc/utilities.h"
 #include "parameters.h"
 
-Calculate::Calculate()
-{
-}
-
-Calculate::~Calculate()
-{
-}
-
 //Computes the Mie solution for one sphere (radius index r) at the given wavelength
 void Calculate::ComputeMieForSphere(Parameters *para, unsigned int r, double wavelength,
                                     const ThetaGrid &grid,

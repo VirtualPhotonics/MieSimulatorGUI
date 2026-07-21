@@ -8,9 +8,8 @@
 class Utilities
 {
 public:
-    Utilities();
-    ~Utilities();
-
+    Utilities() = default;
+    ~Utilities() = default;
     void Delay();
     double ComplexAbs(std::complex<double> c);
     double ComplexAbsSquared(std::complex<double> c);
