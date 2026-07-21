@@ -10,6 +10,8 @@ TARGET = MieSimulatorGUI_v2_0
 CONFIG -= -qt-freetype
 TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
+qcustomplot_compiler_flags.input = SOURCES
+QMAKE_CXXFLAGS += -Wno-deprecated-declarations
 
 win32 {
     RC_ICONS = misc/MieSimulatorGUI.ico
