@@ -1,6 +1,7 @@
 #ifndef MAINWINDOWSUPPORT_H
 #define MAINWINDOWSUPPORT_H
 
+#include <memory>
 #include <qmath.h>
 #include "parameters.h"
 #include "calc/calculate.h"
@@ -9,7 +10,7 @@
 class MainWindowSupport
 {
 public:
-    MainWindowSupport() = default;
+    MainWindowSupport(void) = default;
     void InitializeGUI(Ui_MainWindow *ui, Parameters *para);
     void SetWidgets(Ui_MainWindow *ui, Parameters *para);
     void LoadInputData(Ui_MainWindow *ui, Parameters *para);
@@ -30,7 +31,7 @@ public:
     void DisplayWarning(QString warningMessage);
 
 private:
-    Calculate *mCalc;
+    std::unique_ptr<Calculate> mCalc;
     QPen mPen;
 };
 

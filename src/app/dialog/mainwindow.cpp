@@ -13,7 +13,7 @@
 
 /***********************Starting Main window and initializations ******************************/
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow)
+    QMainWindow(parent), ui(std::make_unique<Ui::MainWindow>())
 {
     //Initialize UI
     ui->setupUi(this);
@@ -41,10 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->doubleSpinBox_B, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &::MainWindow::DoubleSpinBox_B_valueChanged);
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+MainWindow::~MainWindow() = default;
 
 /***************************** Intialize *********************************************/
 void MainWindow::Initialize()
@@ -57,16 +54,16 @@ void MainWindow::Initialize()
     mPara = new Parameters();
 
     MainWindowSupport support;
-    support.InitializeGUI(ui, mPara);
-    support.SetWidgets(ui, mPara);
+    support.InitializeGUI(ui.get(), mPara);
+    support.SetWidgets(ui.get(), mPara);
 
     PlotData plot;
-    plot.InitialSetupDistributionPlot(ui);
-    plot.InitialSetupPhaseFunctionPolarPlot(ui);
-    plot.InitialSetupPhaseFunctionLinearPlot(ui);
-    plot.InitialSetupS1S2Plot(ui);
-    plot.InitialSetupMuspPowerLawFit(ui);
-    plot.InitialSetupOtherPlots(ui);
+    plot.InitialSetupDistributionPlot(ui.get());
+    plot.InitialSetupPhaseFunctionPolarPlot(ui.get());
+    plot.InitialSetupPhaseFunctionLinearPlot(ui.get());
+    plot.InitialSetupS1S2Plot(ui.get());
+    plot.InitialSetupMuspPowerLawFit(ui.get());
+    plot.InitialSetupOtherPlots(ui.get());
 }
 
 /********************************** Update Functions **********************************/
@@ -76,7 +73,7 @@ void MainWindow::UpdatePhaseFunctionLinearPlot()
     if (mOtherPlotsFlag)
     {
         PlotData plot;
-        plot.AssignValuesPhaseFunctionLinearPlot(ui, mPara);
+        plot.AssignValuesPhaseFunctionLinearPlot(ui.get(), mPara);
     }
 }
 
@@ -86,8 +83,8 @@ void MainWindow::UpdatePhaseFunctionPolarPlot()
     if (mOtherPlotsFlag)
     {
         PlotData plot;
-        plot.SetupPolarPlotForData(ui, mPara);
-        plot.AssignValuesPhaseFunctionPolarPlot(ui,mPara);
+        plot.SetupPolarPlotForData(ui.get(), mPara);
+        plot.AssignValuesPhaseFunctionPolarPlot(ui.get(),mPara);
     }
 }
 
@@ -97,7 +94,7 @@ void MainWindow::UpdateS1S2Plot()
     if (mOtherPlotsFlag)
     {
         PlotData plot;
-        plot.AssignValuesS1S2Plot(ui, mPara);
+        plot.AssignValuesS1S2Plot(ui.get(), mPara);
     }
 }
 
@@ -109,7 +106,7 @@ void MainWindow::UpdateMuspFitPlot()
         if (mPara->nWavel >1)
         {
             PlotData plot;
-            plot.AssignValuesMuspPowerLawPlots(ui,mPara);
+            plot.AssignValuesMuspPowerLawPlots(ui.get(),mPara);
         }
     }
 }
@@ -131,10 +128,10 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
     MainWindowSupport support;
 
     //Initialize
-    plot.ClearPlots(ui);
-    support.SetWidgets(ui, mPara);
-    support.LoadInputData(ui,mPara);
-    support.SetWavelengthSliders(ui);              //set slider position
+    plot.ClearPlots(ui.get());
+    support.SetWidgets(ui.get(), mPara);
+    support.LoadInputData(ui.get(),mPara);
+    support.SetWavelengthSliders(ui.get());              //set slider position
 
     if  (mLoadCustomNoGoodFlag)
     {
@@ -151,28 +148,28 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
                                          ui->radioButton_VolFrac))
         {
             //Disable widgets
-            support.DisableWidgetsDuringSimulation(ui, mPara, true);
+            support.DisableWidgetsDuringSimulation(ui.get(), mPara, true);
             //If mArrayFlag is TRUE, delete dynamic arrays before next simulation
             if (mArrayFlag)
                 support.DeleteArrays(mPara, &mArrayFlag);
             //Initialize dynamic arrays
-            support.InitializeArrays(ui,mPara, &mArrayFlag);
+            support.InitializeArrays(ui.get(),mPara, &mArrayFlag);
 
             //Mono disperse
             if (ui->radioButton_MonoDisperse->isChecked())
             {
-                support.ProcessDistribution(ui, mPara, mPara->MonoDisperse);  // index = 3: monodisperse
-                support.ProcessMonoDisperse(ui,mPara);
+                support.ProcessDistribution(ui.get(), mPara, mPara->MonoDisperse);  // index = 3: monodisperse
+                support.ProcessMonoDisperse(ui.get(),mPara);
                 ui->label_Progress->setText("<font color=\"green\"> Completed!</font>");
                 ui->slider_ConcPercentChange->setValue(0);
                 mOtherPlotsFlag = true;
                 mDistPlotFlag = true;
 
                 //Enable widgets
-                support.DisableWidgetsDuringSimulation(ui, mPara, false);
+                support.DisableWidgetsDuringSimulation(ui.get(), mPara, false);
 
                 //Check dependent scattering
-                support.CheckIndependentScattering(ui, mPara);
+                support.CheckIndependentScattering(ui.get(), mPara);
             }
 
             //Poly disperse
@@ -180,10 +177,10 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
             {
                 if (mPara->CheckDistributionParameters(ui->comboBox_Distribution))   //sanity check
                 {
-                    support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
+                    support.ProcessDistribution(ui.get(), mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
                     if (mPara->CheckPackingVolume())   // check packing volume for polydisperse
                     {
-                        support.ProcessPolyDisperse(ui,mPara);
+                        support.ProcessPolyDisperse(ui.get(),mPara);
                         ui->label_Progress->setText("<font color=\"green\"> Completed!</font>");
                         ui->slider_ConcPercentChange->setValue(0);
                         mOtherPlotsFlag = true;
@@ -191,16 +188,16 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
                     }
                 }
                 //Enable widgets
-                support.DisableWidgetsDuringSimulation(ui, mPara, false);
+                support.DisableWidgetsDuringSimulation(ui.get(), mPara, false);
 
                 // Enable disable widgets for Custom selection
                 if (ui->comboBox_Distribution->currentIndex() == mPara->Custom)
-                    support.DisableWidgetsDuringCustomPolyDisperseData(ui, true);
+                    support.DisableWidgetsDuringCustomPolyDisperseData(ui.get(), true);
                 else
-                    support.DisableWidgetsDuringCustomPolyDisperseData(ui, false);
+                    support.DisableWidgetsDuringCustomPolyDisperseData(ui.get(), false);
 
                 //Check dependent scattering
-                support.CheckIndependentScattering(ui, mPara);
+                support.CheckIndependentScattering(ui.get(), mPara);
             }
         }
     }
@@ -227,22 +224,22 @@ void MainWindow::on_pushButton_ShowDistributionAndCustom_clicked()
     if (dataValidFlag)
     {
         PlotData plot;
-        plot.ClearPlots(ui);
+        plot.ClearPlots(ui.get());
         mOtherPlotsFlag = false;
         mDistPlotFlag = false;
         mLoadCustomNoGoodFlag = true;
     }
     else
     {
-        support.LoadInputData(ui, mPara);
+        support.LoadInputData(ui.get(), mPara);
         if (mPara->CheckCommonParameters(ui->radioButton_MonoDisperse,
                                          ui->radioButton_NumDen,
                                          ui->radioButton_VolFrac))    //sanity check
         {
             if (mPara->CheckDistributionParameters(ui->comboBox_Distribution))   //sanity check
             {
-                support.SetWidgets(ui, mPara);
-                support.ProcessDistribution(ui, mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
+                support.SetWidgets(ui.get(), mPara);
+                support.ProcessDistribution(ui.get(), mPara, static_cast<unsigned int>(ui->comboBox_Distribution->currentIndex()));
                 mDistPlotFlag = true;
             }
         }
@@ -281,8 +278,8 @@ void MainWindow::on_pushButton_DisplayData_clicked()
 {
     if (mOtherPlotsFlag)
     {
-        DisplayDialog *display;
-        display = new DisplayDialog();
+        DisplayDialog *display = new DisplayDialog(this);
+        display->setAttribute(Qt::WA_DeleteOnClose);
         display->DisplayData(ui->radioButton_MonoDisperse,
                              ui->radioButton_PolyDisperse,
                              ui->radioButton_NumDen,
@@ -319,7 +316,7 @@ void MainWindow::on_pushButton_BestFit_clicked()
             double fRay, bMie;
 
             //Widget settings
-            support.DisableWidgetsDuringSimulation(ui, mPara, true);
+            support.DisableWidgetsDuringSimulation(ui.get(), mPara, true);
             ui->label_CurrentMSE->setText("<font color=\"red\">Wait!...    </font>");
             ui->label_CurrentA->setText("");
             util.Delay();
@@ -329,7 +326,7 @@ void MainWindow::on_pushButton_BestFit_clicked()
                 cal.CalculatePowerLawAutoFitComplex(mPara);
             else
                 cal.CalculatePowerLawAutoFitSimple(mPara);
-            plot.AssignValuesMuspPowerLawPlots(ui,mPara);
+            plot.AssignValuesMuspPowerLawPlots(ui.get(),mPara);
             fRay = mPara->fRay;
             bMie = mPara->bMie;
             ui->doubleSpinBox_F->setValue(fRay);
@@ -337,7 +334,7 @@ void MainWindow::on_pushButton_BestFit_clicked()
             UpdateMuspFitErrorDisplay();
 
             //Enable Widgets
-            support.DisableWidgetsDuringSimulation(ui, mPara, false);
+            support.DisableWidgetsDuringSimulation(ui.get(), mPara, false);
         }
         else
         {
@@ -444,13 +441,13 @@ void MainWindow::on_radioButton_LinearYAxis_clicked()
     if (mOtherPlotsFlag)
     {
         MainWindowSupport support;
-        support.DisableEnableRealImagButtons(ui);
-        plot.AssignValuesS1S2Plot(ui, mPara);
-        plot.AssignValuesPhaseFunctionLinearPlot(ui, mPara);
-        plot.AssignValuesOtherPlots(ui, mPara);
+        support.DisableEnableRealImagButtons(ui.get());
+        plot.AssignValuesS1S2Plot(ui.get(), mPara);
+        plot.AssignValuesPhaseFunctionLinearPlot(ui.get(), mPara);
+        plot.AssignValuesOtherPlots(ui.get(), mPara);
     }
     if (mDistPlotFlag)
-        plot.AssignValuesDistributionPlot(ui, mPara);
+        plot.AssignValuesDistributionPlot(ui.get(), mPara);
 }
 
 //radioButton_LogYAxis_clicked: Select Log Y-Axis
@@ -460,13 +457,13 @@ void MainWindow::on_radioButton_LogYAxis_clicked()
     if (mOtherPlotsFlag)
     {
         MainWindowSupport support;
-        support.DisableEnableRealImagButtons(ui);
-        plot.AssignValuesS1S2Plot(ui, mPara);
-        plot.AssignValuesPhaseFunctionLinearPlot(ui, mPara);
-        plot.AssignValuesOtherPlots(ui, mPara);
+        support.DisableEnableRealImagButtons(ui.get());
+        plot.AssignValuesS1S2Plot(ui.get(), mPara);
+        plot.AssignValuesPhaseFunctionLinearPlot(ui.get(), mPara);
+        plot.AssignValuesOtherPlots(ui.get(), mPara);
     }
     if (mDistPlotFlag)
-        plot.AssignValuesDistributionPlot(ui, mPara);
+        plot.AssignValuesDistributionPlot(ui.get(), mPara);
 }
 
 //radioButton_LinearXAxis_clicked: Select Linear X-Axis
@@ -475,7 +472,7 @@ void MainWindow::on_radioButton_LinearXAxis_clicked()
     if (mDistPlotFlag)
     {
         PlotData plot;
-        plot.AssignValuesDistributionPlot(ui, mPara);
+        plot.AssignValuesDistributionPlot(ui.get(), mPara);
     }
 }
 
@@ -485,7 +482,7 @@ void MainWindow::on_radioButton_LogXAxis_clicked()
     if (mDistPlotFlag)
     {
         PlotData plot;
-        plot.AssignValuesDistributionPlot(ui, mPara);
+        plot.AssignValuesDistributionPlot(ui.get(), mPara);
     }
 }
 
@@ -494,9 +491,9 @@ void MainWindow::on_radioButton_MonoDisperse_clicked()
 {
     MainWindowSupport support;
     ui->comboBox_Distribution->setCurrentIndex(mPara->LogNormal);
-    support.SetWidgets(ui, mPara);
+    support.SetWidgets(ui.get(), mPara);
     PlotData plot;
-    plot.ClearPlots(ui);
+    plot.ClearPlots(ui.get());
     ui->tabWidget_PhaseFunction->setTabText(0,"S1/S2");
     ui->tabWidget_PhaseFunction->setTabText(1,"Phase Function (Polar)");
     ui->tabWidget_PhaseFunction->setTabText(2,"Phase Function (Linear)");
@@ -514,9 +511,9 @@ void MainWindow::on_radioButton_MonoDisperse_clicked()
 void MainWindow::on_radioButton_PolyDisperse_clicked()
 {
     MainWindowSupport support;
-    support.SetWidgets(ui, mPara);
+    support.SetWidgets(ui.get(), mPara);
     PlotData plot;
-    plot.ClearPlots(ui);
+    plot.ClearPlots(ui.get());
     ui->tabWidget_PhaseFunction->setTabText(0,"Ave. S1/S2");
     ui->tabWidget_PhaseFunction->setTabText(1,"Ave. Phase Function (Polar)");
     ui->tabWidget_PhaseFunction->setTabText(2,"Ave. Phase Function (Linear)");
@@ -537,9 +534,9 @@ void MainWindow::on_radioButton_NumDen_clicked()
     ui->lineEdit_VolFrac->setText(QString::number(mPara->volFraction));
 
     MainWindowSupport support;
-    support.SetWidgets(ui, mPara);
+    support.SetWidgets(ui.get(), mPara);
     PlotData plot;
-    plot.ClearPlots(ui);
+    plot.ClearPlots(ui.get());
     mOtherPlotsFlag = false;
     mDistPlotFlag = false;
 }
@@ -551,9 +548,9 @@ void MainWindow::on_radioButton_VolFrac_clicked()
     ui->lineEdit_NumDen->setText(QString::number(mPara->sphNumDensity));
 
     MainWindowSupport support;
-    support.SetWidgets(ui, mPara);
+    support.SetWidgets(ui.get(), mPara);
     PlotData plot;
-    plot.ClearPlots(ui);
+    plot.ClearPlots(ui.get());
     mOtherPlotsFlag = false;
     mDistPlotFlag = false;
 }
@@ -776,13 +773,13 @@ void MainWindow::on_slider_ConcPercentChange_valueChanged(int position)
     PlotData plot;
     if (mDistPlotFlag)
     {
-        plot.AssignValuesDistributionPlot(ui, mPara);
+        plot.AssignValuesDistributionPlot(ui.get(), mPara);
     }
 
     if (mOtherPlotsFlag)
     {   MainWindowSupport support;
-        support.DisableEnableRealImagButtons(ui);
-        plot.AssignValuesOtherPlots(ui, mPara);
+        support.DisableEnableRealImagButtons(ui.get());
+        plot.AssignValuesOtherPlots(ui.get(), mPara);
     }
 }
 
@@ -795,7 +792,7 @@ void MainWindow::on_slider_WL_PFPolar_valueChanged(int value)
     if (mOtherPlotsFlag)
     {
         PlotData plot;
-        plot.AssignValuesPhaseFunctionPolarPlot(ui,mPara);
+        plot.AssignValuesPhaseFunctionPolarPlot(ui.get(),mPara);
     }
 }
 
@@ -822,7 +819,7 @@ void MainWindow::on_comboBox_Distribution_currentIndexChanged(int value)
 {
     MainWindowSupport support;
     PlotData plot;
-    plot.ClearPlots(ui);
+    plot.ClearPlots(ui.get());
     mOtherPlotsFlag = false;
     mDistPlotFlag = false;
     // 0: Log Normal
@@ -831,12 +828,12 @@ void MainWindow::on_comboBox_Distribution_currentIndexChanged(int value)
 
     if (value == mPara->Custom) //Custom Distribution
     {
-        support.DisableWidgetsDuringCustomPolyDisperseData(ui, true);
+        support.DisableWidgetsDuringCustomPolyDisperseData(ui.get(), true);
         mLoadCustomNoGoodFlag = true;
     }
     else
     {
-        support.DisableWidgetsDuringCustomPolyDisperseData(ui, false);
+        support.DisableWidgetsDuringCustomPolyDisperseData(ui.get(), false);
         mLoadCustomNoGoodFlag = false;
     }
 }
@@ -1092,7 +1089,6 @@ void MainWindow::MouseOverPlotPhaseFunctionPolar(QMouseEvent *event)
     {
         strNameY = "Magnitude";
     }
-    PlotData plot;
     DisplayPolarCurveData(event, customPlot, strNameX, strUnitX, strNameY, strUnitY);
 }
 
@@ -1274,15 +1270,15 @@ void MainWindow::DisplayGraphData(QMouseEvent *event, QCustomPlot *customPlot,
                 if (ok)
                 {
                     QString placeholder = tr("<table>"
-                                          "<tr>"
-                                          "<td>%L1:</td>"
-                                          "<td>%L2%L3</td>"
-                                          "</tr>"
-                                          "<tr>"
-                                          "<td>%L4:</td>"
-                                          "<td>%L5%L6</td>"
-                                          "</tr>"
-                                          "</table>");
+                                             "<tr>"
+                                             "<td>%L1:</td>"
+                                             "<td>%L2%L3</td>"
+                                             "</tr>"
+                                             "<tr>"
+                                             "<td>%L4:</td>"
+                                             "<td>%L5%L6</td>"
+                                             "</tr>"
+                                             "</table>");
                     QToolTip::showText(event->globalPosition().toPoint(),
                                        placeholder.arg(strNameX)
                                            .arg(key)
@@ -1309,7 +1305,7 @@ void MainWindow::DisplayPolarCurveData(QMouseEvent *event, QCustomPlot *customPl
 
     QCPAbstractPlottable *plottable = customPlot->plottableAt(event->position());
     if(plottable)
-    {        
+    {
         double mouseX = customPlot->xAxis->pixelToCoord(event->position().x());
         double mouseY = customPlot->yAxis->pixelToCoord(event->position().y());
 

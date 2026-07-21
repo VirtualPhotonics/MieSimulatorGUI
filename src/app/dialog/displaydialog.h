@@ -1,6 +1,7 @@
 #ifndef DISPLAYDIALOG_H
 #define DISPLAYDIALOG_H
 
+#include <memory>
 #include <QDialog>
 #include <QRadioButton>
 #include <QComboBox>
@@ -29,7 +30,7 @@ public:
                      QCheckBox *checkBox_PhasePolarAve,
                      QCheckBox *checkBox_PhasePolarPara,
                      QCheckBox *checkBox_PhasePolarPerp, Parameters *);
-    Ui::DisplayDialog *ui;
+    std::unique_ptr<Ui::DisplayDialog> ui;
 
 private slots:
     void on_pushButton_Close_clicked();

@@ -1,6 +1,7 @@
 #ifndef OPTIONSDIALOG_H
 #define OPTIONSDIALOG_H
 
+#include <memory>
 #include <QDialog>
 #include <QRadioButton>
 #include <QComboBox>
@@ -44,7 +45,7 @@ private:
     bool mFlagPhaseFunction;
     bool mFlagS1;
     bool mFlagS2;
-    Ui::OptionsDialog *ui;
+    std::unique_ptr<Ui::OptionsDialog> ui;
 
     void SaveScatPara(QRadioButton *radioButton_MonoDisperse,
                       QRadioButton *radioButton_PolyDisperse,

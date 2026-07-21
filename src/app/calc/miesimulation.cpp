@@ -11,90 +11,90 @@
 
 namespace
 {
-    //Shared implementation of the Mie coefficient (an, bn) and qSca/qExt/qBack
-    //computation.
-    template <typename RefIndexType>
-    void ComputeCoefficientsImpl(MieCoefficients &coeff, double xPara, RefIndexType relRef)
+//Shared implementation of the Mie coefficient (an, bn) and qSca/qExt/qBack
+//computation.
+template <typename RefIndexType>
+void ComputeCoefficientsImpl(MieCoefficients &coeff, double xPara, RefIndexType relRef)
+{
+    Utilities util;
+
+    //use conventional symbols
+    double x = xPara;
+    RefIndexType m = relRef;
+    RefIndexType mx = m * x;
+    double xStop = x + 4.05 * (pow(x,(1.0 / 3.0))) + 2.0;
+
+    unsigned int nStop = static_cast<unsigned int>(ceil(xStop));
+    unsigned int yMod = static_cast<unsigned int>(ceil(std::abs(mx)));
+    unsigned int nMx = static_cast<unsigned int>(MAX(xStop, yMod) + 15);
+    unsigned int arraySize = nStop + 1;
+    double x2 = x * x;
+
+    std::vector<RefIndexType> dnMx(nMx);
+    dnMx[nMx-1] = 0;
+
+    for (unsigned int n = nMx - 1; n>0; n--)
     {
-        Utilities util;
-
-        //use conventional symbols
-        double x = xPara;
-        RefIndexType m = relRef;
-        RefIndexType mx = m * x;
-        double xStop = x + 4.05 * (pow(x,(1.0 / 3.0))) + 2.0;
-
-        unsigned int nStop = static_cast<unsigned int>(ceil(xStop));
-        unsigned int yMod = static_cast<unsigned int>(ceil(std::abs(mx)));
-        unsigned int nMx = static_cast<unsigned int>(MAX(xStop, yMod) + 15);
-        unsigned int arraySize = nStop + 1;
-        double x2 = x * x;
-
-        std::vector<RefIndexType> dnMx(nMx);
-        dnMx[nMx-1] = 0;
-
-        for (unsigned int n = nMx - 1; n>0; n--)
-        {
-            dnMx[n-1] = (double(n)/mx)-(1.0/(dnMx[n]+double(n)/mx));
-        }
-
-        // at the sphere boundary
-        double jX0 = cos(x);  // phi(-1)
-        double yX0 = -sin(x); // kai(-1)
-        double jX1 = sin(x);  // phi(0)
-        double yX1 = cos(x);  // kai(0)
-
-        std::vector<double> jX(arraySize);
-        std::vector<double> yX(arraySize);
-        std::vector<std::complex<double>> xi_x(arraySize);
-        jX[0] = jX1;
-        yX[0] = yX1;
-        xi_x[0]=std::complex<double> (jX1,-yX1); // xi(1)
-
-        //Initialize temp holders
-        std::complex<double> tempQback = 0.0;
-        double tempQsca = 0.0;
-        double tempQext = 0.0;
-        double sign = -1.0;   // tracks (-1)^(n-1), toggled each iteration instead of calling pow()
-
-        coeff.an.assign(arraySize, std::complex<double>(0.0, 0.0));
-        coeff.bn.assign(arraySize, std::complex<double>(0.0, 0.0));
-
-        for (unsigned int n = 1; n <= nStop; n++)
-        {
-            double fac2 = 2.0 * double(n) + 1.0;   // 2n+1
-            double fac3 = fac2 - 2.0;              // 2n-1
-
-            //Update riccati Bessel functions  for x (Array indices = n+1)
-            jX[n] = fac3 * jX1 / x - jX0;		// phi recurrence
-            yX[n] = fac3 * yX1 / x - yX0;		// kai recurrence
-            xi_x[n] = std::complex<double> (jX[n], -yX[n]);
-
-            jX0 = jX1;
-            jX1 = jX[n];
-            yX0 = yX1;
-            yX1 = yX[n];
-
-            // Calculate an and bn  (According to Bohren and Huffman book)
-            // Remark: GouGouesbet  uses size parameter as "ka" instead of "kx"
-            RefIndexType dervDn1 = (dnMx[n]/m) + (double(n) / x);
-            RefIndexType dervDn2 = (m*dnMx[n]) + (double(n) / x);
-
-            std::complex<double> an = (dervDn1*jX[n] - jX[n-1])/ (dervDn1*xi_x[n] - xi_x[n-1]);
-            std::complex<double> bn = (dervDn2*jX[n] - jX[n-1])/ (dervDn2*xi_x[n] - xi_x[n-1]);
-            coeff.an[n-1] = an;
-            coeff.bn[n-1] = bn;
-
-            sign = -sign;   // (-1)^(n-1)
-            tempQback += fac2 * sign * (an-bn);
-            tempQsca += fac2 * (util.ComplexAbs(an) * util.ComplexAbs(an) + util.ComplexAbs(bn) * util.ComplexAbs(bn));
-            tempQext += fac2 * (an + bn).real();
-        }
-        coeff.nStop = nStop;
-        coeff.qBack = util.ComplexAbsSquared(tempQback)/x2;  //back scattering efficiency
-        coeff.qSca = 2.0 * tempQsca / x2;                     //scattering efficiency
-        coeff.qExt = 2.0 * tempQext / x2;                     //extinction efficiency
+        dnMx[n-1] = (double(n)/mx)-(1.0/(dnMx[n]+double(n)/mx));
     }
+
+    // at the sphere boundary
+    double jX0 = cos(x);  // phi(-1)
+    double yX0 = -sin(x); // kai(-1)
+    double jX1 = sin(x);  // phi(0)
+    double yX1 = cos(x);  // kai(0)
+
+    std::vector<double> jX(arraySize);
+    std::vector<double> yX(arraySize);
+    std::vector<std::complex<double>> xi_x(arraySize);
+    jX[0] = jX1;
+    yX[0] = yX1;
+    xi_x[0]=std::complex<double> (jX1,-yX1); // xi(1)
+
+    //Initialize temp holders
+    std::complex<double> tempQback = 0.0;
+    double tempQsca = 0.0;
+    double tempQext = 0.0;
+    double sign = -1.0;   // tracks (-1)^(n-1), toggled each iteration instead of calling pow()
+
+    coeff.an.assign(arraySize, std::complex<double>(0.0, 0.0));
+    coeff.bn.assign(arraySize, std::complex<double>(0.0, 0.0));
+
+    for (unsigned int n = 1; n <= nStop; n++)
+    {
+        double fac2 = 2.0 * double(n) + 1.0;   // 2n+1
+        double fac3 = fac2 - 2.0;              // 2n-1
+
+        //Update riccati Bessel functions  for x (Array indices = n+1)
+        jX[n] = fac3 * jX1 / x - jX0;		// phi recurrence
+        yX[n] = fac3 * yX1 / x - yX0;		// kai recurrence
+        xi_x[n] = std::complex<double> (jX[n], -yX[n]);
+
+        jX0 = jX1;
+        jX1 = jX[n];
+        yX0 = yX1;
+        yX1 = yX[n];
+
+        // Calculate an and bn  (According to Bohren and Huffman book)
+        // Remark: GouGouesbet  uses size parameter as "ka" instead of "kx"
+        RefIndexType dervDn1 = (dnMx[n]/m) + (double(n) / x);
+        RefIndexType dervDn2 = (m*dnMx[n]) + (double(n) / x);
+
+        std::complex<double> an = (dervDn1*jX[n] - jX[n-1])/ (dervDn1*xi_x[n] - xi_x[n-1]);
+        std::complex<double> bn = (dervDn2*jX[n] - jX[n-1])/ (dervDn2*xi_x[n] - xi_x[n-1]);
+        coeff.an[n-1] = an;
+        coeff.bn[n-1] = bn;
+
+        sign = -sign;   // (-1)^(n-1)
+        tempQback += fac2 * sign * (an-bn);
+        tempQsca += fac2 * (util.ComplexAbs(an) * util.ComplexAbs(an) + util.ComplexAbs(bn) * util.ComplexAbs(bn));
+        tempQext += fac2 * (an + bn).real();
+    }
+    coeff.nStop = nStop;
+    coeff.qBack = util.ComplexAbsSquared(tempQback)/x2;  //back scattering efficiency
+    coeff.qSca = 2.0 * tempQsca / x2;                     //scattering efficiency
+    coeff.qExt = 2.0 * tempQext / x2;                     //extinction efficiency
+}
 }
 
 //Computes the Mie coefficients (an, bn) for a real relative refractive index.

@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <memory>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <qmath.h>
@@ -92,7 +93,7 @@ private slots:
     void on_slider_WL_PFPolar_valueChanged(int value);
     void on_slider_WL_PFLinear_valueChanged(int value);
     void on_slider_WL_S1S2_valueChanged(int value);
-    void on_comboBox_Distribution_currentIndexChanged(int value);    
+    void on_comboBox_Distribution_currentIndexChanged(int value);
     void MouseOverPlotScatteringCrossSection(QMouseEvent *event);
     void MouseOverPlotExtinctionCrossSection(QMouseEvent *event);
     void MouseOverPlotBackscatteringCrossSection(QMouseEvent *event);
@@ -112,7 +113,7 @@ private slots:
     void DoubleSpinBox_B_valueChanged (double value);
 
 private:
-    Ui::MainWindow *ui;
+    std::unique_ptr<Ui::MainWindow> ui;
     Parameters *mPara;
     bool mDistPlotFlag;         //Flag to check distributionPlot
     bool mOtherPlotsFlag;       //Flag to check other customplots

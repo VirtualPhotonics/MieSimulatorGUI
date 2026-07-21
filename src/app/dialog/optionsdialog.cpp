@@ -9,7 +9,7 @@
 
 OptionsDialog::OptionsDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::OptionsDialog)
+    ui(std::make_unique<Ui::OptionsDialog>())
 {
     mFlagScatPara = false;
     mFlagPhaseFunction = false;
@@ -18,10 +18,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     ui->setupUi(this);
 }
 
-OptionsDialog::~OptionsDialog()
-{
-    delete ui;
-}
+OptionsDialog::~OptionsDialog() = default;
 
 void OptionsDialog::on_pushButton_ScatPara_clicked()
 {
@@ -70,8 +67,8 @@ void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
     if (mFlagScatPara)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
-                 tr("Save Data"), "Mie_ScatteringParameters",
-                 tr("Text File (*.txt);;All Files (*)"));
+                                                        tr("Save Data"), "Mie_ScatteringParameters",
+                                                        tr("Text File (*.txt);;All Files (*)"));
 
         if (fileName.isEmpty())
         {
@@ -91,8 +88,8 @@ void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
     if (mFlagPhaseFunction)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
-                 tr("Save Data"), "Mie_PhaseFunctionData",
-                 tr("Text File (*.txt);;All Files (*)"));
+                                                        tr("Save Data"), "Mie_PhaseFunctionData",
+                                                        tr("Text File (*.txt);;All Files (*)"));
 
         if (fileName.isEmpty())
         {
@@ -110,8 +107,8 @@ void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
     if (mFlagS1)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
-                 tr("Save Data"), "Mie_S1Data",
-                 tr("Text File (*.txt);;All Files (*)"));
+                                                        tr("Save Data"), "Mie_S1Data",
+                                                        tr("Text File (*.txt);;All Files (*)"));
 
         if (fileName.isEmpty())
         {
@@ -126,8 +123,8 @@ void OptionsDialog::SaveData(QRadioButton *radioButton_MonoDisperse,
     if (mFlagS2)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
-                 tr("Save Data"), "Mie_S2Data",
-                 tr("Text File (*.txt);;All Files (*)"));
+                                                        tr("Save Data"), "Mie_S2Data",
+                                                        tr("Text File (*.txt);;All Files (*)"));
 
         if (fileName.isEmpty())
         {
@@ -150,7 +147,7 @@ void OptionsDialog::SaveScatPara(QRadioButton *radioButton_MonoDisperse,
                                  Parameters *para,
                                  QString fileName,
                                  double margin)
-{    
+{
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -286,11 +283,11 @@ void OptionsDialog::SavePhaseFunction(QCheckBox *checkBox_PhasePolarAve,
     }
     if (checkBox_PhasePolarPara->isChecked())
     {
-         out << "(Para): ";
+        out << "(Para): ";
     }
     if (checkBox_PhasePolarPerp->isChecked())
     {
-         out << "(Perp): ";
+        out << "(Perp): ";
     }
     out << "\n\tWL(nm)-->\nAngle(deg)\t";
     for (unsigned int i=0; i<para->nWavel; i++)
@@ -337,7 +334,7 @@ void OptionsDialog::SaveS1(Parameters *para, QString fileName)
     out << "\n\tWL(nm)-->\nAngle(deg)";
     for (unsigned int i=0; i<para->nWavel; i++)
     {
-       out << para->wavelArray[i] <<"\t\t";
+        out << para->wavelArray[i] <<"\t\t";
     }
     out << "\n";
 
@@ -348,7 +345,7 @@ void OptionsDialog::SaveS1(Parameters *para, QString fileName)
         {
             out << para->S1[i][j].real() <<"\t" << para->S1[i][j].imag() <<"\t";
         }
-         out << "\n";
+        out << "\n";
     }
 }
 
@@ -368,7 +365,7 @@ void OptionsDialog::SaveS2(Parameters *para, QString fileName)
     out << "\n\tWL(nm)-->\nAngle(deg)";
     for (unsigned int i=0; i<para->nWavel; i++)
     {
-       out << para->wavelArray[i] <<"\t\t";
+        out << para->wavelArray[i] <<"\t\t";
     }
     out << "\n";
 

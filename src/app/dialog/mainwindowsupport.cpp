@@ -59,7 +59,7 @@ void MainWindowSupport::SetWidgets(Ui_MainWindow *ui, Parameters *para)
         falseFlag = false;
         trueFlag = true;
     }
-	else
+    else
     {
         falseFlag = true;
         trueFlag = false;
@@ -112,7 +112,7 @@ void MainWindowSupport::SetWidgets(Ui_MainWindow *ui, Parameters *para)
 
 //Copy input data to 'para' variable
 void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, Parameters *para)
-{    
+{
     para->startWavel = ui->lineEdit_StartWL->text().toDouble();
     para->endWavel = ui->lineEdit_EndWL->text().toDouble();
     para->stepWavel = ui->lineEdit_StepWL->text().toDouble();
@@ -306,7 +306,7 @@ void MainWindowSupport::SetWavelengthSliders(Ui_MainWindow *ui)
 // Run Mono disperse distribution
 void MainWindowSupport::ProcessMonoDisperse(Ui_MainWindow *ui, Parameters *para)
 {
-    mCalc = new Calculate();
+    mCalc = std::make_unique<Calculate>();
     PlotData plot;
 
     //Run Mie simulation for radius para->radArray[i]
@@ -326,7 +326,7 @@ void MainWindowSupport::ProcessMonoDisperse(Ui_MainWindow *ui, Parameters *para)
 // Run Poly disperse distribution
 void MainWindowSupport::ProcessPolyDisperse(Ui_MainWindow *ui, Parameters *para)
 {
-    mCalc = new Calculate();
+    mCalc = std::make_unique<Calculate>();
     PlotData plot;
 
     //Run Mie simulation for radius para->radArray[i]
@@ -420,7 +420,7 @@ void MainWindowSupport::DisableWidgetsDuringSimulation(Ui_MainWindow *ui, Parame
 
 // Disable/Enable widgets during "Custom" Polydisperse data
 void MainWindowSupport::DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow *ui, bool flag)
-{    
+{
     //disable widgets during simulation
     ui->lineEdit_MeanDiameter->setDisabled(flag);
     ui->lineEdit_StdDev->setDisabled(flag);
@@ -463,12 +463,26 @@ void MainWindowSupport::DisableWidgetsDuringCustomPolyDisperseData(Ui_MainWindow
     }
 }
 
+namespace
+{
+// One row of custom poly-disperse data. Keeping all fields for a given
+// row together (rather than five parallel QVectors indexed in lockstep)
+// means there is only ever one container length to reason about, so a
+// static analyzer -- and a human reader -- can see the array write
+// below is bounded by construction.
+struct CustomDataRow
+{
+    double radius;
+    double numDensity;
+    double scatRefReal;
+    double scatRefImag;
+    double medRef;
+};
+}
+
 //Read "Custom" (PolyDisperse) data from a file
 void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool *dataValidFlag)
 {
-    int count = -1;
-    int badLines = -1;
-
     QFile file(fileName);
     QString line;
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -480,50 +494,51 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
         msgBox.exec();
         return;
     }
+
     QTextStream in(&file);
-    do
+    int badLines = 0;
+    int totalLines = 0;
+
+    QVector<CustomDataRow> rows;
+
+    while (!in.atEnd())
     {
         line = in.readLine();
         QStringList list = line.split(QRegularExpression(",|;|\t"));
 
-        if (!(list.size() == 4 || list.size() == 5))
+        if (list.size() != 4 && list.size() != 5)
         {
             badLines++;
+            totalLines++;
+            continue;
         }
-        else
+
+        totalLines++;
+
+        bool check1, check2, check3, check4, check5 = true;
+        double diameter = list.at(0).toDouble(&check1);
+        double numDensity = list.at(1).toDouble(&check2);
+        double scatRefReal = list.at(2).toDouble(&check3);
+        double scatRefImag = list.at(3).toDouble(&check4);
+        double medRef = para->medRef; //use default unless a 5th column overrides it
+
+        if (list.size() == 5)
         {
-            if (list.size()==4)
-            {
-                bool check1, check2, check3, check4;
-                list.at(0).toDouble(&check1);
-                list.at(1).toDouble(&check2);
-                list.at(2).toDouble(&check3);
-                list.at(3).toDouble(&check4);
-                if (!check1 || !check2 || !check3 || !check4)
-                {
-                    badLines++;
-                }
-            }
-            if (list.size()==5)
-            {
-                bool check1, check2, check3, check4, check5;
-                list.at(0).toDouble(&check1);
-                list.at(1).toDouble(&check2);
-                list.at(2).toDouble(&check3);
-                list.at(3).toDouble(&check4);
-                list.at(4).toDouble(&check5);
-                if (!check1 || !check2 || !check3 || !check4 || !check5)
-                {
-                    badLines++;
-                }
-            }
+            medRef = list.at(4).toDouble(&check5);
         }
-        count++;
-    }while (!line.isNull());
+
+        if (!check1 || !check2 || !check3 || !check4 || !check5)
+        {
+            badLines++;
+            continue;
+        }
+
+        rows.append(CustomDataRow{diameter / 2.0, numDensity, scatRefReal, scatRefImag, medRef});
+    }
 
     file.close();
 
-    if ((badLines > 0) || (count < 1))
+    if ((badLines > 0) || (totalLines < 1))
     {
         QMessageBox msgBox;
         msgBox.setWindowTitle("Error");
@@ -534,62 +549,35 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
     }
     else
     {
-        para->nRadius = static_cast<unsigned int>(count);
+        para->nRadius = static_cast<unsigned int>(rows.size());
         para->radArray = new double [para->nRadius];
         para->numDensityArray = new double [para->nRadius];
         para->scatRefRealArray = new double [para->nRadius];
         para->scatRefImagArray = new double [para->nRadius];
         para->medRefArray = new double [para->nRadius];
 
-        file.open(QIODevice::ReadOnly | QIODevice::Text);
-        QTextStream in(&file);
-        int idx =0;
-        double sumRad =0;
+        double sumRad = 0;
         double minRad = 1e100;
         double maxRad = 0;
-        do
+        for (unsigned int idx = 0; idx < para->nRadius; idx++)
         {
-            line = in.readLine();
-            QStringList list = line.split(QRegularExpression(",|;|\t"));
-            if (list.size() == 4)
-            {
-                 para->radArray[idx] = list.at(0).toDouble()/2.0;
-                 para->numDensityArray[idx] = list.at(1).toDouble();
-                 para->scatRefRealArray[idx] = list.at(2).toDouble();
-                 para->scatRefImagArray[idx] = list.at(3).toDouble();
-                 para->medRefArray[idx] = para->medRef; //use default
-                 sumRad += para->radArray[idx];
-                 if (para->radArray[idx] >maxRad)
-                 {
-                     maxRad = para->radArray[idx];
-                 }
-                 if (para->radArray[idx] < minRad)
-                 {
-                     minRad = para->radArray[idx];
-                 }
-                 idx++;
-            }
-            if (list.size() == 5)
-            {
-                 para->radArray[idx] = list.at(0).toDouble()/2.0;
-                 para->numDensityArray[idx] = list.at(1).toDouble();
-                 para->scatRefRealArray[idx] = list.at(2).toDouble();
-                 para->scatRefImagArray[idx] = list.at(3).toDouble();
-                 para->medRefArray[idx] = list.at(4).toDouble();
-                 sumRad += para->radArray[idx];
-                 if (para->radArray[idx] >maxRad)
-                 {
-                     maxRad = para->radArray[idx];
-                 }
-                 if (para->radArray[idx] < minRad)
-                 {
-                     minRad = para->radArray[idx];
-                 }
-                 idx++;
-            }
-        }while (!line.isNull());
+            const CustomDataRow &row = rows.at(idx);
+            para->radArray[idx] = row.radius;
+            para->numDensityArray[idx] = row.numDensity;
+            para->scatRefRealArray[idx] = row.scatRefReal;
+            para->scatRefImagArray[idx] = row.scatRefImag;
+            para->medRefArray[idx] = row.medRef;
 
-        file.close();
+            sumRad += para->radArray[idx];
+            if (para->radArray[idx] > maxRad)
+            {
+                maxRad = para->radArray[idx];
+            }
+            if (para->radArray[idx] < minRad)
+            {
+                minRad = para->radArray[idx];
+            }
+        }
 
         para->meanRadius = sumRad/para->nRadius;
         para->minRadius = minRad;
@@ -602,7 +590,7 @@ void MainWindowSupport::ReadCustomData(Parameters *para, QString fileName, bool 
 //Check independent/dependent scattering
 void MainWindowSupport::CheckIndependentScattering(Ui_MainWindow *ui, Parameters *para)
 {
-    mCalc = new Calculate();
+    mCalc = std::make_unique<Calculate>();
 
     double clearanceToWavelength, sizeParameter, volFraction, wavelength, clearance;
     QString strRegime;
@@ -659,13 +647,13 @@ void MainWindowSupport::PrepareScatteringRegimeWarning(double clearanceToWavelen
     }
     else
     {
-         // High Concentration Regime
+        // High Concentration Regime
         if (volFraction > 0.1)
         {
-             isIndependentTien = false;
-             strTienCriteria = "f<sub>v</sub> &le; 0.1";
-             isIndependentGaly = false;
-             strGalyCriteria = "f<sub>v</sub> &le; 0.1";
+            isIndependentTien = false;
+            strTienCriteria = "f<sub>v</sub> &le; 0.1";
+            isIndependentGaly = false;
+            strGalyCriteria = "f<sub>v</sub> &le; 0.1";
         }
         else // Transitional Regime (0.006 < fv <= 0.1)
         {
@@ -758,4 +746,3 @@ void MainWindowSupport::DisplayWarning(QString warningMessage)
     msgBoxWarning.setText(warningMessage);
     msgBoxWarning.exec();
 }
-
