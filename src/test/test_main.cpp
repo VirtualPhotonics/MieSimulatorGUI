@@ -3,6 +3,8 @@
 #include "test_parameters.h"
 #include "test_miesimulation.h"
 #include "test_utilities.h"
+#include "test_plotdata.h"
+#include "test_mainwindowsupport.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,6 +15,8 @@ int main(int argc, char *argv[])
     status |= QTest::qExec(new TestCalculate(), argc, argv);
     status |= QTest::qExec(new TestMieSimulation(), argc, argv);
     status |= QTest::qExec(new TestUtilities(), argc, argv);
+    status |= QTest::qExec(new TestPlotData(), argc, argv);
+    status |= QTest::qExec(new TestMainWindowSupport(), argc, argv);
 
     return status;
 }

@@ -57,7 +57,7 @@ public:
     double scatRefReal = 1.377;         // scatRefReal: refractive index of scatterer - Real
     double scatRefImag = 0.0;           // scatRefImg: refractive index of scatterer - Imaginary ((n-ik): negative sign convention as Scott Prahl's Mie calculator)
     double medRef = 1.333;              // medRef: refractive index of medium
-    double volFraction = 0.1;           // volFraction: Volume fraction of sphere volume
+    double volFraction = 0.001;         // volFraction: Volume fraction of sphere volume
     double sphNumDensity = 1e8;         // sphNumDensity: Sphere concentration/volume (Number Density)
 
     double startWavel = 600;            // startWavel: starting wavelength

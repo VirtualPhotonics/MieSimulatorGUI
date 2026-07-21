@@ -7,6 +7,8 @@
 
 class PlotData
 {
+    friend class TestPlotData;
+
 public:
     PlotData(void);
     ~PlotData(void);

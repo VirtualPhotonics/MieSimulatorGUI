@@ -1272,7 +1272,8 @@ void PlotData::RemovePlotables(QCustomPlot *customPlot)
 }
 
 //Rearrange Phase Function Data for Plotting
-void PlotData::RearrangePhaseFunctionData(Parameters *para, QVector<double> &theta,
+void PlotData::RearrangePhaseFunctionData(Parameters *para,
+                                          QVector<double> &theta,
                                           QVector<double> &phaseFuncPara,
                                           QVector<double> &phaseFuncPerp,
                                           QVector<double> &phaseFuncAve,
