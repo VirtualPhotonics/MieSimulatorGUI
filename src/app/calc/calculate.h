@@ -5,6 +5,7 @@
 #include <vector>
 #include <QLabel>
 #include "parameters.h"
+#include "calc/miesimulation.h"
 
 // Precomputed angle grid (cos/sin/Simpson weights) for a given nTheta.
 struct ThetaGrid
@@ -51,6 +52,16 @@ public:
                                     double &sizeParameter, double &volFraction,
                                     double &wavelength, double &clearance,
                                     QString &strRegime, bool flagVolFlag);
+
+private:
+    void ComputeMieForSphere(Parameters *para, unsigned int r, double wavelength,
+                             const ThetaGrid &grid,
+                             MieSimulation &mieSim, MieCoefficients &mieCoeff,
+                             std::complex<double> *curS1, std::complex<double> *curS2,
+                             double &xPara, double &piRadiusSquared);
+
+    double PreparePowerLawFitData(Parameters *para, std::vector<double> &xRatio,
+                                  std::vector<double> &y);
 };
 
 #endif // CALCULATE_H

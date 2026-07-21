@@ -15,6 +15,42 @@ Calculate::~Calculate()
 {
 }
 
+//Computes the Mie solution for one sphere (radius index r) at the given wavelength
+void Calculate::ComputeMieForSphere(Parameters *para, unsigned int r, double wavelength,
+                                    const ThetaGrid &grid,
+                                    MieSimulation &mieSim, MieCoefficients &mieCoeff,
+                                    std::complex<double> *curS1, std::complex<double> *curS2,
+                                    double &xPara, double &piRadiusSquared)
+{
+    mK = 2 * M_PI * para->medRefArray[r] / wavelength;
+    xPara = mK * para->radArray[r];
+    piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
+
+    double refRelRe = para->scatRefRealArray[r] / para->medRefArray[r];
+    double refRelIm = para->scatRefImagArray[r] / para->medRefArray[r];
+
+    if (refRelIm == 0.0)
+    {
+        mieSim.ComputeCoefficientsForRealRefIndex(mieCoeff, xPara, refRelRe);
+    }
+    else
+    {
+        mieSim.ComputeCoefficientsForComplexRefIndex(mieCoeff, xPara,
+                                                     std::complex<double>(refRelRe,-refRelIm));  //multiply by -1 to use "n-ik" convention
+    }
+    mQSca = mieCoeff.qSca;
+    mQExt = mieCoeff.qExt;
+    mQBack = mieCoeff.qBack;
+
+    for (unsigned int t = 0; t < para->nTheta; t++)
+    {
+        mMu = grid.cosTheta[t];
+        mieSim.ComputeAngularS1S2(&mCS1, &mCS2, mieCoeff, mMu);
+        curS1[t] = mCS1;
+        curS2[t] = mCS2;
+    }
+}
+
 //Calculate parameters using mie solution
 void Calculate::DoSimulation(QLabel *progress, Parameters *para)
 {
@@ -25,21 +61,19 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
     double sumForward, sumBackward;
     double sumCsca, sumCext, sumCback;
     double tempPhase;
-    double piRadiusSquared;
-    double refRelRe = 1.0;
-    double refRelIm = 0.0;
+    double piRadiusSquared = 0.0;
     double xPara = 0.0;
 
     ThetaGrid grid;
     BuildThetaGrid(para, grid);
 
-    std::complex<double> *curS1 = new std::complex<double> [para->nTheta];
-    std::complex<double> *curS2 = new std::complex<double> [para->nTheta];
-    std::complex<double> *sumS1 = new std::complex<double> [para->nTheta];
-    std::complex<double> *sumS2 = new std::complex<double> [para->nTheta];
-    double *sumPhaseFuncAve = new double [para->nTheta];
-    double *sumPhaseFuncPara = new double [para->nTheta];
-    double *sumPhaseFuncPerp = new double [para->nTheta];
+    std::vector<std::complex<double>> curS1(para->nTheta);
+    std::vector<std::complex<double>> curS2(para->nTheta);
+    std::vector<std::complex<double>> sumS1(para->nTheta);
+    std::vector<std::complex<double>> sumS2(para->nTheta);
+    std::vector<double> sumPhaseFuncAve(para->nTheta);
+    std::vector<double> sumPhaseFuncPara(para->nTheta);
+    std::vector<double> sumPhaseFuncPerp(para->nTheta);
 
     double sumNumDen = 0.0;
     for (unsigned int r = 0; r < para->nRadius; r++)
@@ -69,42 +103,19 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
         }
         for (unsigned int r = 0; r < para->nRadius; r++)
         {
-            mK = 2 * M_PI * para->medRefArray[r] / mWavel;
-            xPara = mK * para->radArray[r];
-            piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
+            ComputeMieForSphere(para, r, mWavel, grid, mieSim, mieCoeff,
+                                curS1.data(), curS2.data(), xPara, piRadiusSquared);
 
-            refRelRe = para->scatRefRealArray[r] / para->medRefArray[r];
-            refRelIm = para->scatRefImagArray[r] / para->medRefArray[r];
-
-            if (refRelIm == 0.0)  //Real ref index path is ~2x faster than the complex path
-            {
-                mieSim.ComputeCoefficientsForRealRefIndex(mieCoeff, xPara, refRelRe);
-            }
-            else
-            {
-                mieSim.ComputeCoefficientsForComplexRefIndex(mieCoeff, xPara,
-                                                             std::complex<double>(refRelRe,-refRelIm));  //multiply by -1 to use "n-ik" convention
-            }
-            mQSca = mieCoeff.qSca;
-            mQExt = mieCoeff.qExt;
-            mQBack = mieCoeff.qBack;
-            for (unsigned int t = 0; t < para->nTheta; t++)
-            {
-                mMu = grid.cosTheta[t];
-                mieSim.ComputeAngularS1S2(&mCS1, &mCS2, mieCoeff, mMu);
-                curS1[t] = mCS1;
-                curS2[t] = mCS2;
-            }
             //Ref: Schmitt and Kumar, Applied Optics 37(13) 1998
             //Mus calculation
             curMus = piRadiusSquared * mQSca * para->numDensityArray[r];
             sumMus += curMus;          //Σμs
             //G calculation
-            sumMusG += CalculateG(curS1, curS2, para, grid) * curMus;
+            sumMusG += CalculateG(curS1.data(), curS2.data(), para, grid) * curMus;
             //Forward Scattering
-            sumForward += CalculateForwardBackward(curS1, curS2, 0, ((para->nTheta-1)/2)+1, grid, grid.weightForward)* curMus;  //0-90 deg
+            sumForward += CalculateForwardBackward(curS1.data(), curS2.data(), 0, ((para->nTheta-1)/2)+1, grid, grid.weightForward)* curMus;  //0-90 deg
             //Backward Scattering
-            sumBackward += CalculateForwardBackward(curS1, curS2, ((para->nTheta-1)/2), para->nTheta, grid, grid.weightBackward)* curMus; //90-180 deg
+            sumBackward += CalculateForwardBackward(curS1.data(), curS2.data(), ((para->nTheta-1)/2), para->nTheta, grid, grid.weightBackward)* curMus; //90-180 deg
 
             //Coefficients
             sumCsca += piRadiusSquared * mQSca * para->numDensityArray[r];
@@ -146,13 +157,6 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
             para->phaseFunctionPerp[w][t] = sumPhaseFuncPerp[t] /sumMus;
         }
     }
-    delete[] sumPhaseFuncPerp;
-    delete[] sumPhaseFuncPara;
-    delete[] sumPhaseFuncAve;
-    delete[] sumS2;
-    delete[] sumS1;
-    delete[] curS2;
-    delete[] curS1;
 }
 
 //Compute Musp at reference wavelength
@@ -162,18 +166,14 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
     MieCoefficients mieCoeff;
     double curMus;
     double sumMus, sumMusG;
-    double piRadiusSquared;
-    double refRelRe = 1.0;
-    double refRelIm = 0.0;
+    double piRadiusSquared = 0.0;
     double xPara = 0.0;
 
     ThetaGrid grid;
     BuildThetaGrid(para, grid);
 
-    std::complex<double> *curS1 = new std::complex<double> [para->nTheta];
-    std::complex<double> *curS2 = new std::complex<double> [para->nTheta];
-    std::complex<double> *sumS1 = new std::complex<double> [para->nTheta];
-    std::complex<double> *sumS2 = new std::complex<double> [para->nTheta];
+    std::vector<std::complex<double>> curS1(para->nTheta);
+    std::vector<std::complex<double>> curS2(para->nTheta);
 
     for (unsigned int i = 0; i< 6; i++)
     {
@@ -184,45 +184,34 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
         for (unsigned int r = 0; r < para->nRadius; r++)
         {
             //Calculate mus and g at reference wavelength for musp fitting plot
-            mK = 2 * M_PI * para->medRefArray[r] /lambda;    //k at reference wavelength
+            ComputeMieForSphere(para, r, lambda, grid, mieSim, mieCoeff,
+                                curS1.data(), curS2.data(), xPara, piRadiusSquared);
 
-            xPara = mK * para->radArray[r];
-            piRadiusSquared = M_PI * para->radArray[r] * para->radArray[r];
-
-            refRelRe = para->scatRefRealArray[r] / para->medRefArray[r];
-            refRelIm = para->scatRefImagArray[r] / para->medRefArray[r];
-
-            if (refRelIm == 0.0)  //Real ref index path is ~2x faster than the complex path
-            {
-                mieSim.ComputeCoefficientsForRealRefIndex(mieCoeff, xPara, refRelRe);
-            }
-            else
-            {
-                mieSim.ComputeCoefficientsForComplexRefIndex(mieCoeff, xPara,
-                                                             std::complex<double>(refRelRe,-refRelIm));  //multiply by -1 to use "n-ik" convention
-            }
-            mQSca = mieCoeff.qSca;
-            mQExt = mieCoeff.qExt;
-            mQBack = mieCoeff.qBack;
-            for (unsigned int t = 0; t < para->nTheta; t++)
-            {
-                mMu = grid.cosTheta[t];
-                mieSim.ComputeAngularS1S2(&mCS1, &mCS2, mieCoeff, mMu);
-                curS1[t] = mCS1;
-                curS2[t] = mCS2;
-            }
             //Mus calculation
             curMus = piRadiusSquared * mQSca * para->numDensityArray[r] * 1e-6;  //1e-6--> 1micron2 to 1mm2
             sumMus += curMus;          //Σμs
             //G calculation
-            sumMusG += CalculateG(curS1, curS2, para, grid)*curMus;
+            sumMusG += CalculateG(curS1.data(), curS2.data(), para, grid)*curMus;
         }
         para->muspAtRefWavel[i]= sumMus*(1-(sumMusG /sumMus));
     }
-    delete[] sumS2;
-    delete[] sumS1;
-    delete[] curS2;
-    delete[] curS1;
+}
+
+//Fills xRatio (wavelength ratio) and y (musp data) for the power-law fits
+double Calculate::PreparePowerLawFitData(Parameters *para, std::vector<double> &xRatio,
+                                         std::vector<double> &y)
+{
+    const unsigned int nWavel = para->nWavel;
+    const double refWavel = para->refWavel;
+
+    xRatio.resize(nWavel);
+    y.resize(nWavel);
+    for (unsigned int k = 0; k < nWavel; k++)
+    {
+        xRatio[k] = para->wavelArray[k] / refWavel;
+        y[k] = para->mus[k] * (1.0 - para->g[k]);
+    }
+    return para->muspAtRefWavel[para->refWavelIdx];
 }
 
 //Calculate bestfit and plot for Simple Algorithm
@@ -234,17 +223,11 @@ void Calculate::CalculatePowerLawAutoFitSimple(Parameters *para)
     double curB = 0.0;
 
     const unsigned int nWavel = para->nWavel;
-    const double refWavel = para->refWavel;
-    const double muspRef = para->muspAtRefWavel[para->refWavelIdx];
 
     //xRatio and y depend only on k, not on bMie
-    std::vector<double> xRatio(nWavel);
-    std::vector<double> y(nWavel);
-    for (unsigned int k = 0; k < nWavel; k++)
-    {
-        xRatio[k] = para->wavelArray[k] / refWavel;
-        y[k] = para->mus[k] * (1.0 - para->g[k]);
-    }
+    std::vector<double> xRatio;
+    std::vector<double> y;
+    const double muspRef = PreparePowerLawFitData(para, xRatio, y);
 
     for (int j=0; j<=400; j++)
     {
@@ -275,19 +258,15 @@ void Calculate::CalculatePowerLawAutoFitComplex(Parameters *para)
     double curB = 0.0, curF = 0.0;
 
     const unsigned int nWavel = para->nWavel;
-    const double refWavel = para->refWavel;
-    const double muspRef = para->muspAtRefWavel[para->refWavelIdx];
 
     //xRatio, rayTerm and y depend only on k
-    std::vector<double> xRatio(nWavel);
+    std::vector<double> xRatio;
+    std::vector<double> y;
+    const double muspRef = PreparePowerLawFitData(para, xRatio, y);
+
     std::vector<double> rayTerm(nWavel);   //(x/refWavel)^-4, invariant across fRay and bMie
-    std::vector<double> y(nWavel);
     for (unsigned int k = 0; k < nWavel; k++)
-    {
-        xRatio[k] = para->wavelArray[k] / refWavel;
         rayTerm[k] = pow(xRatio[k], -4.0);
-        y[k] = para->mus[k] * (1.0 - para->g[k]);
-    }
 
     //(x/refWavel)^-bMie depends only on (j, k), not on fRay
     std::vector<std::vector<double>> powTerm(401, std::vector<double>(nWavel));
