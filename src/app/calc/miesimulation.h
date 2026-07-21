@@ -21,18 +21,18 @@ public:
     ~MieSimulation() = default;
 
     // Angle-independent stage
-    void ComputeCoefficientsForRealRefIndex(MieCoefficients &coeff, double xPara, double relRef);
-    void ComputeCoefficientsForComplexRefIndex(MieCoefficients &coeff, double xPara, std::complex<double> cRelRef);
+    void ComputeCoefficientsForRealRefIndex(MieCoefficients &coeff, double xPara, double relRef) const;
+    void ComputeCoefficientsForComplexRefIndex(MieCoefficients &coeff, double xPara, std::complex<double> cRelRef) const;
 
     // Angle-dependent stage
     void ComputeAngularS1S2(std::complex<double> *cS1, std::complex<double> *cS2,
-                            const MieCoefficients &coeff, double mu);
+                            const MieCoefficients &coeff, double mu) const;
 
     void FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, std::complex<double> *cS2, double *qSca,
-                                         double *qExt, double *qBack, double xPara, double relRef, double mu);
+                                         double *qExt, double *qBack, double xPara, double relRef, double mu) const;
     void FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1, std::complex<double> *cS2, double *qSca,
                                             double *qExt, double *qBack, double xPara,
-                                            std::complex<double> cRelRef, double mu);
+                                            std::complex<double> cRelRef, double mu) const;
 };
 
 #endif // MIESIMULATION_H

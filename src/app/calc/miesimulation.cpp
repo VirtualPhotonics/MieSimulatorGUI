@@ -98,20 +98,20 @@ void ComputeCoefficientsImpl(MieCoefficients &coeff, double xPara, RefIndexType 
 }
 
 //Computes the Mie coefficients (an, bn) for a real relative refractive index.
-void MieSimulation::ComputeCoefficientsForRealRefIndex(MieCoefficients &coeff, double xPara, double relRef)
+void MieSimulation::ComputeCoefficientsForRealRefIndex(MieCoefficients &coeff, double xPara, double relRef) const
 {
     ComputeCoefficientsImpl(coeff, xPara, relRef);
 }
 
 //Computes the Mie coefficients (an, bn) and qSca/qExt/qBack for a complex relative refractive index.
-void MieSimulation::ComputeCoefficientsForComplexRefIndex(MieCoefficients &coeff, double xPara, std::complex<double> cRelRef)
+void MieSimulation::ComputeCoefficientsForComplexRefIndex(MieCoefficients &coeff, double xPara, std::complex<double> cRelRef) const
 {
     ComputeCoefficientsImpl(coeff, xPara, cRelRef);
 }
 
 //Computes cS1/cS2 for a given scattering angle (mu = cos(theta))
 void MieSimulation::ComputeAngularS1S2(std::complex<double> *cS1, std::complex<double> *cS2,
-                                       const MieCoefficients &coeff, double mu)
+                                       const MieCoefficients &coeff, double mu) const
 {
     // Legendre Polynomials
     double dPCost0 = 0.0;  //pi0
@@ -156,7 +156,7 @@ void MieSimulation::ComputeAngularS1S2(std::complex<double> *cS1, std::complex<d
 //mu - cos(angle)
 void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, std::complex<double> *cS2,
                                                     double *qSca, double *qExt, double *qBack,
-                                                    double xPara, double relRef, double mu)
+                                                    double xPara, double relRef, double mu) const
 {
     MieCoefficients coeff;
     ComputeCoefficientsForRealRefIndex(coeff, xPara, relRef);
@@ -177,7 +177,7 @@ void MieSimulation::FarFieldSolutionForRealRefIndex(std::complex<double> *cS1, s
 //mu - cos(angle)
 void MieSimulation::FarFieldSolutionForComplexRefIndex(std::complex<double> *cS1, std::complex<double> *cS2,
                                                        double *qSca, double *qExt, double *qBack,
-                                                       double xPara, std::complex<double> cRelRef, double mu)
+                                                       double xPara, std::complex<double> cRelRef, double mu) const
 {
     MieCoefficients coeff;
     ComputeCoefficientsForComplexRefIndex(coeff, xPara, cRelRef);
