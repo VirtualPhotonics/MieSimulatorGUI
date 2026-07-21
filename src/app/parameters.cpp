@@ -11,8 +11,8 @@
 //Check the validity of common Parameters
 bool Parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
                                        QRadioButton *radioButton_NumDen,
-                                       QRadioButton *radioButton_VolFrac)
-{    
+                                       QRadioButton *radioButton_VolFrac) const
+{
     bool monoDisperseSelection = false;
     bool numDenSelection = false;
     bool volFracSelection = false;
@@ -49,9 +49,9 @@ bool Parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
 }
 
 ParameterValidationResult Parameters::CheckValidityCommonParameters(
-                                                    bool monoDisperseSelection,
-                                                    bool numDenSelection,
-                                                    bool volFracSelection)
+    bool monoDisperseSelection,
+    bool numDenSelection,
+    bool volFracSelection) const
 {
     ParameterValidationResult result;
     result.isValid = true;
@@ -161,7 +161,7 @@ ParameterValidationResult Parameters::CheckValidityCommonParameters(
 }
 
 //Check the validity of Distribution parameters
-bool Parameters::CheckDistributionParameters(QComboBox *comboBox_Distribution)
+bool Parameters::CheckDistributionParameters(QComboBox *comboBox_Distribution) const
 {
     int comboBoxIndex =0;
 
@@ -189,7 +189,7 @@ bool Parameters::CheckDistributionParameters(QComboBox *comboBox_Distribution)
     }
 }
 
-ParameterValidationResult Parameters::CheckValidityDistributionParameters(int comboBoxIndex)
+ParameterValidationResult Parameters::CheckValidityDistributionParameters(int comboBoxIndex) const
 {
     ParameterValidationResult result;
     result.isValid = true;
@@ -258,7 +258,7 @@ ParameterValidationResult Parameters::CheckValidityDistributionParameters(int co
 }
 
 //Check the validity of Distribution parameters
-bool Parameters::CheckPackingVolume()
+bool Parameters::CheckPackingVolume() const
 {
     double totalVolume = 0.0;
     for (unsigned int i = 0; i< nRadius; i++)
@@ -285,7 +285,7 @@ bool Parameters::CheckPackingVolume()
 }
 
 // Check packing totalVolume limit for polydisperse distribution
-ParameterValidationResult Parameters::CheckValidityPackingVolume(double totalVolume)
+ParameterValidationResult Parameters::CheckValidityPackingVolume(double totalVolume) const
 {
     ParameterValidationResult result;
     result.isValid = true;

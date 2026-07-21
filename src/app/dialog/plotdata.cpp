@@ -38,7 +38,7 @@ void PlotData::InitialSetupDistributionPlot(Ui_MainWindow *ui)
 
 //Initialize phase function linear plot
 void PlotData::InitialSetupPhaseFunctionLinearPlot(Ui_MainWindow *ui)
-{    
+{
     double minX = -180;
     double maxX = 180;
 
@@ -409,7 +409,7 @@ void PlotData::AssignValuesOtherPlots(Ui_MainWindow *ui, Parameters* para)
 }
 
 //Find MinLog value for MouseOver Polar Plot
-double PlotData::FindMinLogPolarPlot(Parameters *para)
+double PlotData::FindMinLogPolarPlot(Parameters *para) const
 {
     Utilities util;
 
@@ -440,7 +440,7 @@ double PlotData::FindMinLogPolarPlot(Parameters *para)
 
 //plot distribution plot
 void PlotData::PlotDistribution(Ui_MainWindow *ui, Parameters *para, QVector<double> x, QVector<double> yDist)
-{    
+{
     const double MAX_Y_BUFFER = 1.1;
     const double X_BUFFER_MIN = 0.92;
     const double X_BUFFER_MAX = 1.08;
@@ -710,7 +710,7 @@ void PlotData::PlotMuspPowerLaw(Ui_MainWindow *ui, QVector<double> x, QVector<do
     auto customPlot = ui->customPlot_MuspPowerLaw;
 
     // remove previous graphs (if any)
-    RemoveGraphs(customPlot);    
+    RemoveGraphs(customPlot);
 
     if (ui->radioButton_LinearYAxis->isChecked())
     {
@@ -938,7 +938,7 @@ void PlotData::PlotForwardBackward(Ui_MainWindow *ui, QVector<double> x, QVector
 
 //Plot single graph
 void PlotData::PlotSingleGraph(QCustomPlot* customPlot, const QVector<double> &x, const QVector<double> &y,
-                     QColor color, const QString &name, int graphIndex, int sizeCircle)
+                               QColor color, const QString &name, int graphIndex, int sizeCircle)
 {
     customPlot->addGraph();
     customPlot->graph(graphIndex)->setData(x, y);
@@ -974,7 +974,7 @@ void PlotData::InitialSetupPlot(QCustomPlot *customPlot, const QString &xLabel, 
 
 //Draw axes of polar plot
 void PlotData::DrawPolarPlotGrid(QCustomPlot *customPlot, bool flagLinearLog)
-{    
+{
     RemoveLegends(customPlot);
     RemovePlotables(customPlot);
     RemoveEllipseLineTextItems(customPlot);
@@ -1050,7 +1050,7 @@ void PlotData::CreateCircularGrid(QCustomPlot *customPlot, bool flagLinearLog)
             boundaryCircle->setPen(boundaryGridPen);
         }
     }
-    else //Log spacing    
+    else //Log spacing
     {
         double logMin = log10(mPolarMinRadius);
         double logMax = log10(mPolarMaxRadius);

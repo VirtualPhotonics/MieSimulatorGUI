@@ -10,8 +10,8 @@ class PlotData
     friend class TestPlotData;
 
 public:
-    PlotData() = default;
-    ~PlotData() = default;
+    PlotData(void) = default;
+    ~PlotData(void) = default;
 
     void ClearPlots(Ui_MainWindow *ui);
     void InitialSetupDistributionPlot(Ui_MainWindow *ui);
@@ -27,7 +27,7 @@ public:
     void AssignValuesS1S2Plot(Ui_MainWindow *ui, Parameters *para);
     void AssignValuesMuspPowerLawPlots(Ui_MainWindow *ui, Parameters* para);
     void AssignValuesOtherPlots(Ui_MainWindow *ui, Parameters* para);
-    double FindMinLogPolarPlot(Parameters *para);
+    double FindMinLogPolarPlot(Parameters *para) const;
 
 private:
     void PlotDistribution(Ui_MainWindow *ui, Parameters *para, QVector<double> x, QVector<double> yDist);

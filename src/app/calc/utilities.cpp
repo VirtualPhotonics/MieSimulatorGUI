@@ -5,7 +5,7 @@
 #include "calc/utilities.h"
 
 //Delay function for display update
-void Utilities::Delay()
+void Utilities::Delay() const
 {
     QTime dieTime = QTime::currentTime().addMSecs(1);
 
@@ -16,19 +16,19 @@ void Utilities::Delay()
 }
 
 //Intensity calculation (Amplitude^2)
-double Utilities::ComplexAbsSquared(std::complex<double> c)
+double Utilities::ComplexAbsSquared(std::complex<double> c) const
 {
     return (c.real() * c.real() + c.imag() * c.imag());
 }
 
 //Absolute value (amplitude) calculation
-double Utilities::ComplexAbs(std::complex<double> c)
+double Utilities::ComplexAbs(std::complex<double> c) const
 {
     return sqrt(ComplexAbsSquared(c));
 }
 
 //Simpson's 1/3 rule
-double Utilities::SimpsonsWeight (unsigned int i, unsigned int n)
+double Utilities::SimpsonsWeight (unsigned int i, unsigned int n) const
 {
     if (i == 0 || i == n - 1)
     {
@@ -44,7 +44,7 @@ double Utilities::SimpsonsWeight (unsigned int i, unsigned int n)
 }
 
 //Find nice step for polar plot ticks
-double Utilities::NiceStep(double range, int initialCircles)
+double Utilities::NiceStep(double range, int initialCircles) const
 {
     double niceStep = 0.0;
     double roughStep = (initialCircles > 0) ? range / initialCircles : range;
@@ -78,7 +78,7 @@ double Utilities::NiceStep(double range, int initialCircles)
 
 //Find min and max out of three variables
 double Utilities::FindMinMax(const QVector<double>& yPara, const QVector<double>& yPerp,
-                             const QVector<double>& yAve, bool flagMinMax)
+                             const QVector<double>& yAve, bool flagMinMax) const
 {
     QVector<double> allY;
     allY << yPara << yPerp << yAve;
