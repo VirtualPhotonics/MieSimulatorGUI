@@ -127,11 +127,13 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
     PlotData plot;
     MainWindowSupport support;
 
-    //Initialize
-    plot.ClearPlots(ui.get());
+    //Initialize    
     support.SetWidgets(ui.get(), mPara);
     support.LoadInputData(ui.get(),mPara);
     support.SetWavelengthSliders(ui.get());              //set slider position
+
+    // Clear plots
+    plot.ClearPlots(ui.get());
 
     if  (mLoadCustomNoGoodFlag)
     {
@@ -145,7 +147,8 @@ void MainWindow::on_pushButton_RunSimulation_clicked()
     {
         if (mPara->CheckCommonParameters(ui->radioButton_MonoDisperse,
                                          ui->radioButton_NumDen,
-                                         ui->radioButton_VolFrac))
+                                         ui->radioButton_VolFrac,
+                                         ui->comboBox_Distribution))
         {
             //Disable widgets
             support.DisableWidgetsDuringSimulation(ui.get(), mPara, true);
@@ -234,7 +237,8 @@ void MainWindow::on_pushButton_ShowDistributionAndCustom_clicked()
         support.LoadInputData(ui.get(), mPara);
         if (mPara->CheckCommonParameters(ui->radioButton_MonoDisperse,
                                          ui->radioButton_NumDen,
-                                         ui->radioButton_VolFrac))    //sanity check
+                                         ui->radioButton_VolFrac,
+                                         ui->comboBox_Distribution))    //sanity check
         {
             if (mPara->CheckDistributionParameters(ui->comboBox_Distribution))   //sanity check
             {

@@ -19,14 +19,20 @@ public:
 
     bool CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
                                QRadioButton *radioButton_NumDen,
-                               QRadioButton *radioButton_VolFrac) const;
+                               QRadioButton *radioButton_VolFrac,
+                               QComboBox *comboBox_Distribution) const;
     bool CheckDistributionParameters(QComboBox *comboBox_Distribution) const;
     bool CheckPackingVolume() const;
     ParameterValidationResult CheckValidityCommonParameters(bool monoDisperseSelection,
                                                             bool numDenSelection,
-                                                            bool volFracSelection) const;
+                                                            bool volFracSelection,
+                                                            int comboBoxIndex) const;
     ParameterValidationResult CheckValidityDistributionParameters(int comboBoxIndex) const;
     ParameterValidationResult CheckValidityPackingVolume(double totalVolume) const;
+    bool CheckNumDensityDistribution(QComboBox *comboBox_Distribution,
+                                     QRadioButton *radioButton_NumDen,
+                                     QRadioButton *radioButton_VolFrac) const;
+    ParameterValidationResult CheckValidityNumDensityDistribution(int comboBoxIndex, bool flagVolOrConc) const;
 
     enum distType {
         LogNormal    = 0,       // poly-disperse: Log Normal

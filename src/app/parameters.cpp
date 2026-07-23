@@ -7,11 +7,13 @@
 #include <QComboBox>
 #include <QRadioButton>
 #include <QMessageBox>
+#include <vector>
 
 //Check the validity of common Parameters
 bool Parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
                                        QRadioButton *radioButton_NumDen,
-                                       QRadioButton *radioButton_VolFrac) const
+                                       QRadioButton *radioButton_VolFrac,
+                                       QComboBox *comboBox_Distribution) const
 {
     bool monoDisperseSelection = false;
     bool numDenSelection = false;
@@ -30,9 +32,13 @@ bool Parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
         volFracSelection = true;
     }
 
+    //comboBox item order (Log Normal=0, Gaussian=1, Custom=2) matches distType enum values
+    int comboBoxIndex = comboBox_Distribution->currentIndex();
+
     ParameterValidationResult check = CheckValidityCommonParameters(monoDisperseSelection,
                                                                     numDenSelection,
-                                                                    volFracSelection);
+                                                                    volFracSelection,
+                                                                    comboBoxIndex);
     if (!check.isValid)
     {
         QMessageBox msgBoxError;
@@ -51,7 +57,8 @@ bool Parameters::CheckCommonParameters(QRadioButton *radioButton_MonoDisperse,
 ParameterValidationResult Parameters::CheckValidityCommonParameters(
     bool monoDisperseSelection,
     bool numDenSelection,
-    bool volFracSelection) const
+    bool volFracSelection,
+    int comboBoxIndex) const
 {
     ParameterValidationResult result;
     result.isValid = true;
@@ -59,7 +66,7 @@ ParameterValidationResult Parameters::CheckValidityCommonParameters(
     if ((scatRefReal <= 0.0) || (medRef <= 0.0))
     {
         result.isValid = false;
-        result.errorMessage = "Refractive index cannot be zero.";
+        result.errorMessage = "Refractive index (Real) cannot be zero.";
         return result;
     }
     if ((scatRefReal/medRef == 1.0))
@@ -115,10 +122,10 @@ ParameterValidationResult Parameters::CheckValidityCommonParameters(
     }
     if (numDenSelection)
     {
-        if (sphNumDensity <= 0.0)
+        if (sphNumDensity < 1.0)
         {
             result.isValid = false;
-            result.errorMessage = "Sphere concentration cannot be zero.";
+            result.errorMessage = "Sphere concentration cannot be less than 1.";
             return result;
         }
     }
@@ -153,6 +160,68 @@ ParameterValidationResult Parameters::CheckValidityCommonParameters(
             {
                 result.isValid = false;
                 result.errorMessage = "'Concentration x Sphere Volume' exceeds the maximum packing factor! Reduce Concentration (Conc).";
+                return result;
+            }
+        }
+        if (volFracSelection)
+        {
+            double singleSphVolume = (4.0/3.0) * M_PI * pow(meanRadius, 3);
+            double sphNumDensity = std::round(1e9 * volFraction / singleSphVolume);
+            if (sphNumDensity < 1)
+            {
+                result.isValid = false;
+                result.errorMessage = "Unrealistc Volume Fraction! Number density is less than 1";
+                return result;
+            }
+        }
+    }
+    else //Poly Disperse
+    {
+        if (numDenSelection && comboBoxIndex != Custom)
+        {
+            double totalNumDensity = static_cast<double>(nRadius);
+            if (sphNumDensity < totalNumDensity)
+            {
+                result.isValid = false;
+                result.errorMessage = "Concentration (Ns) is too low! Increase concentration. ";
+                return result;
+            }
+        }
+        if (volFracSelection && comboBoxIndex != Custom)
+        {
+            double sigma = stdDev;
+            double zScore = 3.0 + (nRadius / 100.0);
+            double localMinRadius, localMaxRadius;
+
+            if (comboBoxIndex == LogNormal)
+            {
+                double mu = std::log(meanRadius) - (sigma * sigma / 2.0);
+                localMinRadius = std::exp(mu - zScore * sigma);
+                localMaxRadius = std::exp(mu + zScore * sigma);
+            }
+            else //Gaussian
+            {
+                localMinRadius = meanRadius - zScore * sigma;
+                localMaxRadius = meanRadius + zScore * sigma;
+            }
+            if (localMinRadius < 1e-10) localMinRadius = 1e-10;
+
+            double stepR = (localMaxRadius - localMinRadius) / (nRadius - 1);
+            double totalNumDensity = static_cast<double>(nRadius);
+            double totalVolume = 0.0;
+            for (unsigned int i = 0; i < nRadius; i++)
+            {
+                double r = localMinRadius + i * stepR;
+                double singleSphVolume = (4.0/3.0) * M_PI * pow(r, 3);
+                totalVolume += singleSphVolume * 1.0;  //numDensity assumed = 1 per bin
+            }
+            double computedMinVolFraction = totalVolume / 1e9;
+            Q_UNUSED(totalNumDensity);
+
+            if (volFraction < computedMinVolFraction)
+            {
+                result.isValid = false;
+                result.errorMessage = "Unrealistic Volume Fraction! Volume Fraction is too low";
                 return result;
             }
         }
@@ -252,6 +321,116 @@ ParameterValidationResult Parameters::CheckValidityDistributionParameters(int co
     {
         result.isValid = false;
         result.errorMessage = "Standard deviation to mean diameter ratio is smaller than 1e-5! Use 'Mono Disperse'.";
+        return result;
+    }
+    return result;
+}
+
+
+bool Parameters::CheckNumDensityDistribution(QComboBox *comboBox_Distribution,
+                                             QRadioButton *radioButton_NumDen,
+                                             QRadioButton *radioButton_VolFrac) const
+{
+    int comboBoxIndex = 0;
+    if (comboBox_Distribution->currentIndex() == LogNormal)
+        comboBoxIndex = LogNormal;
+    if (comboBox_Distribution->currentIndex() == Gaussian)
+        comboBoxIndex = Gaussian;
+    if (comboBox_Distribution->currentIndex() == Custom)
+        comboBoxIndex = Custom;
+
+    bool flagVolOrConc = radioButton_VolFrac->isChecked();
+    Q_UNUSED(radioButton_NumDen);
+
+    ParameterValidationResult check = CheckValidityNumDensityDistribution(comboBoxIndex, flagVolOrConc);
+
+    if (!check.isValid)
+    {
+        QMessageBox msgBoxError;
+        msgBoxError.setWindowTitle("Error");
+        msgBoxError.setIcon(QMessageBox::Critical);
+        msgBoxError.setText(check.errorMessage);
+        msgBoxError.exec();
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+ParameterValidationResult Parameters::CheckValidityNumDensityDistribution(int comboBoxIndex, bool flagVolOrConc) const
+{
+    ParameterValidationResult result;
+    result.isValid = true;
+
+    if (comboBoxIndex == Custom)
+        return result;
+
+    //Mirrors Calculate::DiameterRangeSetting()
+    double sigma = stdDev;
+    double zScore = 3.0 + (nRadius / 100.0);
+    double localMinRadius, localMaxRadius;
+
+    if (comboBoxIndex == LogNormal)
+    {
+        double mu = std::log(meanRadius) - (sigma * sigma / 2.0);
+        localMinRadius = std::exp(mu - zScore * sigma);
+        localMaxRadius = std::exp(mu + zScore * sigma);
+    }
+    else //Gaussian
+    {
+        localMinRadius = meanRadius - zScore * sigma;
+        localMaxRadius = meanRadius + zScore * sigma;
+    }
+    if (localMinRadius < 1e-10) localMinRadius = 1e-10;
+
+    //Mirrors Calculate::SetSphereRadiusAndRefIndex()
+    const double volumeConst = 4.0 * M_PI / 3.0;
+    const double sqrtTwoPi = std::sqrt(2.0 * M_PI);
+    const double twoSigSq = 2.0 * sigma * sigma;
+    double stepR = (localMaxRadius - localMinRadius) / (nRadius - 1);
+
+    double totalSphereVolume = 0.0;
+    double totalFuncSum = 0.0;
+    std::vector<double> funcArray(nRadius, 0.0);
+
+    for (unsigned int i = 0; i < nRadius; i++)
+    {
+        double r = localMinRadius + i * stepR;
+
+        if (comboBoxIndex == LogNormal)
+        {
+            double diff = std::log(r) - std::log(meanRadius);
+            funcArray[i] = std::exp(-(diff * diff) / twoSigSq) / (r * sigma * sqrtTwoPi);
+        }
+        else //Gaussian
+        {
+            double diff = r - meanRadius;
+            funcArray[i] = std::exp(-(diff * diff) / twoSigSq) / (sigma * sqrtTwoPi);
+        }
+        totalSphereVolume += funcArray[i] * volumeConst * pow(r, 3);
+        totalFuncSum += funcArray[i];
+    }
+
+    double factor = 1e-12;
+    if (flagVolOrConc && totalSphereVolume > 0)
+    {
+        factor = 1e9 * volFraction / totalSphereVolume;
+    }
+    else if (totalFuncSum > 0)
+    {
+        factor = sphNumDensity / totalFuncSum;
+    }
+
+    double totalRoundedNumDensity = 0.0;
+    for (unsigned int i = 0; i < nRadius; i++)
+        totalRoundedNumDensity += std::round(funcArray[i] * factor);
+
+    if (totalRoundedNumDensity < 1.0)
+    {
+        result.isValid = false;
+        result.errorMessage = "Volume Fraction is too low! Increase";
         return result;
     }
     return result;

@@ -34,6 +34,12 @@ private slots:
     void test_CheckValidityCommonParameters_invalidRelativeRefractiveIndexSmall();
     void test_CheckValidityCommonParameters_volFractionAtLimit();
     void test_CheckValidityCommonParameters_invalidRelativeRefractiveIndexTooLow();
+    void test_CheckValidityCommonParameters_polyDisperseVolFractionTooLowForBins();
+    void test_CheckValidityCommonParameters_polyDisperseVolFractionEnoughForBins();
+    void test_CheckValidityCommonParameters_polyDisperseCustomSkipsBinCheck();
+    void test_CheckValidityCommonParameters_polyDisperseNumDenTooLowForBins();
+    void test_CheckValidityCommonParameters_polyDisperseNumDenEnoughForBins();
+    void test_CheckValidityCommonParameters_polyDisperseNumDenCustomSkipsBinCheck();
 
     void test_CheckValidityDistributionParameters_valid();
     void test_CheckValidityDistributionParameters_invalidStdDevZero();

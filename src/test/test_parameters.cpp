@@ -32,7 +32,7 @@ void TestParameters::cleanup()
 // Test case: Check CheckValidityCommonParameters
 void TestParameters::test_CheckValidityCommonParameters_valid()
 {
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, true, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, true, false, Parameters::LogNormal);
     QVERIFY(result.isValid);
 }
 
@@ -41,118 +41,118 @@ void TestParameters::test_CheckValidityCommonParameters_invalidRefractiveIndex()
 {
 
     mPara->scatRefReal = 0.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Refractive index cannot be zero."));
+    QCOMPARE(result.errorMessage, QString("Refractive index (Real) cannot be zero."));
 }
 
 // Test case: Relative refractive index is 1.0
 void TestParameters::test_CheckValidityCommonParameters_invalidRelativeRefractiveIndexOne()
-{    
+{
     mPara->scatRefReal = 1.5;
     mPara->medRef = 1.5;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Relative refractive index cannot be 1.0."));
 }
 
 // Test case: Relative refractive index is out of range (m > 5.0)
 void TestParameters::test_CheckValidityCommonParameters_invalidRelativeRefractiveIndexRange()
-{    
+{
     mPara->scatRefReal = 6.0;
     mPara->medRef = 1.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Unrealistic relative refractive index! Check sphere and medium refractive index values."));
 }
 
 // Test case: Imaginary refractive index is too large
 void TestParameters::test_CheckValidityCommonParameters_invalidImaginaryRefractiveIndex()
-{    
+{
     mPara->scatRefImag = 5.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Imaginary refractive index must be negative or less than 5.0."));
 }
 
 // Test case: Starting wavelength is zero
 void TestParameters::test_CheckValidityCommonParameters_invalidWavelengthZero()
-{    
+{
     mPara->startWavel = 0.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("The starting or ending wavelength cannot be zero."));
 }
 
- // Test case: Wavelength step is zero
+// Test case: Wavelength step is zero
 void TestParameters::test_CheckValidityCommonParameters_invalidWavelengthStepZero()
-{   
+{
     mPara->stepWavel = 0.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Wavelength step cannot be zero."));
 }
 
 // Test case: Starting wavelength is too small
 void TestParameters::test_CheckValidityCommonParameters_invalidStartWavelengthRange()
-{    
+{
     mPara->startWavel = 49.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Current minimum wavlength is 50nm."));
 }
 
 // Test case: Ending wavelength is too large
 void TestParameters::test_CheckValidityCommonParameters_invalidEndWavelengthRange()
-{    
+{
     mPara->endWavel = 3001.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Current maximum wavlength is 3000nm."));
 }
 
 // Test case: Starting wavelength is greater than ending wavelength
 void TestParameters::test_CheckValidityCommonParameters_invalidWavelengthOrder()
-{    
+{
     mPara->startWavel = 1100.0;
     mPara->endWavel = 1000.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("The starting wavelength is greater than the ending wavelength."));
 }
 
 // Test case: Number density is zero when selected
 void TestParameters::test_CheckValidityCommonParameters_invalidNumDensityZero()
-{    
+{
     mPara->sphNumDensity = 0.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, true, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, true, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
-    QCOMPARE(result.errorMessage, QString("Sphere concentration cannot be zero."));
+    QCOMPARE(result.errorMessage, QString("Sphere concentration cannot be less than 1."));
 }
 
 // Test case: Volume fraction is zero when selected
 void TestParameters::test_CheckValidityCommonParameters_invalidVolFractionZero()
-{    
+{
     mPara->volFraction = 0.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Volume Fraction cannot be zero."));
 }
 
 // Test case: Volume fraction exceeds 1.0 when selected
 void TestParameters::test_CheckValidityCommonParameters_invalidVolFractionUpperLimit()
-{    
+{
     mPara->volFraction = 1.1;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Volume Fraction must not exceed the maximum packing factor (~0.74)."));
 }
 
 // Test case: Mean radius is too large
 void TestParameters::test_CheckValidityCommonParameters_invalidMeanRadiusRange()
-{    
+{
     mPara->meanRadius = 151.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Diameter is out of range! Enter a value between 0.0001μm and 300μm."));
 }
@@ -162,7 +162,7 @@ void TestParameters::test_CheckValidityCommonParameters_invalidVolumeExceedsLimi
 {
     mPara->meanRadius = 100.0; // Radius in micrometers
     mPara->sphNumDensity = 239.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(true, true, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(true, true, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("'Concentration x Sphere Volume' exceeds the maximum packing factor! Reduce Concentration (Conc)."));
 }
@@ -172,7 +172,7 @@ void TestParameters::test_CheckValidityCommonParameters_invalidRelativeRefractiv
 {
     mPara->scatRefReal = 0.04;
     mPara->medRef = 1.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Unrealistic relative refractive index! Check sphere and medium refractive index values."));
 }
@@ -181,7 +181,7 @@ void TestParameters::test_CheckValidityCommonParameters_invalidRelativeRefractiv
 void TestParameters::test_CheckValidityCommonParameters_volFractionAtLimit()
 {
     mPara->volFraction = 0.74048;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Volume Fraction must not exceed the maximum packing factor (~0.74)."));
 }
@@ -197,14 +197,14 @@ void TestParameters::test_CheckValidityCommonParameters_invalidRelativeRefractiv
 
 // Test case: Ensures a valid set of parameters passes the distribution check (for Log Normal)
 void TestParameters::test_CheckValidityDistributionParameters_valid()
-{    
+{
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(0);
     QVERIFY(result.isValid);
 }
 
 // Test case:Standard deviation is zero
 void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevZero()
-{    
+{
     mPara->stdDev = 0.0;
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(0);
     QVERIFY(!result.isValid);
@@ -213,7 +213,7 @@ void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevZero(
 
 // Test case: Log Normal distribution with a large standard deviation
 void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevLogNormalUpper()
-{    
+{
     mPara->stdDev = 3.1;
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(0);
     QVERIFY(!result.isValid);
@@ -222,7 +222,7 @@ void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevLogNo
 
 // Test case: Log Normal distribution with a small standard deviation
 void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevLogNormalLower()
-{    
+{
     mPara->stdDev = 1e-6;
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(0);
     QVERIFY(!result.isValid);
@@ -231,7 +231,7 @@ void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevLogNo
 
 // Test case: Gaussian distribution with a large standard deviation
 void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevGaussianUpper()
-{    
+{
     mPara->stdDev = 51.0;
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(1);
     QVERIFY(!result.isValid);
@@ -240,7 +240,7 @@ void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevGauss
 
 // Test case: Gaussian distribution with a small standard deviation
 void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevGaussianLower()
-{    
+{
     mPara->stdDev = 1e-9;
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(1);
     QVERIFY(!result.isValid);
@@ -249,7 +249,7 @@ void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevGauss
 
 // Test case: nRadius is 1
 void TestParameters::test_CheckValidityDistributionParameters_invalidNRadiusOne()
-{    
+{
     mPara->nRadius = 1;
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(0);
     QVERIFY(!result.isValid);
@@ -267,7 +267,7 @@ void TestParameters::test_CheckValidityDistributionParameters_invalidNRadiusRang
 
 // Test case: mean radius is too large for distribution check
 void TestParameters::test_CheckValidityDistributionParameters_invalidMeanRadiusDistributionRange()
-{    
+{
     mPara->meanRadius = 26.0;
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(0);
     QVERIFY(!result.isValid);
@@ -276,7 +276,7 @@ void TestParameters::test_CheckValidityDistributionParameters_invalidMeanRadiusD
 
 // Test case: Ratio of stdDev/meanRadius is too small
 void TestParameters::test_CheckValidityDistributionParameters_invalidStdDevMeanRadiusRatio()
-{    
+{
     mPara->stdDev = 1e-4;
     mPara->meanRadius = 10.0;
     ParameterValidationResult result = mPara->CheckValidityDistributionParameters(0);
@@ -289,9 +289,77 @@ void TestParameters::test_CheckValidityDistributionParameters_invalidMeanRadiusL
 {
     mPara->scatRefReal = 0.04;
     mPara->medRef = 1.0;
-    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false);
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, false, Parameters::LogNormal);
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QString("Unrealistic relative refractive index! Check sphere and medium refractive index values."));
+}
+
+// Test case: Poly-disperse + Volume Fraction, too tiny a volume fraction for 31 bins -> invalid
+void TestParameters::test_CheckValidityCommonParameters_polyDisperseVolFractionTooLowForBins()
+{
+    mPara->nRadius = 31;
+    mPara->meanRadius = 0.05;     // small spheres -> tiny per-sphere volume
+    mPara->stdDev = 0.02;
+    mPara->volFraction = 1e-12;   // way too small to give 1 sphere per bin
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true, Parameters::LogNormal);
+    QVERIFY(!result.isValid);
+    QVERIFY(result.errorMessage.contains("Volume Fraction is too low"));
+}
+
+// Test case: Poly-disperse + Volume Fraction, plenty of volume fraction -> valid
+void TestParameters::test_CheckValidityCommonParameters_polyDisperseVolFractionEnoughForBins()
+{
+    mPara->nRadius = 31;
+    mPara->meanRadius = 0.05;
+    mPara->stdDev = 0.02;
+    mPara->volFraction = 0.05;    // generous
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true, Parameters::LogNormal);
+    QVERIFY(result.isValid);
+}
+
+// Test case: Poly-disperse + Custom distribution bypasses the per-bin volume fraction check
+void TestParameters::test_CheckValidityCommonParameters_polyDisperseCustomSkipsBinCheck()
+{
+    mPara->nRadius = 31;
+    mPara->meanRadius = 0.05;
+    mPara->stdDev = 0.02;
+    mPara->volFraction = 1e-12;   // would fail LogNormal/Gaussian, but Custom should skip this check
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, false, true, Parameters::Custom);
+    QVERIFY(result.isValid);
+}
+
+// Test case: Poly-disperse + Concentration (Ns), too few spheres for 31 bins -> invalid
+void TestParameters::test_CheckValidityCommonParameters_polyDisperseNumDenTooLowForBins()
+{
+    mPara->nRadius = 31;
+    mPara->meanRadius = 0.05;
+    mPara->stdDev = 0.02;
+    mPara->sphNumDensity = 1.0;   // fewer than nRadius bins
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, true, false, Parameters::LogNormal);
+    QVERIFY(!result.isValid);
+    QVERIFY(result.errorMessage.contains("Concentration (Ns) is too low"));
+}
+
+// Test case: Poly-disperse + Concentration (Ns), enough spheres for 31 bins -> valid
+void TestParameters::test_CheckValidityCommonParameters_polyDisperseNumDenEnoughForBins()
+{
+    mPara->nRadius = 31;
+    mPara->meanRadius = 0.05;
+    mPara->stdDev = 0.02;
+    mPara->sphNumDensity = 5000.0; // generous
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, true, false, Parameters::LogNormal);
+    QVERIFY(result.isValid);
+}
+
+// Test case: Poly-disperse + Custom distribution bypasses the per-bin Concentration (Ns) check
+void TestParameters::test_CheckValidityCommonParameters_polyDisperseNumDenCustomSkipsBinCheck()
+{
+    mPara->nRadius = 31;
+    mPara->meanRadius = 0.05;
+    mPara->stdDev = 0.02;
+    mPara->sphNumDensity = 1.0;   // would fail LogNormal/Gaussian, but Custom should skip this check
+    ParameterValidationResult result = mPara->CheckValidityCommonParameters(false, true, false, Parameters::Custom);
+    QVERIFY(result.isValid);
 }
 
 // Test case: Polydisperse packing volume is valid
