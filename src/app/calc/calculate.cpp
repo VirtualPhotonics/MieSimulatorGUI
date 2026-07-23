@@ -131,22 +131,29 @@ void Calculate::DoSimulation(QLabel *progress, Parameters *para)
                 sumPhaseFuncAve[t] +=  tempPhase*curMus;
             }
         }
+        // Zero protection
+        double totalSumSafe = (sumForward + sumBackward <= 0.0) ? 1e-100 : sumForward + sumBackward;
+        double sumMusSafe = (sumMus <= 0.0) ? 1e-100 : sumMus;
+        double sumNumDenSafe = (sumNumDen <= 0.0) ? 1e-100 : sumNumDen;
+
         //Normalize
-        para->cSca[w]  = sumCsca / sumNumDen ;
-        para->cExt[w]  = sumCext / sumNumDen;
-        para->cBack[w] = sumCback / sumNumDen;
+        para->cSca[w]  = sumCsca / sumNumDenSafe ;
+        para->cExt[w]  = sumCext / sumNumDenSafe;
+        para->cBack[w] = sumCback / sumNumDenSafe;
         para->sizePara[w] = xPara;
         para->mus[w] = sumMus * 1e-6;   //1e-6--> 1micron2 to 1mm2
-        para->g[w] = sumMusG /sumMus;
-        para->forward[w] = sumForward*100.0/(sumForward+sumBackward);    //Not necessary to divide by sumMus in ratio calculation
-        para->backward[w] = sumBackward*100.0/(sumForward+sumBackward);  //Not necessary to divide by sumMus in ratio calculation
+        para->g[w] = sumMusG /sumMusSafe;
+
+        para->forward[w]  = sumForward * 100.0 / totalSumSafe;   //Not necessary to divide by sumMus in ratio calculation
+        para->backward[w] = sumBackward * 100.0 / totalSumSafe;  //Not necessary to divide by sumMus in ratio calculation
+
         for (unsigned int t = 0; t < para->nTheta; t++)
-        {
-            para->S1[w][t] = sumS1[t] /sumMus;
-            para->S2[w][t] = sumS2[t] /sumMus;
-            para->phaseFunctionAve[w][t] = sumPhaseFuncAve[t] /sumMus;
-            para->phaseFunctionPara[w][t] = sumPhaseFuncPara[t] /sumMus;
-            para->phaseFunctionPerp[w][t] = sumPhaseFuncPerp[t] /sumMus;
+        {            
+            para->S1[w][t] = sumS1[t] /sumMusSafe;
+            para->S2[w][t] = sumS2[t] /sumMusSafe;
+            para->phaseFunctionAve[w][t] = sumPhaseFuncAve[t] /sumMusSafe;
+            para->phaseFunctionPara[w][t] = sumPhaseFuncPara[t] /sumMusSafe;
+            para->phaseFunctionPerp[w][t] = sumPhaseFuncPerp[t] /sumMusSafe;
         }
     }
 }
@@ -185,7 +192,8 @@ void Calculate::ComputeMuspAtRefWavel(Parameters *para)
             //G calculation
             sumMusG += CalculateG(curS1.data(), curS2.data(), para, grid)*curMus;
         }
-        para->muspAtRefWavel[i]= sumMus*(1-(sumMusG /sumMus));
+        double sumMusSafe = (sumMus <= 0.0) ? 1e-100 : sumMus;
+        para->muspAtRefWavel[i]= sumMus*(1-(sumMusG /sumMusSafe));
     }
 }
 
@@ -446,7 +454,7 @@ void Calculate::SetSphereRadiusAndRefIndex(Parameters *para, unsigned int index,
         }
         else if (totalFuncSum > 0)
         {
-            factor = para->sphNumDensity/totalFuncSum;
+            factor = para->sphNumDensity / totalFuncSum;
         }
 
         // Apply factor to compute data
@@ -535,7 +543,8 @@ bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceTo
         {
             volFraction = singleSphVolume * para->numDensityArray[0] / 1e9;
         }
-        interparticleDistance = 1e3 / pow(para->numDensityArray[0], 1.0 / 3.0);
+        double numDensity0Safe = (para->numDensityArray[0] <= 0.0) ? 1e-100 : para->numDensityArray[0];
+        interparticleDistance = 1e3 / pow(numDensity0Safe, 1.0 / 3.0);
     }
     else                         //polydisperse
     {
@@ -555,9 +564,10 @@ bool Calculate::CheckIndependentScattering(Parameters *para, double &clearanceTo
         {
             volFraction = totalVolume / 1e9;
         }
-        interparticleDistance = 1e3 / pow(totalNumDensity, 1.0 / 3.0);
+        double totalNumDensitySafe = (totalNumDensity <= 0.0) ? 1e-100 : totalNumDensity;
+        interparticleDistance = 1e3 / pow(totalNumDensitySafe, 1.0/3.0);
 
-        double averageVolume = totalVolume / totalNumDensity;
+        double averageVolume = totalVolume / totalNumDensitySafe;
         effectiveRadius = pow(3.0 * averageVolume / (4.0 * M_PI), 1.0/3.0);
     }
 

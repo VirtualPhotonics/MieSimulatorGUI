@@ -182,7 +182,10 @@ void MainWindowSupport::LoadInputData(Ui_MainWindow *ui, Parameters *para)
         para->refWavel = 1000.0;
         para->refWavelIdx = para->wavel1000;
     }
-    SetWavelengthSliders(ui);
+    if (para->nWavel>0)
+    {
+        SetWavelengthSliders(ui);
+    }
 }
 
 //Initialize dynamic arrays.
@@ -285,7 +288,7 @@ void MainWindowSupport::SetWavelengthSliders(Ui_MainWindow *ui)
     double startWL = ui->lineEdit_StartWL->text().toDouble();
     double endWL = ui->lineEdit_EndWL->text().toDouble();
     double stepWL = ui->lineEdit_StepWL->text().toDouble();
-    int nWL = static_cast<int>(floor(endWL - startWL)/stepWL) + 1;
+    int nWL = (stepWL <= 0.0) ? 1 : static_cast<int>(floor(endWL - startWL)/stepWL) + 1;
 
     ui->slider_WL_PFPolar->setMinimum(0);
     ui->slider_WL_PFPolar->setMaximum(nWL-1);
